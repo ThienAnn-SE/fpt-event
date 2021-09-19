@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/fpt-event">
+<Resource auth="Container"
+          driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+          name="DSBlink"
+          type="javax.sql.DataSource"
+          url="jdbc:sqlserver://localhost:1433;database=FU-Event;"
+          username="sa"
+          password="sa"/>
+</Context>
