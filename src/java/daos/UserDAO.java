@@ -128,4 +128,26 @@ public class UserDAO {
         return list;
     }
 
+    public User getUserByEmail(String email) throws SQLException, NamingException {
+        User user = null;
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT * FROM Users WHERE userEmail=?";
+            preStm = conn.prepareStatement(sql);
+            rs = preStm.executeQuery();
+            if (rs.next()) {
+                String name = rs.getString("userName");
+                Date dateOfBirth = rs.getDate("dateOfBirth");
+                boolean gender = rs.getBoolean("gender");
+                String phoneNumber = rs.getString("phoneNumber");
+                int role = rs.getInt("roleID");
+                int status = rs.getInt("statusID");
+                Date formatDate = Helper.convertStringToDate(dateOfBirth.toString());
+                user = new User(email, name, formatDate, gender, phoneNumber, role, status);
+            }
+        } finally {
+
+        }
+        return user;
+    }
 }
