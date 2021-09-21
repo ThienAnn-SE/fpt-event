@@ -128,15 +128,15 @@ public class UserDAO {
         return list;
     }
 
-    public User getUserByEmail(String email) throws SQLException, NamingException {
+    public User getUserByName(String name) throws SQLException, NamingException {
         User user = null;
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "SELECT * FROM Users WHERE userEmail=?";
+            String sql = "SELECT * FROM Users WHERE userName=?";
             preStm = conn.prepareStatement(sql);
             rs = preStm.executeQuery();
             if (rs.next()) {
-                String name = rs.getString("userName");
+                String email = rs.getString("userEmail");
                 Date dateOfBirth = rs.getDate("dateOfBirth");
                 boolean gender = rs.getBoolean("gender");
                 String phoneNumber = rs.getString("phoneNumber");
@@ -146,7 +146,7 @@ public class UserDAO {
                 user = new User(email, name, formatDate, gender, phoneNumber, role, status);
             }
         } finally {
-
+            this.closeConnection();
         }
         return user;
     }

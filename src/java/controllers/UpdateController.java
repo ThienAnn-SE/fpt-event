@@ -7,15 +7,19 @@ package controllers;
 
 import constant.Routers;
 import daos.UserDAO;
+import dtos.User;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import utils.GetParam;
 import utils.Helper;
 
@@ -27,8 +31,34 @@ import utils.Helper;
 public class UpdateController extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Processes requests for <code>GET</code> methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @return
+     * @throws Exception if a error occurs
+     */
+    protected boolean getHandler(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        UserDAO dao = new UserDAO();
+
+        //
+        HttpSession session = request.getSession();
+        String userName = (String) session.getAttribute("name");
+        if (userName == null) {
+            return false;
+        }
+        User existedUser = dao.getUserByName(userName);
+        if (existedUser == null) {
+            request.setAttribute("errorMessage", "User with this given name was not found");
+            return false;
+        }
+        request.setAttribute("user", existedUser);
+        return true;
+    }
+
+    /**
+     * Processes requests for <code>POST</code> methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -36,7 +66,7 @@ public class UpdateController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected boolean processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected boolean postHandler(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //get param field from request and validation
         String email = GetParam.getStringParam(request, "txtEmail", "Email", 0, 0, null);
@@ -87,7 +117,16 @@ public class UpdateController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            if (this.getHandler(request, response)) {
+                request.getRequestDispatcher(Routers.UPDATE_PAGE).forward(request, response);
+            }
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+
+        } catch (Exception ex) {
+            log(ex.getMessage());
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+        }
     }
 
     /**
@@ -111,8 +150,8 @@ public class UpdateController extends HttpServlet {
         } catch (SQLException | NamingException ex) {
             log(ex.getMessage());
         }
-        if(processRequest(request, response)){
-            response.sendRedirect(Routers.UPDATE_PAGE+"?message=Update successfully");
+        if (postHandler(request, response)) {
+            response.sendRedirect(Routers.UPDATE_PAGE + "?message=Update successfully");
         }
     }
 

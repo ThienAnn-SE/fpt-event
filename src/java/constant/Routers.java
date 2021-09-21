@@ -22,6 +22,8 @@ public class Routers {
     public final static String INDEX_PAGE = "index.jsp";
     public final static String LOGIN_PAGE = "login.jsp";
     public final static String UPDATE_PAGE = "update.jsp";
+    public final static String ERROR_PAGE = "error.jsp";
+    public final static String REGISTER_PAGE = "register.jsp";
     
     public final static String UPDATE_CONTROLLER = "UpdateController";
     public final static String REGISTER_CONTROLLER = "RegisterController";

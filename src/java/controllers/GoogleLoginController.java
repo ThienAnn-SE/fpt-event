@@ -56,6 +56,7 @@ public class GoogleLoginController extends HttpServlet {
         }
         request.setAttribute("email", googleDao.getEmail());
         request.setAttribute("name", googleDao.getName());
+        request.setAttribute("avatar", googleDao.getPicture());
         return true;
     }
 
@@ -71,17 +72,19 @@ public class GoogleLoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if(!processRequest(request, response)){
+        if (!processRequest(request, response)) {
             request.getRequestDispatcher(Routers.LOGIN_PAGE).forward(request, response);
-        }else{
+        } else {
             UserDAO dao = new UserDAO();
             try {
-                if(dao.isExisted(request.getParameter((String) request.getAttribute("email")))){
+                if (dao.isExisted(request.getParameter((String) request.getAttribute("email")))) {
                     HttpSession session = request.getSession();
                     session.setAttribute("name", request.getAttribute("name"));
+                    session.setAttribute("avatar", request.getAttribute("avatar"));
                     response.sendRedirect(Routers.INDEX_PAGE);
+                } else {
+                    request.getRequestDispatcher(Routers.REGISTER_CONTROLLER).forward(request, response);
                 }
-                request.getRequestDispatcher(Routers.REGISTER_CONTROLLER).forward(request, response);
             } catch (SQLException | NamingException ex) {
                 log(ex.getMessage());
             }
