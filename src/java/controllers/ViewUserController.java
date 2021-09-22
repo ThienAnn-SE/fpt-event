@@ -10,24 +10,21 @@ import daos.UserDAO;
 import dtos.User;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import utils.GetParam;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author thien
  */
-@WebServlet(name = "RegisterController", urlPatterns = {"/RegisterController"})
-public class RegisterController extends HttpServlet {
+@WebServlet(name = "ViewUserController", urlPatterns = {"/ViewUserController"})
+public class ViewUserController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,21 +35,22 @@ public class RegisterController extends HttpServlet {
      * @return
      * @throws IOException if an error occurs
      */
-    protected boolean processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected boolean getHanlder(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
-        String email = GetParam.getEmailParams(request, "email", "Email");
-        String name = GetParam.getStringParam(request, "name", "Name", 0, 50, null);
-        Date dayOfBirth = GetParam.getDateParams(request, "dayOfBirth", "Day of birth", null);
-        boolean gender = (GetParam.getIntParams(request, "gender", "Gender", 0, 1, 1) == 1);
-        String phoneNumber = GetParam.getPhoneParams(request, "phoneNumber", null);
+        UserDAO dao = new UserDAO();
 
-        if (name == null || dayOfBirth == null || phoneNumber == null) {
+        HttpSession session = request.getSession();
+        String userName = (String) session.getAttribute("name");
+        if (userName == null) {
             return false;
         }
 
-        User user = new User(email, name, dayOfBirth, gender, phoneNumber, 0, 400);
-        UserDAO dao = new UserDAO();
-        dao.addUser(user);
+        User user = dao.getUserByName(userName);
+        if (user == null) {
+            request.setAttribute("errorMessage", "User with this given name was not found");
+            return false;
+        }
+        request.setAttribute("user", user);
         return true;
     }
 
@@ -68,7 +66,16 @@ public class RegisterController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher(Routers.REGISTER_PAGE).forward(request, response);
+        try {
+            if (this.getHanlder(request, response)) {
+                request.getRequestDispatcher(Routers.USER_INFO_PAGE).forward(request, response);
+            } else {
+                request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+            }
+        } catch (Exception ex) {
+            log(ex.getMessage());
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+        }
     }
 
     /**
@@ -79,18 +86,4 @@ public class RegisterController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            if (processRequest(request, response)) {
-                response.sendRedirect(Routers.INDEX_PAGE);
-            } else {
-                request.getRequestDispatcher(Routers.REGISTER_PAGE).forward(request, response);
-            }
-        } catch (Exception ex) {
-            log(ex.getMessage());
-            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
-        }
-    }
 }
