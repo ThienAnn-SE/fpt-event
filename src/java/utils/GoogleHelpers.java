@@ -8,7 +8,7 @@ package utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import constant.Routers;
-import daos.GoogleDAO;
+import dtos.GoogleDTO;
 import java.io.IOException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Form;
@@ -32,11 +32,11 @@ public class GoogleHelpers {
         return accessToken;
     }
     
-    public static GoogleDAO getUserInfo(final String accessToken) 
+    public static GoogleDTO getUserInfo(final String accessToken) 
             throws ClientProtocolException, IOException{
         String link = Routers.GOOGLE_GET_USER_INFO_LINK + accessToken;
         String respone = Request.Get(link).execute().returnContent().asString();
-        GoogleDAO googleDao = new Gson().fromJson(respone, GoogleDAO.class);
+        GoogleDTO googleDao = new Gson().fromJson(respone, GoogleDTO.class);
         System.out.println(googleDao.toString());
         return googleDao;
     }
