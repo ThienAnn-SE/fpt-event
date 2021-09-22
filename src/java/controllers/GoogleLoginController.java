@@ -87,6 +87,7 @@ public class GoogleLoginController extends HttpServlet {
                 }
             } catch (SQLException | NamingException ex) {
                 log(ex.getMessage());
+                request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
             }
         }
     }
