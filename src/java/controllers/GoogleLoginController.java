@@ -8,10 +8,9 @@ package controllers;
 import constant.Routers;
 import daos.GoogleDAO;
 import daos.UserDAO;
+import dtos.UserDTO;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -75,11 +74,14 @@ public class GoogleLoginController extends HttpServlet {
         if (!processRequest(request, response)) {
             request.getRequestDispatcher(Routers.LOGIN_PAGE).forward(request, response);
         } else {
+            String email = (String) request.getAttribute("email");
             UserDAO dao = new UserDAO();
+            
             try {
-                if (dao.isExisted(request.getParameter((String) request.getAttribute("email")))) {
+                UserDTO user = dao.getUserByEmail(email);
+                if (user != null) {
                     HttpSession session = request.getSession();
-                    session.setAttribute("name", request.getAttribute("name"));
+                    session.setAttribute("USER_DATA", user);
                     session.setAttribute("avatar", request.getAttribute("avatar"));
                     response.sendRedirect(Routers.INDEX_PAGE);
                 } else {

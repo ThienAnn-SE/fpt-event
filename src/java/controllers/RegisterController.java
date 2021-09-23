@@ -7,14 +7,9 @@ package controllers;
 
 import constant.Routers;
 import daos.UserDAO;
-import dtos.User;
+import dtos.UserDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -50,7 +45,7 @@ public class RegisterController extends HttpServlet {
             return false;
         }
 
-        User user = new User(email, name, dayOfBirth, gender, phoneNumber, 0, 400);
+        UserDTO user = new UserDTO(email, name, dayOfBirth, gender, phoneNumber, 0, 400);
         UserDAO dao = new UserDAO();
         dao.addUser(user);
         return true;

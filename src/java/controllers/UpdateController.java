@@ -7,7 +7,7 @@ package controllers;
 
 import constant.Routers;
 import daos.UserDAO;
-import dtos.User;
+import dtos.UserDTO;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
@@ -48,7 +48,7 @@ public class UpdateController extends HttpServlet {
         if (userName == null) {
             return false;
         }
-        User existedUser = dao.getUserByName(userName);
+        UserDTO existedUser = dao.getUserByName(userName);
         if (existedUser == null) {
             request.setAttribute("errorMessage", "User with this given name was not found");
             return false;
