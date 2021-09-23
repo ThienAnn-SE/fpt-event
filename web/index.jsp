@@ -13,11 +13,7 @@
     </head>
     <body>
         <h1>Hello World!</h1>
-        <%
-            String id = request.getAttribute("id").toString();
-            String email = request.getAttribute("email").toString();
-            out.print("Id: " + id);
-            out.print("<br/>Email: " + email);
-        %>
+        <h1>Hello ${sessionScope.USER_DATA.name}</h1>
+        <a href="info.jsp">info</a>
     </body>
 </html>

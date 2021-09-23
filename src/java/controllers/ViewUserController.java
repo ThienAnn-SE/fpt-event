@@ -7,11 +7,8 @@ package controllers;
 
 import constant.Routers;
 import daos.UserDAO;
-import dtos.User;
+import dtos.UserDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -45,7 +42,7 @@ public class ViewUserController extends HttpServlet {
             return false;
         }
 
-        User user = dao.getUserByName(userName);
+        UserDTO user = dao.getUserByName(userName);
         if (user == null) {
             request.setAttribute("errorMessage", "User with this given name was not found");
             return false;
