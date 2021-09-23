@@ -76,11 +76,10 @@ public class GoogleLoginController extends HttpServlet {
         } else {
             String name = request.getParameter("name");
             UserDAO dao = new UserDAO();
-
             try {
                 if (dao.isExisted((String) request.getAttribute("email"))) {
                     HttpSession session = request.getSession();
-                    session.setAttribute("USER_DATA", user);
+                    session.setAttribute("name", request.getAttribute("name"));
                     session.setAttribute("avatar", request.getAttribute("avatar"));
                     response.sendRedirect(Routers.INDEX_PAGE);
                 } else {

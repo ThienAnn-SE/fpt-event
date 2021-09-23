@@ -13,7 +13,7 @@
     </head>
     <body>
         <h1>Hello World!</h1>
-        <h1>Hello ${sessionScope.USER_DATA.name}</h1>
-        <a href="info.jsp">info</a>
+        <%
+        %>
     </body>
 </html>

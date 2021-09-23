@@ -45,8 +45,7 @@ public class RegisterController extends HttpServlet {
             return false;
         }
 
-
-        UserDTO user = new UserDTO(email, name, dayOfBirth, gender, phoneNumber, 0, 400);
+        UserDTO user = new UserDTO(email, name, dayOfBirth, gender, phoneNumber, 1, 400);
         UserDAO dao = new UserDAO();
         dao.addUser(user);
         return true;
