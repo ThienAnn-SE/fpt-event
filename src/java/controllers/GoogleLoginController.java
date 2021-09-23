@@ -75,7 +75,7 @@ public class GoogleLoginController extends HttpServlet {
         } else {
             UserDAO dao = new UserDAO();
             try {
-                if (dao.isExisted(request.getParameter((String) request.getAttribute("email")))) {
+                if (dao.isExisted((String) request.getAttribute("email"))) {
                     HttpSession session = request.getSession();
                     session.setAttribute("name", request.getAttribute("name"));
                     session.setAttribute("avatar", request.getAttribute("avatar"));

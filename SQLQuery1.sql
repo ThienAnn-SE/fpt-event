@@ -10,39 +10,39 @@ create table tblRoles(
 )
 
 create table tblUserStatuses(
-	statusID			integer		primary key,
-	statusDescription	nvarchar	not null,
+	statusID			integer			primary key,
+	statusDescription	nvarchar(30)	not null,
 )
 
 create table tblUsers(
-	userEmail	 varchar(30)	primary key,
-	userName	 nvarchar(50)	not null,
-	dateOfBirth	 date			not null,
-	gender		 bit			not null,
+	userEmail	 varchar(30)		primary key,
+	userName	 nvarchar(50)		not null	unique,
+	dateOfBirth	 date				not null,
+	gender		 bit				not null,
 	phoneNumber  varchar(15)		not null	unique,
-	roleID		 integer		not null	foreign key references tblRoles,
-	statusID	 integer		not null	foreign key references tblUserStatuses
+	roleID		 integer			not null	foreign key references tblRoles,
+	statusID	 integer			not null	foreign key references tblUserStatuses
 )
 
 create table tblLocations(
-	locationID			integer		primary key,
-	locationName		nvarchar	not null,
-	locationCapacity	integer		not null
+	locationID			integer			primary key,
+	locationName		nvarchar(30)	not null,
+	locationCapacity	integer			not null
 )
 
 create table tblCatetories(
-	catetoryID		integer		primary key,
-	catetoryName	nvarchar	not null
+	catetoryID		integer				primary key,
+	catetoryName	nvarchar(30)		not null
 )
 
 create table tblClubDetails(
-	clubID				integer			primary key,
-	clubName			nvarchar		not null	unique,
-	createDate			date			not null,
-	clubDescription		ntext			not null,
-	clubEmail			varchar,
-	clubPhoneNumber		varchar(15)		unique,
-	userEmail			varchar(30)		foreign key references	tblUsers
+	clubID				integer				primary key,
+	clubName			nvarchar(30)		not null	unique,
+	createDate			date				not null,
+	clubDescription		ntext				not null,
+	clubEmail			varchar(30),
+	clubPhoneNumber		varchar(15)			unique,
+	userEmail			varchar(30)			foreign key references	tblUsers
 	)
 	
 create table tblFUEvents(
@@ -55,7 +55,7 @@ create table tblFUEvents(
 	startDate		date			not null,
 	endDate			date			not null,
 	avgVote			float			not null,
-	imageURL		varchar,
+	imageURL		varchar(max),
 	content			ntext			not null,
 	fee				bit				not null,
 	totalFollowers	integer			not null	check (totalFollowers >= 0)
@@ -78,7 +78,7 @@ create table tblFeedbacks(
 
 create table tblPaymentStatuses(
 	statusID			integer		primary key,
-	statusDescription	nvarchar	
+	statusDescription	nvarchar(30)	
 	)
 
 create table tblPayments(
