@@ -9,12 +9,7 @@ import constant.Routers;
 import daos.UserDAO;
 import dtos.User;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -50,7 +45,7 @@ public class RegisterController extends HttpServlet {
             return false;
         }
 
-        User user = new User(email, name, dayOfBirth, gender, phoneNumber, 0, 400);
+        User user = new User(email, name, dayOfBirth, gender, phoneNumber, 1, 400);
         UserDAO dao = new UserDAO();
         dao.addUser(user);
         return true;
@@ -89,8 +84,13 @@ public class RegisterController extends HttpServlet {
                 request.getRequestDispatcher(Routers.REGISTER_PAGE).forward(request, response);
             }
         } catch (Exception ex) {
-            log(ex.getMessage());
-            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+            if (ex.getMessage().contains("duplicate")) {
+                request.setAttribute("nameError", "This username is already taken");
+                request.getRequestDispatcher(Routers.REGISTER_PAGE).forward(request, response);
+            } else {
+                log(ex.getMessage());
+                request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+            }
         }
     }
 }

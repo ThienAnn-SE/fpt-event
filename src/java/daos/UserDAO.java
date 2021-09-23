@@ -55,7 +55,7 @@ public class UserDAO {
             preStm.setString(1, user.getEmail());
             preStm.setString(2, user.getName());
             preStm.setDate(3, java.sql.Date.valueOf(Helper.convertDateToString(user.getDayOfBirth())));
-            preStm.setBoolean(0, user.isGender());
+            preStm.setBoolean(4, user.isGender());
             preStm.setString(5, user.getPhoneNumber());
             preStm.setInt(6, user.getRole());
             preStm.setInt(7, user.getStatus());

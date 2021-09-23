@@ -3,7 +3,8 @@
     Created on : Sep 21, 2021, 2:21:14 PM
     Author     : thien
 --%>
-
+<%@taglib uri="http://java.sun.com/jsp/jstl/core"
+          prefix="c"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -12,6 +13,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>Hello World!</h1>
+        <p>${requestScope.error}</p>
+        <p>${requestScope.errorMessage}</p>
     </body>
 </html>
