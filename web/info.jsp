@@ -20,5 +20,6 @@
         <h3>Phone: ${sessionScope.USER_DATA.phoneNumber}</h3>
         <h3>Role: ${sessionScope.USER_DATA.role}</h3>
         <h3>Status ${sessionScope.USER_DATA.status}</h3>
+        Avatar: <img src="${sessionScope.avatar}"></img>
     </body>
 </html>

@@ -134,6 +134,7 @@ public class UserDAO {
             conn = DBHelpers.makeConnection();
             String sql = "SELECT * FROM Users WHERE userName=?";
             preStm = conn.prepareStatement(sql);
+            preStm.setString(1, name);
             rs = preStm.executeQuery();
             if (rs.next()) {
                 String email = rs.getString("userEmail");
@@ -144,34 +145,6 @@ public class UserDAO {
                 int status = rs.getInt("statusID");
                 Date formatDate = Helper.convertStringToDate(dateOfBirth.toString());
                 user = new UserDTO(email, name, formatDate, gender, phoneNumber, role, status);
-            }
-        } finally {
-            this.closeConnection();
-        }
-        return user;
-    }
-    
-    public UserDTO getUserByEmail(String email) throws SQLException, NamingException {
-        UserDTO user = null;
-        try {
-            conn = DBHelpers.makeConnection();
-            String sql = "SELECT * "
-                    + " FROM Users "
-                    + " WHERE userEmail = ? ";
-            preStm = conn.prepareStatement(sql);
-            System.out.println(email);
-            preStm.setString(1, email);
-            rs = preStm.executeQuery();
-            if (rs.next()) {
-                String name = rs.getString("userName");
-                Date dateOfBirth = rs.getDate("dateOfBirth");
-                boolean gender = rs.getBoolean("gender");
-                String phoneNumber = rs.getString("phoneNumber");
-                int role = rs.getInt("roleID");
-                int status = rs.getInt("statusID");
-                Date formatDate = Helper.convertStringToDate(dateOfBirth.toString());
-                user = new UserDTO(email, name, formatDate, gender, phoneNumber, role, status);
-                System.out.println(user == null);
             }
         } finally {
             this.closeConnection();

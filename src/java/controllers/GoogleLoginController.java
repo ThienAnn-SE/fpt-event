@@ -74,11 +74,11 @@ public class GoogleLoginController extends HttpServlet {
         if (!processRequest(request, response)) {
             request.getRequestDispatcher(Routers.LOGIN_PAGE).forward(request, response);
         } else {
-            String email = (String) request.getAttribute("email");
+            String name = request.getParameter("name");
             UserDAO dao = new UserDAO();
-            
+
             try {
-                UserDTO user = dao.getUserByEmail(email);
+                UserDTO user = dao.getUserByName(name);
                 if (user != null) {
                     HttpSession session = request.getSession();
                     session.setAttribute("USER_DATA", user);
