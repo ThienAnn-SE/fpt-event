@@ -13,6 +13,7 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <h1>Error!</h1>
         <p>${requestScope.error}</p>
         <p>${requestScope.errorMessage}</p>
     </body>

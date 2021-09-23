@@ -14,10 +14,6 @@
     <body>
         <h1>Hello World!</h1>
         <%
-            String id = request.getAttribute("id").toString();
-            String email = request.getAttribute("email").toString();
-            out.print("Id: " + id);
-            out.print("<br/>Email: " + email);
         %>
     </body>
 </html>

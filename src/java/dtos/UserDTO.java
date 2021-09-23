@@ -13,7 +13,7 @@ import java.util.Date;
  *
  * @author thien
  */
-public class User {
+public class UserDTO {
     private String email;
     private String name;
     private Date dayOfBirth;
@@ -22,7 +22,7 @@ public class User {
     private int role;
     private int status;
 
-    public User(String email, String name, Date dayOfBirth, boolean gender, String phoneNumber, int role, int status) {
+    public UserDTO(String email, String name, Date dayOfBirth, boolean gender, String phoneNumber, int role, int status) {
         this.email = email;
         this.name = name;
         this.dayOfBirth = dayOfBirth;
@@ -32,7 +32,7 @@ public class User {
         this.status = status;
     }
 
-    public User() {
+    public UserDTO() {
     }
     
 

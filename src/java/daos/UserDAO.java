@@ -5,7 +5,7 @@
  */
 package daos;
 
-import dtos.User;
+import dtos.UserDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,7 +44,7 @@ public class UserDAO {
         }
     }
 
-    public boolean addUser(User user) throws SQLException, NamingException {
+    public boolean addUser(UserDTO user) throws SQLException, NamingException {
         boolean isSuccess;
         try {
             conn = DBHelpers.makeConnection();
@@ -103,8 +103,8 @@ public class UserDAO {
         return isSuccess;
     }
 
-    public ArrayList<User> getAllUsers() throws SQLException, NamingException {
-        ArrayList<User> list = new ArrayList<>();
+    public ArrayList<UserDTO> getAllUsers() throws SQLException, NamingException {
+        ArrayList<UserDTO> list = new ArrayList<>();
         try {
             conn = DBHelpers.makeConnection();
             String sql = "SELECT * FROM tblUsers";
@@ -119,7 +119,7 @@ public class UserDAO {
                 int role = rs.getInt("roleID");
                 int status = rs.getInt("statusID");
                 Date formatDate = Helper.convertStringToDate(dateOfBirth.toString());
-                User user = new User(email, name, formatDate, gender, phoneNumber, role, status);
+                UserDTO user = new UserDTO(email, name, formatDate, gender, phoneNumber, role, status);
                 list.add(user);
             }
         } finally {
@@ -128,12 +128,13 @@ public class UserDAO {
         return list;
     }
 
-    public User getUserByName(String name) throws SQLException, NamingException {
-        User user = null;
+    public UserDTO getUserByName(String name) throws SQLException, NamingException {
+        UserDTO user = null;
         try {
             conn = DBHelpers.makeConnection();
             String sql = "SELECT * FROM tblUsers WHERE userName=?";
             preStm = conn.prepareStatement(sql);
+            preStm.setString(1, name);
             rs = preStm.executeQuery();
             if (rs.next()) {
                 String email = rs.getString("userEmail");
@@ -143,7 +144,7 @@ public class UserDAO {
                 int role = rs.getInt("roleID");
                 int status = rs.getInt("statusID");
                 Date formatDate = Helper.convertStringToDate(dateOfBirth.toString());
-                user = new User(email, name, formatDate, gender, phoneNumber, role, status);
+                user = new UserDTO(email, name, formatDate, gender, phoneNumber, role, status);
             }
         } finally {
             this.closeConnection();
