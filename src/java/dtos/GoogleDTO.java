@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package daos;
+package dtos;
 
 /**
  *
  * @author thien
  */
-public class GoogleDAO {
+public class GoogleDTO {
 
     private String id;
     private String email;

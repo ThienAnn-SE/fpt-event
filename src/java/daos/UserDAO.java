@@ -48,14 +48,14 @@ public class UserDAO {
         boolean isSuccess;
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "INSERT INTO Users(userEmail, userName, dateOfBirth, gender, phoneNumber, roleID, statusID)"
+            String sql = "INSERT INTO tblUsers(userEmail, userName, dateOfBirth, gender, phoneNumber, roleID, statusID)"
                     + "VALUES (?,?,?,?,?,?,?)";
 
             preStm = conn.prepareStatement(sql);
             preStm.setString(1, user.getEmail());
             preStm.setString(2, user.getName());
             preStm.setDate(3, java.sql.Date.valueOf(Helper.convertDateToString(user.getDayOfBirth())));
-            preStm.setBoolean(0, user.isGender());
+            preStm.setBoolean(4, user.isGender());
             preStm.setString(5, user.getPhoneNumber());
             preStm.setInt(6, user.getRole());
             preStm.setInt(7, user.getStatus());
@@ -71,7 +71,7 @@ public class UserDAO {
         boolean existed = false;
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "SELECT userEmail FROM Users WHERE userEmail=?";
+            String sql = "SELECT userEmail FROM tblUsers WHERE userEmail=?";
             preStm = conn.prepareStatement(sql);
             preStm.setString(1, email);
             rs = preStm.executeQuery();
@@ -88,7 +88,7 @@ public class UserDAO {
         boolean isSuccess = false;
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "UPDATE Users SET userName=?, dateOfBirth=?, gender=?, phoneNumber=? WHERE userEmail=?";
+            String sql = "UPDATE tblUsers SET userName=?, dateOfBirth=?, gender=?, phoneNumber=? WHERE userEmail=?";
             preStm = conn.prepareStatement(sql);
             preStm.setString(1, name);
             preStm.setDate(2, java.sql.Date.valueOf(Helper.convertDateToString(dateOfBirth)));
@@ -107,7 +107,7 @@ public class UserDAO {
         ArrayList<UserDTO> list = new ArrayList<>();
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "SELECT * FROM Users";
+            String sql = "SELECT * FROM tblUsers";
             preStm = conn.prepareStatement(sql);
             rs = preStm.executeQuery();
             if (rs.next()) {
@@ -132,7 +132,7 @@ public class UserDAO {
         UserDTO user = null;
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "SELECT * FROM Users WHERE userName=?";
+            String sql = "SELECT * FROM tblUsers WHERE userName=?";
             preStm = conn.prepareStatement(sql);
             preStm.setString(1, name);
             rs = preStm.executeQuery();

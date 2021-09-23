@@ -45,6 +45,7 @@ public class RegisterController extends HttpServlet {
             return false;
         }
 
+
         UserDTO user = new UserDTO(email, name, dayOfBirth, gender, phoneNumber, 0, 400);
         UserDAO dao = new UserDAO();
         dao.addUser(user);
@@ -84,8 +85,13 @@ public class RegisterController extends HttpServlet {
                 request.getRequestDispatcher(Routers.REGISTER_PAGE).forward(request, response);
             }
         } catch (Exception ex) {
-            log(ex.getMessage());
-            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+            if (ex.getMessage().contains("duplicate")) {
+                request.setAttribute("nameError", "This username is already taken");
+                request.getRequestDispatcher(Routers.REGISTER_PAGE).forward(request, response);
+            } else {
+                log(ex.getMessage());
+                request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+            }
         }
     }
 }

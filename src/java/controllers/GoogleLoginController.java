@@ -6,7 +6,7 @@
 package controllers;
 
 import constant.Routers;
-import daos.GoogleDAO;
+import dtos.GoogleDTO;
 import daos.UserDAO;
 import dtos.UserDTO;
 import java.io.IOException;
@@ -46,7 +46,7 @@ public class GoogleLoginController extends HttpServlet {
             return false;
         }
         String accessToken = GoogleHelpers.getToken(code);
-        GoogleDAO googleDao = GoogleHelpers.getUserInfo(accessToken);
+        GoogleDTO googleDao = GoogleHelpers.getUserInfo(accessToken);
         String email = googleDao.getEmail();
 
         if (!email.contains("@fpt.edu.vn")) {
@@ -78,8 +78,7 @@ public class GoogleLoginController extends HttpServlet {
             UserDAO dao = new UserDAO();
 
             try {
-                UserDTO user = dao.getUserByName(name);
-                if (user != null) {
+                if (dao.isExisted((String) request.getAttribute("email"))) {
                     HttpSession session = request.getSession();
                     session.setAttribute("USER_DATA", user);
                     session.setAttribute("avatar", request.getAttribute("avatar"));

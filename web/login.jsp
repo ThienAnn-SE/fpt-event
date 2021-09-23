@@ -44,7 +44,7 @@
                                 <div class="inputBox">
                                     <input type="submit" value="Login" />
                                 </div>
-                                <a class="google" href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force">
+              s                  <a class="google" href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force">
                                     <img src="https://cdn-icons-png.flaticon.com/128/281/281764.png" />
                                     Login With Google
                                 </a>
