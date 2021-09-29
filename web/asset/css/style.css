@@ -1,0 +1,46 @@
+:root {
+    --black: #161623;
+    --white: #fff;
+    --black-shadow: rgba(0, 0, 0, 0.25);
+    --white-shadow: rgba(255, 255, 255, 0.1);
+    --light-pink: #ff7777;
+    --dark-pink: #ff2871;
+    --pink-gradient: linear-gradient(to right, #ff2871, #ff7777);
+    --dark-pink-shadow: rgb(255, 40, 113, 0.3);
+    --pink-shadow-gradient: linear-gradient(to right, #ff7777, 
+    rgb(255, 40, 113, 0.3));
+}
+
+.dark {
+    --black: #fff;
+    --white: #161623;
+    --black-shadow: rgba(255, 255, 255, 0.1);
+    --white-shadow: rgba(0, 0, 0, 0.25);
+    --pink-gradient: linear-gradient(to right bottom, #fa561ada, #f6475ed2, #ce30cbd5);
+    --light-pink: #ce30cbd5;
+    --dark-pink: #fa561ada;
+    --dark-pink-shadow: rgba(250, 86, 26, 0.3);
+}
+
+body {
+    background: var(--white) !important;
+    color: var(--black) !important;
+    overflow-x: hidden;
+}
+
+button {
+    width: 190px;
+    color: var(--white);
+    background: var(--pink-gradient);
+    border: none;
+    letter-spacing: 0.6px;
+    box-shadow: -5px -5px 10px var(--dark-pink), 
+                5px 5px 10px var(--light-pink);
+    padding: 15px 40px;
+    text-transform: uppercase !important;
+}
+
+button:hover {
+    transform: translateY(-10px);
+    transition: 0.25s;
+}

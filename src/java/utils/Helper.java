@@ -20,6 +20,7 @@ public class Helper {
      * @param maxRole  maximum user's role to be passed
      * @param page     move to this page if user can not be passed
      * @return false if the access is illegal
+     * @throws java.lang.Exception
      */
     public static boolean protectedRouter(HttpServletRequest request, HttpServletResponse response, int minRole,
                                           int maxRole, String page) throws Exception {
@@ -59,8 +60,8 @@ public class Helper {
         if (session == null) {
             return false; //if the session is not exist
         }
-        String username = (String) session.getAttribute("username");
-        return username != null; //username exist in session or not
+        String email = (String) session.getAttribute("email");
+        return email != null; //username exist in session or not
     }
 
     /**

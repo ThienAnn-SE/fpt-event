@@ -5,8 +5,6 @@
  */
 package dtos;
 
-import java.util.Date;
-
 
 
 /**
@@ -16,13 +14,21 @@ import java.util.Date;
 public class UserDTO {
     private String email;
     private String name;
-    private Date dayOfBirth;
+    private String dayOfBirth;
     private boolean gender;
     private String phoneNumber;
     private int role;
     private int status;
 
-    public UserDTO(String email, String name, Date dayOfBirth, boolean gender, String phoneNumber, int role, int status) {
+    public UserDTO(String email, int role, int status) {
+        this.email = email;
+        this.role = role;
+        this.status = status;
+    }
+    
+    
+
+    public UserDTO(String email, String name, String dayOfBirth, boolean gender, String phoneNumber, int role, int status) {
         this.email = email;
         this.name = name;
         this.dayOfBirth = dayOfBirth;
@@ -52,11 +58,11 @@ public class UserDTO {
         this.name = name;
     }
 
-    public Date getDayOfBirth() {
+    public String getDayOfBirth() {
         return dayOfBirth;
     }
 
-    public void setDayOfBirth(Date dayOfBirth) {
+    public void setDayOfBirth(String dayOfBirth) {
         this.dayOfBirth = dayOfBirth;
     }
 
@@ -91,6 +97,6 @@ public class UserDTO {
     public void setStatus(int status) {
         this.status = status;
     }
-    
+
     
 }

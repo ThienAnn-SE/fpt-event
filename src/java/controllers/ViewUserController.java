@@ -37,12 +37,12 @@ public class ViewUserController extends HttpServlet {
         UserDAO dao = new UserDAO();
 
         HttpSession session = request.getSession();
-        String userName = (String) session.getAttribute("name");
-        if (userName == null) {
+        String email = (String) session.getAttribute("email");
+        if (email == null) {
             return false;
         }
 
-        UserDTO user = dao.getUserByName(userName);
+        UserDTO user = dao.getUserByEmail(email);
         if (user == null) {
             request.setAttribute("errorMessage", "User with this given name was not found");
             return false;

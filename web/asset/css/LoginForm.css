@@ -40,7 +40,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.5);
-    animation: animate 10s linear infinite;
+    animation: animate 5s linear infinite;
 }
 
 @keyframes animate {
@@ -230,27 +230,6 @@ body {
     width: 30px;
     height: 30px;
 }
-
-/* .google a:hover {
-    color:  #ff7777;
-}
-
-.google a::after {
-    content: "";
-    position: absolute;
-    bottom: 40px;
-    right: 116px;
-    width: 85px;
-    height: 4px;
-    background: #ff7777;
-    opacity: 0;
-    transition: all 0.3s ease-out;
-} 
-
-.google a:hover::after {
-    opacity: 1;
-    transform: translateY(-10px);
-}  */
 
 .img img {
     width: 400px;

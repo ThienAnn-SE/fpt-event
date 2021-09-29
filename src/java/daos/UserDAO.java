@@ -53,10 +53,10 @@ public class UserDAO {
 
             preStm = conn.prepareStatement(sql);
             preStm.setString(1, user.getEmail());
-            preStm.setString(2, user.getName());
-            preStm.setDate(3, java.sql.Date.valueOf(Helper.convertDateToString(user.getDayOfBirth())));
-            preStm.setBoolean(4, user.isGender());
-            preStm.setString(5, user.getPhoneNumber());
+            preStm.setString(2, null);
+            preStm.setDate(3, null);
+            preStm.setBoolean(4, true);
+            preStm.setString(5, null);
             preStm.setInt(6, user.getRole());
             preStm.setInt(7, user.getStatus());
 
@@ -67,31 +67,14 @@ public class UserDAO {
         return isSuccess;
     }
 
-    public boolean isExisted(String email) throws SQLException, NamingException {
-        boolean existed = false;
-        try {
-            conn = DBHelpers.makeConnection();
-            String sql = "SELECT userEmail FROM tblUsers WHERE userEmail=?";
-            preStm = conn.prepareStatement(sql);
-            preStm.setString(1, email);
-            rs = preStm.executeQuery();
-            if (rs.next()) {
-                existed = true;
-            }
-        } finally {
-            this.closeConnection();
-        }
-        return existed;
-    }
-
-    public boolean updateUser(String email, String name, Date dateOfBirth, int gender, String phoneNumber) throws NamingException, SQLException {
+    public boolean updateUser(String email, String name, String dateOfBirth, int gender, String phoneNumber) throws NamingException, SQLException {
         boolean isSuccess = false;
         try {
             conn = DBHelpers.makeConnection();
             String sql = "UPDATE tblUsers SET userName=?, dateOfBirth=?, gender=?, phoneNumber=? WHERE userEmail=?";
             preStm = conn.prepareStatement(sql);
             preStm.setString(1, name);
-            preStm.setDate(2, java.sql.Date.valueOf(Helper.convertDateToString(dateOfBirth)));
+            preStm.setDate(2, java.sql.Date.valueOf(dateOfBirth));
             preStm.setInt(3, gender);
             preStm.setString(4, phoneNumber);
             preStm.setString(5, email);
@@ -118,8 +101,11 @@ public class UserDAO {
                 String phoneNumber = rs.getString("phoneNumber");
                 int role = rs.getInt("roleID");
                 int status = rs.getInt("statusID");
-                Date formatDate = Helper.convertStringToDate(dateOfBirth.toString());
-                UserDTO user = new UserDTO(email, name, formatDate, gender, phoneNumber, role, status);
+                String formatDateOfBirth = null;
+                if (dateOfBirth != null) {
+                    formatDateOfBirth = Helper.convertDateToString(dateOfBirth);
+                }
+                UserDTO user = new UserDTO(email, name, formatDateOfBirth, gender, phoneNumber, role, status);
                 list.add(user);
             }
         } finally {
@@ -143,8 +129,38 @@ public class UserDAO {
                 String phoneNumber = rs.getString("phoneNumber");
                 int role = rs.getInt("roleID");
                 int status = rs.getInt("statusID");
-                Date formatDate = Helper.convertStringToDate(dateOfBirth.toString());
-                user = new UserDTO(email, name, formatDate, gender, phoneNumber, role, status);
+                String formatDateOfBirth = null;
+                if (dateOfBirth != null) {
+                    formatDateOfBirth = Helper.convertDateToString(dateOfBirth);
+                }
+                user = new UserDTO(email, name, formatDateOfBirth, gender, phoneNumber, role, status);
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return user;
+    }
+
+    public UserDTO getUserByEmail(String email) throws SQLException, NamingException {
+        UserDTO user = null;
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT * FROM tblUsers WHERE userEmail=?";
+            preStm = conn.prepareStatement(sql);
+            preStm.setString(1, email);
+            rs = preStm.executeQuery();
+            if (rs.next()) {
+                String name = rs.getString("userName");
+                Date dateOfBirth = rs.getDate("dateOfBirth");
+                boolean gender = rs.getBoolean("gender");
+                String phoneNumber = rs.getString("phoneNumber");
+                int role = rs.getInt("roleID");
+                int status = rs.getInt("statusID");
+                String formatDateOfBirth = null;
+                if (dateOfBirth != null) {
+                    formatDateOfBirth = Helper.convertDateToString(dateOfBirth);
+                }
+                user = new UserDTO(email, name, formatDateOfBirth, gender, phoneNumber, role, status);
             }
         } finally {
             this.closeConnection();
