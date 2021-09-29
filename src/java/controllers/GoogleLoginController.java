@@ -53,8 +53,7 @@ public class GoogleLoginController extends HttpServlet {
             request.setAttribute("error", "Please using FPT email");
             return false;
         }
-        request.setAttribute("email", googleDao.getEmail());
-        request.setAttribute("name", googleDao.getName());
+        request.setAttribute("email", email);
         request.setAttribute("avatar", googleDao.getPicture());
         return true;
     }
@@ -74,16 +73,24 @@ public class GoogleLoginController extends HttpServlet {
         if (!processRequest(request, response)) {
             request.getRequestDispatcher(Routers.LOGIN_PAGE).forward(request, response);
         } else {
-            String name = request.getParameter("name");
             UserDAO dao = new UserDAO();
+            String email = (String) request.getAttribute("email");
             try {
-                if (dao.isExisted((String) request.getAttribute("email"))) {
+                UserDTO user = dao.getUserByEmail(email);
+                if (user != null) {
                     HttpSession session = request.getSession();
-                    session.setAttribute("name", request.getAttribute("name"));
+                    session.setAttribute("email", user.getEmail());
+                    session.setAttribute("name", user.getName());
                     session.setAttribute("avatar", request.getAttribute("avatar"));
+                    session.setAttribute("role", user.getRole());
                     response.sendRedirect(Routers.INDEX_PAGE);
                 } else {
-                    request.getRequestDispatcher(Routers.REGISTER_CONTROLLER).forward(request, response);
+                    if (firstLoginRegister(email)) {
+                        response.sendRedirect(Routers.INDEX_PAGE);
+                    } else {
+                        request.setAttribute("error", "Internal error");
+                        request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+                    }
                 }
             } catch (SQLException | NamingException ex) {
                 log(ex.getMessage());
@@ -104,5 +111,15 @@ public class GoogleLoginController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+    }
+
+    private boolean firstLoginRegister(String email) {
+        UserDAO dao = new UserDAO();
+        try {
+            return dao.addUser(new UserDTO(email, 1, 300));
+        } catch (SQLException | NamingException ex) {
+            log(ex.getMessage());
+            return false;
+        }
     }
 }

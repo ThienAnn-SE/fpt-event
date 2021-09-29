@@ -25,27 +25,20 @@ import utils.GetParam;
 public class RegisterController extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Processes requests for HTTP <code>GET</code> methods.
      *
      * @param request servlet request
      * @param response servlet response
      * @return
      * @throws IOException if an error occurs
      */
-    protected boolean processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected boolean getHandler(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
-        String email = GetParam.getEmailParams(request, "email", "Email");
-        String name = GetParam.getStringParam(request, "name", "Name", 0, 50, null);
-        Date dayOfBirth = GetParam.getDateParams(request, "dayOfBirth", "Day of birth", null);
-        boolean gender = (GetParam.getIntParams(request, "gender", "Gender", 0, 1, 1) == 1);
-        String phoneNumber = GetParam.getPhoneParams(request, "phoneNumber", null);
-
-        if (name == null || dayOfBirth == null || phoneNumber == null) {
+        String email = (String) GetParam.getClientAttribute(request, "email", null);
+        if (email == null) {
             return false;
         }
-
-        UserDTO user = new UserDTO(email, name, dayOfBirth, gender, phoneNumber, 1, 400);
+        UserDTO user = new UserDTO(email, null, null, true, null, 1, 300);
         UserDAO dao = new UserDAO();
         dao.addUser(user);
         return true;
@@ -63,34 +56,16 @@ public class RegisterController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher(Routers.REGISTER_PAGE).forward(request, response);
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
         try {
-            if (processRequest(request, response)) {
-                response.sendRedirect(Routers.INDEX_PAGE);
+            if (getHandler(request, response)) {
+                request.getRequestDispatcher(Routers.INDEX_PAGE).forward(request, response);
             } else {
-                request.getRequestDispatcher(Routers.REGISTER_PAGE).forward(request, response);
-            }
-        } catch (Exception ex) {
-            if (ex.getMessage().contains("duplicate")) {
-                request.setAttribute("nameError", "This username is already taken");
-                request.getRequestDispatcher(Routers.REGISTER_PAGE).forward(request, response);
-            } else {
-                log(ex.getMessage());
                 request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
             }
+        } catch (Exception ex) {
+            log(ex.getMessage());
+            request.setAttribute("errorMessage", ex.getMessage());
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
         }
     }
 }

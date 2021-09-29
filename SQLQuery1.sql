@@ -16,12 +16,12 @@ create table tblUserStatuses(
 
 create table tblUsers(
 	userEmail	 varchar(30)		primary key,
-	userName	 nvarchar(50)		not null	unique,
-	dateOfBirth	 date				not null,
-	gender		 bit				not null,
-	phoneNumber  varchar(15)		not null	unique,
-	roleID		 integer			not null	foreign key references tblRoles,
-	statusID	 integer			not null	foreign key references tblUserStatuses
+	userName	 nvarchar(50)		unique,
+	dateOfBirth	 date,
+	gender		 bit,
+	phoneNumber  varchar(15)		unique,
+	roleID		 integer			foreign key references tblRoles,
+	statusID	 integer			foreign key references tblUserStatuses
 )
 
 create table tblLocations(
@@ -71,21 +71,15 @@ create table tblEventRegisters(
 create table tblFeedbacks(
 	feedbackID		integer			primary key,
 	eventID			integer			foreign key references tblEventRegisters,
-	userEmail		varchar(30)		foreign key references tblUsers,
 	feedback		ntext			not null,
 	vote			float			not null	check (vote >= 0)
 	)
 
-create table tblPaymentStatuses(
-	statusID			integer		primary key,
-	statusDescription	nvarchar(30)	
-	)
-
 create table tblPayments(
-	paymentID		integer			primary key,
-	eventID			integer			foreign key references tblEventRegisters,
-	userEmail		varchar(30)		foreign key references tblUsers,
-	statusID		integer			foreign key references tblPaymentStatuses,
-	paymentDate		date			not null,
-	paymentDetail	text			not null
+	paymentID			integer			primary key,
+	eventID				integer			foreign key references tblEventRegisters,
+	userEmail			varchar(30)		foreign key references tblUsers,
+	statusDescription	varchar(30)		not null,
+	paymentDate			date			not null,
+	paymentDetail		text			not null
 	)

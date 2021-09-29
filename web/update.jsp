@@ -5,7 +5,6 @@
 --%>
 
 <%@page import="utils.GetParam"%>
-<%@page import="dtos.User"%>
 <%@page import="daos.UserDAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
