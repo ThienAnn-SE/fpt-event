@@ -44,39 +44,56 @@ create table tblClubDetails(
 	clubPhoneNumber		varchar(15)			unique,
 	userEmail			varchar(30)			foreign key references	tblUsers
 	)
+
+create table tblEventStatuses(
+	statusID			integer			primary key,
+	statusDescriptin	nvarchar(30)	not null
+)
 	
 create table tblFUEvents(
-	eventID			integer			primary key,
+	eventID			integer			identity(10,5)	primary key,
 	eventName		nvarchar(50)	not null	unique,
-	clubID			integer			not null	foreign key references tblClubDetails,
-	locationID		integer			not null	foreign key references tblLocations,
-	catetoryID		integer			not null	foreign key	references tblCatetories,
+	clubID			integer			foreign key references tblClubDetails,
+	locationID		integer			foreign key references tblLocations,
+	catetoryID		integer			foreign key	references tblCatetories,
+	statusID		integer			foreign key references tblEventStatuses,
 	createDate		date			not null,
 	startDate		date			not null,
 	endDate			date			not null,
 	avgVote			float			not null,
 	imageURL		varchar(max),
 	content			ntext			not null,
-	fee				bit				not null,
-	totalFollowers	integer			not null	check (totalFollowers >= 0)
+	fee				bit				not null
 	)
 
+create table tblFollowed(
+	followID		integer			identity(10,5)	primary key,
+	eventID			integer			foreign key references tblFUEvents,
+	userEmail		varchar(30)		foreign key references tblUsers
+)
+
+create table tblLiked(
+	likeID			integer			identity(10,5)	primary key,
+	eventID			integer			foreign key references tblFUEvents,
+	userEmail		varchar(30)		foreign key references tblUsers
+)
+
 create table tblEventRegisters(
-	registerID		integer			primary key,
-	eventID			integer			not null	foreign key references tblFUEvents,
-	userEmail		varchar(30)		not null	foreign key references tblUsers,
+	registerID		integer			identity(10,5)	primary key,
+	eventID			integer			foreign key references tblFUEvents,
+	userEmail		varchar(30)		foreign key references tblUsers,
 	registerDate	date			not null
 	)
 
 create table tblFeedbacks(
-	feedbackID		integer			primary key,
+	feedbackID		integer			identity(10,5)	primary key,
 	eventID			integer			foreign key references tblEventRegisters,
 	feedback		ntext			not null,
 	vote			float			not null	check (vote >= 0)
 	)
 
 create table tblPayments(
-	paymentID			integer			primary key,
+	paymentID			integer			identity(10,5)	primary key,
 	eventID				integer			foreign key references tblEventRegisters,
 	userEmail			varchar(30)		foreign key references tblUsers,
 	statusDescription	varchar(30)		not null,
