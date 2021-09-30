@@ -47,9 +47,9 @@ public class CatetoryDAO {
         try {
             conn = DBHelpers.makeConnection();
             if(conn != null){
-                String sql = "Select * "
-                        + " From tblCategories "
-                        + " Where categoryID = ? ";
+                String sql = "SELECT * "
+                        + " FROM tblCategories "
+                        + " WHERE categoryID = ? ";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, id);
                 rs = preStm.executeQuery();
@@ -58,7 +58,7 @@ public class CatetoryDAO {
                 }
             }
         } finally {
-            closeConnection();
+            this.closeConnection();
         }
         return category;
     }
@@ -68,8 +68,8 @@ public class CatetoryDAO {
         try {
             conn = DBHelpers.makeConnection();
             if(conn != null){
-                String sql = "Select * "
-                        + " From tblCategories ";
+                String sql = "SELECT * "
+                        + " FROM tblCategories ";
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();
                 while(rs.next()){
@@ -78,7 +78,7 @@ public class CatetoryDAO {
                 }
             }
         } finally {
-            closeConnection();
+            this.closeConnection();
         }
         return list;
     }
