@@ -5,7 +5,15 @@
  */
 package controllers;
 
+import constant.Routers;
+import daos.CatetoryDAO;
+import daos.ClubDAO;
+import daos.LocationDAO;
+import dtos.CatetoryDTO;
+import dtos.ClubDTO;
+import dtos.LocationDTO;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,21 +28,61 @@ import javax.servlet.http.HttpServletResponse;
 public class AddEventController extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Processes requests for HTTP <code>GET</code> methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @return
+     * @throws Exception if a error occurs
+     */
+    protected boolean getHandler(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        response.setContentType("text/html;charset=UTF-8");
+        //intialize resourse
+        CatetoryDAO catetoryDAO = new CatetoryDAO();
+        ClubDAO clubDAO = new ClubDAO();
+        LocationDAO locationDAO = new LocationDAO();
+
+        //get catetory list
+        ArrayList<CatetoryDTO> catetoryList = catetoryDAO.getAllCatetories();
+        if (catetoryList == null) {
+            request.setAttribute("catetoryError", "Catetory list is empty");
+            return false;
+        }
+        //get host club
+        ClubDTO club = clubDAO.getClubByEmail((String) request.getAttribute("email"));
+        if (club == null) {
+            request.setAttribute("clubError", "Can not find the club");
+            return false;
+        }
+        //get location list
+        ArrayList<LocationDTO> locationList = locationDAO.getAllLocations();
+        if (locationList == null) {
+            request.setAttribute("locationError", "Location list is empty");
+            return false;
+        }
+        
+        //on success validation
+        request.setAttribute("catetoryList", catetoryList);
+        request.setAttribute("club", club);
+        request.setAttribute("locationList", locationList);
+        return true;
+    }
+
+    /**
+     * Processes requests for HTTP <code>POST</code> methods.
      *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected void postHandler(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -46,7 +94,17 @@ public class AddEventController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            if (getHandler(request, response)) {
+                request.getRequestDispatcher(Routers.ADD_EVENT_PAGE).forward(request, response);
+            } else {
+
+            }
+        } catch (Exception ex) {
+            log(ex.getMessage());
+            request.setAttribute("errorMessage", ex.getMessage());
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+        }
     }
 
     /**
@@ -60,17 +118,7 @@ public class AddEventController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        postHandler(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+    
 }
