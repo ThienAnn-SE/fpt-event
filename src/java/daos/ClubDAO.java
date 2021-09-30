@@ -42,56 +42,81 @@ public class ClubDAO {
             conn.close();
         }
     }
-    
-    public ClubDTO getClubByID(int id) throws NamingException, SQLException{
+
+    public ClubDTO getClubByID(int id) throws NamingException, SQLException {
         ClubDTO club = null;
         try {
             conn = DBHelpers.makeConnection();
-            if(conn != null){
+            if (conn != null) {
                 String sql = " Select * "
                         + " From tblClubDetails "
                         + " Where clubID = ? ";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, id);
                 rs = preStm.executeQuery();
-                if(rs.next()){
+                if (rs.next()) {
                     int clubID = rs.getInt("clubID");
                     String clubName = rs.getString("clubName");
                     Date createDate = rs.getDate("createDate");
                     String clubDescription = rs.getString("clubDescription");
                     String clubEmail = rs.getString("clubEmail");
-                    String clubPhoneNumber = rs.getString("clubPhoneNumber"); 
+                    String clubPhoneNumber = rs.getString("clubPhoneNumber");
                     club = new ClubDTO(clubID, clubName, createDate, clubDescription, clubEmail, clubPhoneNumber);
                 }
             }
         } finally {
-            closeConnection();
+            this.closeConnection();
         }
         return club;
     }
-    
-    public ArrayList<ClubDTO> getAllClubs() throws SQLException, NamingException{
+
+    public ClubDTO getClubByEmail(String email) throws NamingException, SQLException {
+        ClubDTO club = null;
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT *"
+                    + " FROM tblClubDetails"
+                    + " WHERE userEmail = ?";
+            preStm = conn.prepareStatement(sql);
+            preStm.setString(1, email);
+            rs = preStm.executeQuery();
+            if (rs.next()) {
+                int clubID = rs.getInt("clubID");
+                String clubName = rs.getString("clubName");
+                Date createDate = rs.getDate("createDate");
+                String clubDescription = rs.getString("clubDescription");
+                String clubEmail = rs.getString("clubEmail");
+                String clubPhoneNumber = rs.getString("clubPhoneNumber");
+                club = new ClubDTO(clubID, clubName, createDate, clubDescription, clubEmail, clubPhoneNumber);
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return club;
+    }
+
+    public ArrayList<ClubDTO> getAllClubs() throws SQLException, NamingException {
         ArrayList<ClubDTO> list = new ArrayList<>();
         try {
             conn = DBHelpers.makeConnection();
-            if(conn != null){
+            if (conn != null) {
                 String sql = " Select * "
                         + " From tblClubDetails ";
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();
-                while(rs.next()){
+                while (rs.next()) {
                     int clubID = rs.getInt("clubID");
                     String clubName = rs.getString("clubName");
                     Date createDate = rs.getDate("createDate");
                     String clubDescription = rs.getString("clubDescription");
                     String clubEmail = rs.getString("clubEmail");
-                    String clubPhoneNumber = rs.getString("clubPhoneNumber"); 
+                    String clubPhoneNumber = rs.getString("clubPhoneNumber");
                     ClubDTO club = new ClubDTO(clubID, clubName, createDate, clubDescription, clubEmail, clubPhoneNumber);
                     list.add(club);
                 }
             }
         } finally {
-            closeConnection();
+            this.closeConnection();
         }
         return list;
     }

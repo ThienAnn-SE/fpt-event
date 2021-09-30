@@ -47,19 +47,19 @@ public class LocationDAO {
         try {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
-                String sql = " Select * "
-                        + " From tblLocations "
-                        + " Where locationID = ? ";
+                String sql = " SELECT * "
+                        + " FROM tblLocations "
+                        + " WHERE locationID = ? ";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, id);
                 rs = preStm.executeQuery();
                 if (rs.next()) {
-                    location = new LocationDTO(rs.getInt("locationID"), rs.getString("locationName"),
-                            rs.getInt("locationCapacity"));
+                    location = new LocationDTO(rs.getInt("locationID"), 
+                            rs.getString("locationName"), rs.getInt("locationCapacity"));
                 }
             }
         } finally {
-            closeConnection();
+            this.closeConnection();
         }
         return location;
     }
@@ -74,13 +74,13 @@ public class LocationDAO {
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();
                 while (rs.next()) {
-                    LocationDTO location = new LocationDTO(rs.getInt("locationID"), rs.getString("locationName"),
-                            rs.getInt("locationCapacity"));
+                    LocationDTO location = new LocationDTO(rs.getInt("locationID"),
+                            rs.getString("locationName"), rs.getInt("locationCapacity"));
                     list.add(location);
                 }
             }
         } finally {
-            closeConnection();
+            this.closeConnection();
         }
         return list;
     }
