@@ -293,7 +293,7 @@
         range2.innerHTML = slider2.value;
       });
 
-      var countDate = new Date('Sep 30, 2021 00:00:00').getTime();
+      var countDate = new Date('Nov 30, 2021 00:00:00').getTime();
       
       function countDown() {
         var now = new Date().getTime();
