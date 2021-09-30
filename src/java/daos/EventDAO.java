@@ -119,7 +119,7 @@ public class EventDAO {
         }
         return event;
     }
-
+    
     public ArrayList<EventDTO> getAllEvents() throws NamingException, SQLException {
         ArrayList<EventDTO> list = new ArrayList<>();
         try {
