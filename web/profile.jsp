@@ -111,21 +111,21 @@
                                 <c:choose>
                                     <c:when test="${user.gender}">
                                         <label class="male">
-                                            <input type="radio" name="gender" value="0" checked/>
+                                            <input type="radio" name="gender" value="1" checked/>
                                             <i class="fal fa-venus"></i>
                                         </label>
                                         <label class="female">
-                                            <input type="radio" name="gender" value="1"/>
+                                            <input type="radio" name="gender" value="0"/>
                                             <i class="fal fa-mars"></i>
                                         </label>
                                     </c:when>
                                     <c:otherwise>
                                         <label class="male">
-                                            <input type="radio" name="gender" value="0"/>
+                                            <input type="radio" name="gender" value="1"/>
                                             <i class="fal fa-venus"></i>
                                         </label>
                                         <label class="female">
-                                            <input type="radio" name="gender" value="1" checked/>
+                                            <input type="radio" name="gender" value="0" checked/>
                                             <i class="fal fa-mars"></i>
                                         </label>
                                     </c:otherwise>
