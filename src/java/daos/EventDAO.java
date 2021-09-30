@@ -10,8 +10,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.naming.NamingException;
 import utils.DBHelpers;
+import utils.Helper;
 
 /**
  *
@@ -45,12 +48,105 @@ public class EventDAO {
         boolean isSuccess = false;
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, createDate, startDate, endDate, avgVote, content, fee) VALUES (?,?,?,?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID,"
+                    + " createDate, startDate, endDate, avgVote, content, fee)"
+                    + " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
             preStm = conn.prepareStatement(sql);
+
+            preStm.setNString(1, event.getEventName());
+            preStm.setInt(2, event.getClubID());
+            preStm.setInt(3, event.getLocationID());
+            preStm.setInt(4, event.getCatetoryID());
+            preStm.setInt(5, event.getStatusID());
+            preStm.setDate(6, java.sql.Date.valueOf(event.getCreateDate().toString()));
+            preStm.setDate(7, java.sql.Date.valueOf(event.getStartDate().toString()));
+            preStm.setDate(8, java.sql.Date.valueOf(event.getEndDate().toString()));
+            preStm.setDouble(9, 0);
+            preStm.setNString(10, event.getContent());
+            preStm.setBoolean(11, event.isFee());
+
+            isSuccess = preStm.executeUpdate() > 0;
         } finally {
             this.closeConnection();
         }
         return isSuccess;
     }
 
+    public boolean changeEventStatus(int eventID, int eventStatus) throws SQLException, NamingException {
+        boolean isSuccess = false;
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "UPDATE tblFUEvents set eventStatus = ? WHERE eventID = ?";
+            preStm = conn.prepareStatement(sql);
+
+            preStm.setInt(1, eventID);
+            preStm.setInt(2, eventStatus);
+
+            isSuccess = preStm.executeUpdate() > 0;
+        } finally {
+            this.closeConnection();
+        }
+        return isSuccess;
+    }
+
+    public EventDTO getEventByID(int eventID) throws NamingException, SQLException {
+        EventDTO event = null;
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT eventName, clubID, locationID, statusID,"
+                    + " createDate, startDate, endDate, avgVote, content, fee"
+                    + " FROM tblFUEvents WHERE eventID = ?";
+            preStm = conn.prepareStatement(sql);
+            preStm.setInt(1, eventID);
+            rs = preStm.executeQuery();
+
+            if (rs.next()) {
+                String eventName = rs.getNString("eventName");
+                int clubID = rs.getInt("clubID");
+                int locationID = rs.getInt("locationID");
+                int statusID = rs.getInt("statusID");
+                Date createDate = Helper.convertStringToDate(rs.getDate("createDate").toString());
+                Date startDate = Helper.convertStringToDate(rs.getDate("startDate").toString());
+                Date endDate = Helper.convertStringToDate(rs.getDate("endDate").toString());
+                Double avgVote = rs.getDouble("avgVote");
+                String contend = rs.getNString("content");
+                boolean fee = rs.getBoolean("fee");
+
+                event = new EventDTO(eventID, eventName, clubID, locationID, statusID, statusID, createDate, startDate, endDate, avgVote, contend, fee);
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return event;
+    }
+
+    public ArrayList<EventDTO> getAllEvents() throws NamingException, SQLException {
+        ArrayList<EventDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT eventID, eventName, clubID, locationID, statusID,"
+                    + " createDate, startDate, endDate, avgVote, content, fee"
+                    + " FROM tblFUEvents";
+            preStm = conn.prepareStatement(sql);
+            rs = preStm.executeQuery();
+            if (rs.next()) {
+                int eventID = rs.getInt("eventID");
+                String eventName = rs.getNString("eventName");
+                int clubID = rs.getInt("clubID");
+                int locationID = rs.getInt("locationID");
+                int statusID = rs.getInt("statusID");
+                Date createDate = Helper.convertStringToDate(rs.getDate("createDate").toString());
+                Date startDate = Helper.convertStringToDate(rs.getDate("startDate").toString());
+                Date endDate = Helper.convertStringToDate(rs.getDate("endDate").toString());
+                Double avgVote = rs.getDouble("avgVote");
+                String contend = rs.getNString("content");
+                boolean fee = rs.getBoolean("fee");
+                
+                list.add(new EventDTO(eventID, eventName, clubID, locationID, statusID, statusID, createDate, startDate, endDate, avgVote, contend, fee));
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return list;
+    }
 }

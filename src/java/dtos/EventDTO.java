@@ -12,42 +12,42 @@ import java.util.Date;
  * @author thien
  */
 public class EventDTO {
-    private String eventID;
+    private int eventID;
     private String eventName;
     private int clubID;
     private int locationID;
     private int catetoryID;
+    private int statusID;
     private Date createDate;
     private Date startDate;
     private Date endDate;
     private double avgVote;
     private String content;
     private boolean fee;
-    private int totalFollowers;
 
-    public EventDTO(String eventID, String eventName, int clubID, int locationID, int catetoryID, Date createDate, Date startDate, Date endDate, double avgVote, String content, boolean fee, int totalFollowers) {
+    public EventDTO(int eventID, String eventName, int clubID, int locationID, int catetoryID, int statusID, Date createDate, Date startDate, Date endDate, double avgVote, String content, boolean fee) {
         this.eventID = eventID;
         this.eventName = eventName;
         this.clubID = clubID;
         this.locationID = locationID;
         this.catetoryID = catetoryID;
+        this.statusID = statusID;
         this.createDate = createDate;
         this.startDate = startDate;
         this.endDate = endDate;
         this.avgVote = avgVote;
         this.content = content;
         this.fee = fee;
-        this.totalFollowers = totalFollowers;
     }
 
     public EventDTO() {
     }
 
-    public String getEventID() {
+    public int getEventID() {
         return eventID;
     }
 
-    public void setEventID(String eventID) {
+    public void setEventID(int eventID) {
         this.eventID = eventID;
     }
 
@@ -81,6 +81,14 @@ public class EventDTO {
 
     public void setCatetoryID(int catetoryID) {
         this.catetoryID = catetoryID;
+    }
+
+    public int getStatusID() {
+        return statusID;
+    }
+
+    public void setStatusID(int statusID) {
+        this.statusID = statusID;
     }
 
     public Date getCreateDate() {
@@ -130,14 +138,5 @@ public class EventDTO {
     public void setFee(boolean fee) {
         this.fee = fee;
     }
-
-    public int getTotalFollowers() {
-        return totalFollowers;
-    }
-
-    public void setTotalFollowers(int totalFollowers) {
-        this.totalFollowers = totalFollowers;
-    }
-    
     
 }
