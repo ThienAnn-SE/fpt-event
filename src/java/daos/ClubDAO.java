@@ -5,10 +5,15 @@
  */
 package daos;
 
+import dtos.ClubDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import javax.naming.NamingException;
+import utils.DBHelpers;
 
 /**
  *
@@ -36,5 +41,58 @@ public class ClubDAO {
 
             conn.close();
         }
+    }
+    
+    public ClubDTO getClubByID(int id) throws NamingException, SQLException{
+        ClubDTO club = null;
+        try {
+            conn = DBHelpers.makeConnection();
+            if(conn != null){
+                String sql = " Select * "
+                        + " From tblClubDetails "
+                        + " Where clubID = ? ";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, id);
+                rs = preStm.executeQuery();
+                if(rs.next()){
+                    int clubID = rs.getInt("clubID");
+                    String clubName = rs.getString("clubName");
+                    Date createDate = rs.getDate("createDate");
+                    String clubDescription = rs.getString("clubDescription");
+                    String clubEmail = rs.getString("clubEmail");
+                    String clubPhoneNumber = rs.getString("clubPhoneNumber"); 
+                    club = new ClubDTO(clubID, clubName, createDate, clubDescription, clubEmail, clubPhoneNumber);
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return club;
+    }
+    
+    public ArrayList<ClubDTO> getAllClubs() throws SQLException, NamingException{
+        ArrayList<ClubDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            if(conn != null){
+                String sql = " Select * "
+                        + " From tblClubDetails ";
+                preStm = conn.prepareStatement(sql);
+                rs = preStm.executeQuery();
+                while(rs.next()){
+                    int clubID = rs.getInt("clubID");
+                    String clubName = rs.getString("clubName");
+                    Date createDate = rs.getDate("createDate");
+                    String clubDescription = rs.getString("clubDescription");
+                    String clubEmail = rs.getString("clubEmail");
+                    String clubPhoneNumber = rs.getString("clubPhoneNumber"); 
+                    ClubDTO club = new ClubDTO(clubID, clubName, createDate, clubDescription, clubEmail, clubPhoneNumber);
+                    list.add(club);
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return list;
     }
 }

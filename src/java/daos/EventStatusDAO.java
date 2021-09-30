@@ -5,10 +5,14 @@
  */
 package daos;
 
+import dtos.EventStatusDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import javax.naming.NamingException;
+import utils.DBHelpers;
 
 /**
  *
@@ -37,5 +41,46 @@ public class EventStatusDAO {
             conn.close();
 
         }
+    }
+
+    public EventStatusDTO getStatusByID(int id) throws SQLException, NamingException {
+        EventStatusDTO eventStatus = null;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = " Select * "
+                        + " From tblEventStatuses "
+                        + " Where statusID = ? ";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, id);
+                rs = preStm.executeQuery();
+                if (rs.next()) {
+                    eventStatus = new EventStatusDTO(rs.getInt("statusID"), rs.getString("statusDescription"));
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return eventStatus;
+    }
+
+    public ArrayList<EventStatusDTO> getAllStatuses() throws SQLException, NamingException {
+        ArrayList<EventStatusDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = " Select * "
+                        + " From tblEventStatuses ";
+                preStm = conn.prepareStatement(sql);
+                rs = preStm.executeQuery();
+                while (rs.next()) {
+                    EventStatusDTO eventStatus = new EventStatusDTO(rs.getInt("statusID"), rs.getString("statusDescription"));
+                    list.add(eventStatus);
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return list;
     }
 }

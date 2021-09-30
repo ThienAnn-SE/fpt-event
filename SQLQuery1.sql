@@ -47,7 +47,7 @@ create table tblClubDetails(
 
 create table tblEventStatuses(
 	statusID			integer			primary key,
-	statusDescriptin	nvarchar(30)	not null
+	statusDescription	nvarchar(30)	not null
 )
 	
 create table tblFUEvents(

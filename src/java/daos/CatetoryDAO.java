@@ -5,10 +5,14 @@
  */
 package daos;
 
+import dtos.CatetoryDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import javax.naming.NamingException;
+import utils.DBHelpers;
 
 /**
  *
@@ -36,5 +40,46 @@ public class CatetoryDAO {
 
             conn.close();
         }
+    }
+    
+    public CatetoryDTO getCatetoryByID(int id) throws SQLException, NamingException{
+        CatetoryDTO category = null;
+        try {
+            conn = DBHelpers.makeConnection();
+            if(conn != null){
+                String sql = "Select * "
+                        + " From tblCategories "
+                        + " Where categoryID = ? ";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, id);
+                rs = preStm.executeQuery();
+                if(rs.next()){
+                    category = new CatetoryDTO(rs.getInt("categoryID"), rs.getString("categoryName"));
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return category;
+    }
+    
+    public ArrayList<CatetoryDTO> getAllCatetories() throws SQLException, NamingException{
+        ArrayList<CatetoryDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            if(conn != null){
+                String sql = "Select * "
+                        + " From tblCategories ";
+                preStm = conn.prepareStatement(sql);
+                rs = preStm.executeQuery();
+                while(rs.next()){
+                   CatetoryDTO category = new CatetoryDTO(rs.getInt("categoryID"), rs.getString("categoryName"));
+                   list.add(category);
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return list;
     }
 }
