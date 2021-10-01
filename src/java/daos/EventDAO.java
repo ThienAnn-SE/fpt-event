@@ -44,7 +44,25 @@ public class EventDAO {
         }
     }
 
-    public boolean addEvent(EventDTO event) throws NamingException, SQLException {
+    public boolean checkExistedEventByEventName(String eventName) throws SQLException, NamingException {
+        boolean isExist = false;
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT eventID FROM tblFUEvents WHERE eventName = ?";
+            preStm = conn.prepareStatement(sql);
+            preStm.setString(1, eventName);
+            rs = preStm.executeQuery();
+            if (rs.next()) {
+                isExist = true;
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return isExist;
+    }
+
+    public boolean addEvent(String eventName, int clubID, int locationID, int catetoryID,
+            Date createDate, Date startDate, Date endDate, String content, int fee) throws NamingException, SQLException {
         boolean isSuccess = false;
         try {
             conn = DBHelpers.makeConnection();
@@ -53,17 +71,17 @@ public class EventDAO {
                     + " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
             preStm = conn.prepareStatement(sql);
 
-            preStm.setNString(1, event.getEventName());
-            preStm.setInt(2, event.getClubID());
-            preStm.setInt(3, event.getLocationID());
-            preStm.setInt(4, event.getCatetoryID());
-            preStm.setInt(5, event.getStatusID());
-            preStm.setDate(6, java.sql.Date.valueOf(event.getCreateDate().toString()));
-            preStm.setDate(7, java.sql.Date.valueOf(event.getStartDate().toString()));
-            preStm.setDate(8, java.sql.Date.valueOf(event.getEndDate().toString()));
+            preStm.setNString(1, eventName);
+            preStm.setInt(2, clubID);
+            preStm.setInt(3, locationID);
+            preStm.setInt(4, catetoryID);
+            preStm.setInt(5, 300);
+            preStm.setDate(6, java.sql.Date.valueOf(createDate.toString()));
+            preStm.setDate(7, java.sql.Date.valueOf(startDate.toString()));
+            preStm.setDate(8, java.sql.Date.valueOf(endDate.toString()));
             preStm.setDouble(9, 0);
-            preStm.setNString(10, event.getContent());
-            preStm.setBoolean(11, event.isFee());
+            preStm.setNString(10, content);
+            preStm.setBoolean(11, fee == 1);
 
             isSuccess = preStm.executeUpdate() > 0;
         } finally {
@@ -119,7 +137,7 @@ public class EventDAO {
         }
         return event;
     }
-    
+
     public ArrayList<EventDTO> getAllEvents() throws NamingException, SQLException {
         ArrayList<EventDTO> list = new ArrayList<>();
         try {
@@ -141,7 +159,7 @@ public class EventDAO {
                 Double avgVote = rs.getDouble("avgVote");
                 String contend = rs.getNString("content");
                 boolean fee = rs.getBoolean("fee");
-                
+
                 list.add(new EventDTO(eventID, eventName, clubID, locationID, statusID, statusID, createDate, startDate, endDate, avgVote, contend, fee));
             }
         } finally {
