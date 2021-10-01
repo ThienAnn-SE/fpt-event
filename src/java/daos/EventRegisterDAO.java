@@ -5,10 +5,13 @@
  */
 package daos;
 
+import dtos.EventRegisterDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.naming.NamingException;
+import utils.DBHelpers;
 
 /**
  *
@@ -36,5 +39,23 @@ public class EventRegisterDAO {
 
             conn.close();
         }
+    }
+
+    public boolean addNewEventRegistration(EventRegisterDTO dto) throws NamingException, SQLException {
+        boolean isSuccess = false;
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "INSERT INTO tblEventRegister(eventID, userEmail, registerDate) VALUES (?,?,?)";
+            preStm = conn.prepareStatement(sql);
+
+            preStm.setInt(1, dto.getEventID());
+            preStm.setString(2, dto.getEmail());
+            preStm.setDate(3, java.sql.Date.valueOf(dto.getRegisterDate().toString()));
+
+            isSuccess = preStm.executeUpdate()> 0;
+        } finally {
+            this.closeConnection();
+        }
+        return isSuccess;
     }
 }
