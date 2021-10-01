@@ -107,6 +107,42 @@ public class EventDAO {
         return isSuccess;
     }
 
+    public ArrayList<EventDTO> getTop9Event(int count) throws Exception {
+        ArrayList<EventDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "select * \n"
+                        + "from (select ROW_NUMBER() over (order by eventID asc) as rn, * from tblFUEvents) as b\n"
+                        + "where rn >= (?*9-8) and rn <= (?*9)";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, count);
+                preStm.setInt(2, count);
+                rs = preStm.executeQuery();
+                list = new ArrayList<>();
+                while (rs.next()) {
+                    String eventID = rs.getString("eventID");
+                    String eventName = rs.getString("eventName");
+                    int clubID = rs.getInt("clubID");
+                    int locationID = rs.getInt("locationID");
+                    int catetoryID = rs.getInt("catetoryID");
+                    Date createDate = rs.getDate("createDate");
+                    Date startDate = rs.getDate("startDate");
+                    Date endDate = rs.getDate("endDate");
+                    double avgVote = rs.getDouble("avgVote");
+                    String content = rs.getString("content");
+                    boolean fee = rs.getBoolean("fee");
+                    
+                    EventDTO dto = new EventDTO(eventID, eventName, clubID, locationID, catetoryID, createDate, startDate, endDate);
+                    list.add(dto);
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+                  return list;
+    }
+  
     public EventDTO getEventByID(int eventID) throws NamingException, SQLException {
         EventDTO event = null;
         try {
@@ -165,6 +201,7 @@ public class EventDAO {
         } finally {
             this.closeConnection();
         }
-        return list;
+      return list;
     }
+
 }
