@@ -25,7 +25,7 @@ public class EventDTO {
     private boolean fee;
     private int totalFollowers;
 
-    public EventDTO(String eventID, String eventName, int clubID, int locationID, int catetoryID, Date createDate, Date startDate, Date endDate, double avgVote, String content, boolean fee, int totalFollowers) {
+    public EventDTO(String eventID, String eventName, int clubID, int locationID, int catetoryID, Date createDate, Date startDate, Date endDate) {
         this.eventID = eventID;
         this.eventName = eventName;
         this.clubID = clubID;
@@ -138,6 +138,4 @@ public class EventDTO {
     public void setTotalFollowers(int totalFollowers) {
         this.totalFollowers = totalFollowers;
     }
-    
-    
 }
