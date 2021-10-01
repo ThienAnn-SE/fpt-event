@@ -139,12 +139,4 @@ public class EventDTO {
         this.fee = fee;
     }
 
-    public int getTotalFollowers() {
-        return totalFollowers;
-    }
-
-    public void setTotalFollowers(int totalFollowers) {
-        this.totalFollowers = totalFollowers;
-    }
-
 }
