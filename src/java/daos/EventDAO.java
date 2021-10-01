@@ -121,11 +121,12 @@ public class EventDAO {
                 rs = preStm.executeQuery();
                 list = new ArrayList<>();
                 while (rs.next()) {
-                    String eventID = rs.getString("eventID");
+                    int eventID = rs.getInt("eventID");
                     String eventName = rs.getString("eventName");
                     int clubID = rs.getInt("clubID");
                     int locationID = rs.getInt("locationID");
                     int catetoryID = rs.getInt("catetoryID");
+                    int statusID = rs.getInt("statusID");
                     Date createDate = rs.getDate("createDate");
                     Date startDate = rs.getDate("startDate");
                     Date endDate = rs.getDate("endDate");
@@ -133,7 +134,7 @@ public class EventDAO {
                     String content = rs.getString("content");
                     boolean fee = rs.getBoolean("fee");
                     
-                    EventDTO dto = new EventDTO(eventID, eventName, clubID, locationID, catetoryID, createDate, startDate, endDate);
+                    EventDTO dto = new EventDTO(eventID, eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, fee);
                     list.add(dto);
                 }
             }
