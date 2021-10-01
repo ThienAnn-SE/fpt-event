@@ -23,9 +23,9 @@ public class EventDTO {
     private Date endDate;
     private double avgVote;
     private String content;
-    private boolean fee;
+    private int ticketFee;
 
-    public EventDTO(int eventID, String eventName, int clubID, int locationID, int catetoryID, int statusID, Date createDate, Date startDate, Date endDate, double avgVote, String content, boolean fee) {
+    public EventDTO(int eventID, String eventName, int clubID, int locationID, int catetoryID, int statusID, Date createDate, Date startDate, Date endDate, double avgVote, String content, int ticketFee) {
         this.eventID = eventID;
         this.eventName = eventName;
         this.clubID = clubID;
@@ -37,7 +37,7 @@ public class EventDTO {
         this.endDate = endDate;
         this.avgVote = avgVote;
         this.content = content;
-        this.fee = fee;
+        this.ticketFee = ticketFee;
     }
 
     public EventDTO() {
@@ -131,12 +131,12 @@ public class EventDTO {
         this.content = content;
     }
 
-    public boolean isFee() {
-        return fee;
+    public int getTicketFee() {
+        return ticketFee;
     }
 
-    public void setFee(boolean fee) {
-        this.fee = fee;
+    public void setTicketFee(int ticketFee) {
+        this.ticketFee = ticketFee;
     }
 
 }

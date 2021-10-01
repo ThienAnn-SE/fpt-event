@@ -63,43 +63,46 @@ create table tblFUEvents(
 	avgVote			float			not null,
 	imageURL		varchar(max),
 	content			ntext			not null,
-	fee				bit				not null
+	ticketFee		int				not null
 	)
 
 create table tblFollowed(
 	followID		integer			identity(10,5)	primary key,
 	eventID			integer			foreign key references tblFUEvents,
-	userEmail		varchar(30)		foreign key references tblUsers
+	userEmail		varchar(30)		foreign key references tblUsers,
+	constraint	UC_tblFollowed	unique (eventID, userEmail)
 )
 
 create table tblLiked(
 	likeID			integer			identity(10,5)	primary key,
 	eventID			integer			foreign key references tblFUEvents,
-	userEmail		varchar(30)		foreign key references tblUsers
+	userEmail		varchar(30)		foreign key references tblUsers,
+	constraint	UC_tblLiked	unique (eventID, userEmail)
 )
 
 create table tblEventRegisters(
-	registerID		integer			identity(10,5)	primary key,
-	eventID			integer			foreign key references tblFUEvents,
-	userEmail		varchar(30)		foreign key references tblUsers,
-	registerDate	date			not null
+	registerID			integer			identity(10,5)	primary key,
+	eventID				integer			foreign key references tblFUEvents,
+	userEmail			varchar(30)		foreign key references tblUsers,
+	registerDate		date			not null,
+	constraint	UC_tblEventRegister unique (eventID, userEmail)
 	)
 
 create table tblFeedbacks(
 	feedbackID		integer			identity(10,5)	primary key,
-	eventID			integer			foreign key references tblEventRegisters,
+	registerID		integer			foreign key references tblEventRegisters,
 	feedback		ntext			not null,
 	vote			float			not null	check (vote >= 0)
 	)
 
 create table tblPayments(
 	paymentID			integer			identity(10,5)	primary key,
-	eventID				integer			foreign key references tblEventRegisters,
-	userEmail			varchar(30)		foreign key references tblUsers,
+	registerID			integer			foreign key references tblEventRegisters,
 	statusDescription	varchar(30)		not null,
 	paymentDate			date			not null,
 	paymentDetail		text			not null
 	)
+
 	INSERT INTO tblRoles(roleID, roleName) VALUES (1,'Student')
 	INSERT INTO tblRoles(roleID, roleName) VALUES (2,'Lecture')
 	INSERT INTO tblRoles(roleID, roleName) VALUES (3,'Mentor')
@@ -142,6 +145,7 @@ create table tblPayments(
 	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (530,'Đang diễn ra')
 	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (550,'Đã diễn ra')
 	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (400,'Đã bị hủy')
+	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (450,'Đã hết chỗ')
 
 
-	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, fee) VALUES ('A',10,10,10,300,'9-10-2021','10-10-2021','11-11-2021',5,'none',0)
+	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('A',10,10,10,300,'9-10-2021','10-10-2021','11-11-2021',5,'none',0)
