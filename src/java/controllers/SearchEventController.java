@@ -5,8 +5,14 @@
  */
 package controllers;
 
+import constant.Routers;
+import daos.CatetoryDAO;
+import daos.EventDAO;
+import dtos.CatetoryDTO;
+import dtos.EventDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,6 +41,42 @@ public class SearchEventController extends HttpServlet {
 
     }
 
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @return
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected boolean getHandler(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        response.setContentType("text/html;charset=UTF-8");
+        //initialized resource
+        CatetoryDAO catetoryDAO = new CatetoryDAO();
+        EventDAO eventDAO = new EventDAO();
+
+        //get catetory
+        ArrayList<CatetoryDTO> catetoryList = catetoryDAO.getAllCatetories();
+        if (catetoryList == null) {
+            request.setAttribute("errorMessage", "Catetory is empty");
+            return false;
+        }
+
+        //get top 9 avaiable event
+        ArrayList<EventDTO> eventList = eventDAO.getAllEvents();
+        if (eventList == null) {
+            request.setAttribute("eventListError", "There is no event avaiable at the moment");
+        }
+
+        //on success
+        request.setAttribute("eventList", eventList);
+        request.setAttribute("catetoryList", catetoryList);
+        return true;
+    }
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -47,7 +89,17 @@ public class SearchEventController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            if (getHandler(request, response)) {
+                request.getRequestDispatcher(Routers.VIEW_EVENT_PAGE).forward(request, response);
+            } else {
+                request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+            }
+        } catch (Exception ex) {
+            log(ex.getMessage());
+            request.setAttribute("errorMessage", ex.getMessage());
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+        }
     }
 
     /**
@@ -63,15 +115,5 @@ public class SearchEventController extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+// </editor-fold>
 }
