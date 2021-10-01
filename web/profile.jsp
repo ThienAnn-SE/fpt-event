@@ -36,7 +36,7 @@
             <div class="row">
                 <div class="left col-md-4">
                     <div class="img">
-                        <img src="./asset/img/trungthu.png" />
+                        <img src="${sessionScope.avatar}" />
                     </div>
                     <div class="nav">
                         <a class="item nav-link" href="#">view schedule</a>

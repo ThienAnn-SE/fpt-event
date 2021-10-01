@@ -48,9 +48,9 @@ public class EventStatusDAO {
         try {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
-                String sql = " Select * "
-                        + " From tblEventStatuses "
-                        + " Where statusID = ? ";
+                String sql = " SELECT * "
+                        + " FROM tblEventStatuses "
+                        + " WHERE statusID = ? ";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, id);
                 rs = preStm.executeQuery();
@@ -59,7 +59,7 @@ public class EventStatusDAO {
                 }
             }
         } finally {
-            closeConnection();
+            this.closeConnection();
         }
         return eventStatus;
     }
@@ -69,8 +69,8 @@ public class EventStatusDAO {
         try {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
-                String sql = " Select * "
-                        + " From tblEventStatuses ";
+                String sql = " SELECT * "
+                        + " FROM tblEventStatuses ";
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();
                 while (rs.next()) {
@@ -79,7 +79,7 @@ public class EventStatusDAO {
                 }
             }
         } finally {
-            closeConnection();
+            this.closeConnection();
         }
         return list;
     }

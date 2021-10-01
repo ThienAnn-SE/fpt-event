@@ -58,6 +58,7 @@ public class GetParam {
      * @param label Label
      * @param min minimum number
      * @param max maximum number
+     * @param defaultValue
      * @return Valid integer
      */
     public static Integer getIntParams(HttpServletRequest request, String field, String label, int min, int max,
@@ -230,6 +231,7 @@ public class GetParam {
      * @param request servlet request
      * @param field request parameter name
      * @param label Label
+     * @param df
      * @return Future date
      */
     public static Date getDateFromNowToFuture(HttpServletRequest request, String field, String label, Date df) {
