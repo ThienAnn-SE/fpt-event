@@ -27,8 +27,11 @@ public class Routers {
     public final static String USER_INFO_PAGE = "profile.jsp";
     public final static String ADD_EVENT_PAGE = "addEvent.jsp";
     public final static String VIEW_EVENT_PAGE = "event.jsp";
+    public final static String REVIEW_PAYMENT_PAGE = "review.jsp";
+    public final static String VIEW_PAYMENT_RECEIPT_PAGE = "receipt.jsp";
     
     public final static String UPDATE_CONTROLLER = "UpdateController";
     public final static String REGISTER_CONTROLLER = "RegisterController";
     public final static String VIEW_USER_CONTROLLER = "ViewUserController";
+    public final static String VIEW_EVENT_CONTROLLER = "ViewEventController";
 }

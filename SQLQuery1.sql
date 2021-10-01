@@ -100,7 +100,7 @@ create table tblPayments(
 	registerID			integer			foreign key references tblEventRegisters,
 	statusDescription	varchar(30)		not null,
 	paymentDate			date			not null,
-	paymentDetail		text			not null
+	paymentTotal		int				not null
 	)
 
 	INSERT INTO tblRoles(roleID, roleName) VALUES (1,'Student')

@@ -20,6 +20,13 @@ public class EventRegisterDTO {
     public EventRegisterDTO() {
     }
 
+    public EventRegisterDTO(int eventID, String email, Date registerDate) {
+        this.eventID = eventID;
+        this.email = email;
+        this.registerDate = registerDate;
+    }
+    
+
     public EventRegisterDTO(int registerID, int eventID, String email, Date registerDate) {
         this.registerID = registerID;
         this.eventID = eventID;
