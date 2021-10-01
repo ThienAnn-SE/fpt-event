@@ -25,13 +25,13 @@ create table tblUsers(
 )
 
 create table tblLocations(
-	locationID			integer			primary key,
+	locationID			integer			identity(10,5)	primary key,
 	locationName		nvarchar(30)	not null,
 	locationCapacity	integer			not null
 )
 
 create table tblCatetories(
-	catetoryID		integer				primary key,
+	catetoryID		integer				identity(10,5)	primary key,
 	catetoryName	nvarchar(30)		not null
 )
 
@@ -128,10 +128,10 @@ create table tblPayments(
 	INSERT INTO tblClubDetails(clubName, createDate, clubDescription, clubEmail, clubPhoneNumber, userEmail) VALUES ('FPT Event Club','2016-1-25','This is a club description','fev.club.contact@gmail.com','0931229051','duchtsa134114@fpt.edu.vn')
 
 
-	INSERT INTO tblLocations(locationID,locationName,locationCapacity) VALUES (10,'Semina', 40)
-	INSERT INTO tblLocations(locationID,locationName,locationCapacity) VALUES (15,'Hall A', 250)
-	INSERT INTO tblLocations(locationID,locationName,locationCapacity) VALUES (20,'Hall B', 150)
-	INSERT INTO tblLocations(locationID,locationName,locationCapacity) VALUES (25,'Floor 3_Library',100)
+	INSERT INTO tblLocations(locationName,locationCapacity) VALUES ('Semina', 40)
+	INSERT INTO tblLocations(locationName,locationCapacity) VALUES ('Hall A', 250)
+	INSERT INTO tblLocations(locationName,locationCapacity) VALUES ('Hall B', 150)
+	INSERT INTO tblLocations(locationName,locationCapacity) VALUES ('Floor 3_Library',100)
 
 	INSERT INTO tblCatetories(catetoryName) VALUES ('Seminar')
 	INSERT INTO tblCatetories(catetoryName) VALUES ('Entertainment Event')
@@ -144,4 +144,4 @@ create table tblPayments(
 	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (400,'Đã bị hủy')
 
 
-	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, fee) VALUES ('A',5,5,5,5,'9-10-2021','10-10-2021','11-11-2021',5,'none',1)
+	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, fee) VALUES ('A',10,10,10,300,'9-10-2021','10-10-2021','11-11-2021',5,'none',0)
