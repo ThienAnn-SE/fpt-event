@@ -35,7 +35,7 @@ public class ViewUserController extends HttpServlet {
     protected boolean getHanlder(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         UserDAO dao = new UserDAO();
-
+        
         HttpSession session = request.getSession();
         String email = (String) session.getAttribute("email");
         if (email == null) {

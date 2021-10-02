@@ -184,7 +184,7 @@ public class EventDAO {
                     + " FROM tblFUEvents";
             preStm = conn.prepareStatement(sql);
             rs = preStm.executeQuery();
-            if (rs.next()) {
+            while (rs.next()) {
                 int eventID = rs.getInt("eventID");
                 String eventName = rs.getNString("eventName");
                 int clubID = rs.getInt("clubID");
