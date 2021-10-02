@@ -62,12 +62,12 @@ public class EventDAO {
     }
 
     public boolean addEvent(String eventName, int clubID, int locationID, int catetoryID,
-            Date createDate, Date startDate, Date endDate, String content, int fee) throws NamingException, SQLException {
+            Date createDate, Date startDate, Date endDate, String content, int ticketFee) throws NamingException, SQLException {
         boolean isSuccess = false;
         try {
             conn = DBHelpers.makeConnection();
             String sql = "INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID,"
-                    + " createDate, startDate, endDate, avgVote, content, fee)"
+                    + " createDate, startDate, endDate, avgVote, content, ticketFee)"
                     + " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
             preStm = conn.prepareStatement(sql);
 
@@ -81,7 +81,7 @@ public class EventDAO {
             preStm.setDate(8, java.sql.Date.valueOf(endDate.toString()));
             preStm.setDouble(9, 0);
             preStm.setNString(10, content);
-            preStm.setBoolean(11, fee == 1);
+            preStm.setInt(11, ticketFee);
 
             isSuccess = preStm.executeUpdate() > 0;
         } finally {
@@ -132,9 +132,9 @@ public class EventDAO {
                     Date endDate = rs.getDate("endDate");
                     double avgVote = rs.getDouble("avgVote");
                     String content = rs.getString("content");
-                    boolean fee = rs.getBoolean("fee");
+                    int ticketFee = rs.getInt("ticketFee");
                     
-                    EventDTO dto = new EventDTO(eventID, eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, fee);
+                    EventDTO dto = new EventDTO(eventID, eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee);
                     list.add(dto);
                 }
             }
@@ -165,9 +165,9 @@ public class EventDAO {
                 Date endDate = Helper.convertStringToDate(rs.getDate("endDate").toString());
                 Double avgVote = rs.getDouble("avgVote");
                 String contend = rs.getNString("content");
-                boolean fee = rs.getBoolean("fee");
+                int ticketFee = rs.getInt("ticketFee");
 
-                event = new EventDTO(eventID, eventName, clubID, locationID, statusID, statusID, createDate, startDate, endDate, avgVote, contend, fee);
+                event = new EventDTO(eventID, eventName, clubID, locationID, statusID, statusID, createDate, startDate, endDate, avgVote, contend, ticketFee);
             }
         } finally {
             this.closeConnection();
@@ -195,9 +195,9 @@ public class EventDAO {
                 Date endDate = Helper.convertStringToDate(rs.getDate("endDate").toString());
                 Double avgVote = rs.getDouble("avgVote");
                 String contend = rs.getNString("content");
-                boolean fee = rs.getBoolean("fee");
+                int ticketFee = rs.getInt("ticketFee");
 
-                list.add(new EventDTO(eventID, eventName, clubID, locationID, statusID, statusID, createDate, startDate, endDate, avgVote, contend, fee));
+                list.add(new EventDTO(eventID, eventName, clubID, locationID, statusID, statusID, createDate, startDate, endDate, avgVote, contend, ticketFee));
             }
         } finally {
             this.closeConnection();
