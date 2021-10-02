@@ -5,8 +5,12 @@
  */
 package controllers;
 
+import constant.Routers;
+import daos.EventDAO;
+import dtos.EventDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,10 +36,36 @@ public class ViewEventController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        //check event exist
-        //get event
-        //check event is followed
-        //check event is registered
+        try {
+            //check event exist
+            //get event
+            //check event is followed
+            //check event is registered        
+            int i = 1;
+            if (request.getParameter("i") != null) {
+                i = Integer.parseInt(request.getParameter("i"));
+            }
+            EventDAO dao = new EventDAO();
+            ArrayList<EventDTO> list = dao.getTop9Event(i);
+            int count = dao.getAllEvents().size();
+            int endPage = count/9;
+            if(count % 3 != 0){
+                endPage++;
+            }
+            
+            if (list.isEmpty()) {
+                request.setAttribute("notify", "Some events will coming up soon.");
+            }
+            
+            request.setAttribute("listEvent", list);
+            request.setAttribute("index", i);
+            request.setAttribute("endPage", endPage);
+        } catch (Exception e) {
+            log(e.getMessage());
+        } finally {
+            request.getRequestDispatcher("pagination.jsp").forward(request, response);
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -51,7 +81,7 @@ public class ViewEventController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-        
+
     }
 
     /**
