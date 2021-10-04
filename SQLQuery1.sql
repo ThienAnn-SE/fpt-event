@@ -133,6 +133,11 @@ create table tblPayments(
 	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('uyentlpse171664@fpt.edu.vn','Trương Lý Phụng Uyên','2003-11-11',0,'0528665682',1,500)
 	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('nhinyse177341@fpt.edu.vn','Nguyễn Yến Nhi','2003-2-16',0,'0528265622',1,500)
 	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('thanhldse171878@fpt.edu.vn','Lý Dương Thành','2003-6-11',1,'0528065692',1,500)
+	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('mynlhss172290@fpt.edu.vn','Nguyễn Lý Huyền My','2003-8-22',0,'0928115692',1,500)
+	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('trangntmss171002@fpt.edu.vn','Ngọc Trương Minh Trang','2003-9-26',0,'0528065692',1,500)
+	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('diemtbsa170121@fpt.edu.vn','Trần Bích Diễm','2003-9-1',0,'0523015690',1,500)
+	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('maithsa171010@fpt.edu.vn','Trương Huyền Mai','2003-12-4',0,'0521060642',1,500)
+	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('huongvqss1710948@fpt.edu.vn','Vương Quốc Hương','2003-3-7',1,'0328005491',1,500)
 
 	INSERT INTO tblClubDetails(clubName, createDate, clubDescription, clubEmail, clubPhoneNumber, userEmail) VALUES ('Bussiness Economics Club','2018-7-20','This is a club description','bec.fptuhcm@gmail.com','0728665912','duytlse140800@fpt.edu.vn')
 	INSERT INTO tblClubDetails(clubName, createDate, clubDescription, clubEmail, clubPhoneNumber, userEmail) VALUES ('Multimedia & Entertainment Club','2016-5-11','This is a club description','mec.fptuhcm@gmail.com','0528761091','thaocbsa131164@fpt.edu.vn')
