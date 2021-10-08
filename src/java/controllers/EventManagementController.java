@@ -6,32 +6,31 @@
 package controllers;
 
 import constant.Routers;
-import daos.CatetoryDAO;
 import daos.ClubDAO;
 import daos.EventDAO;
-import daos.EventStatusDAO;
-import daos.LocationDAO;
-import dtos.CatetoryDTO;
+import daos.UserDAO;
 import dtos.ClubDTO;
 import dtos.EventDTO;
-import dtos.EventStatusDTO;
-import dtos.LocationDTO;
+import dtos.UserDTO;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import utils.GetParam;
 
 /**
  *
  * @author thien
  */
-@WebServlet(name = "ViewEventController", urlPatterns = {"/ViewEventController"})
-public class ViewEventController extends HttpServlet {
+@WebServlet(name = "EventManagementController", urlPatterns = {"/EventManagementController"})
+public class EventManagementController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -46,39 +45,35 @@ public class ViewEventController extends HttpServlet {
     protected boolean processRequest(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         response.setContentType("text/html;charset=UTF-8");
-
-        Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 10, 5000, null);
-
+        Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 0, 500, null);
+        Integer page = GetParam.getIntParams(request, "page", "Page", 1, 50, 1);
         if (eventID == null) {
             return false;
         }
 
-        EventDAO eventDAO = new EventDAO();
-        EventDTO event = eventDAO.getEventByID(eventID);
-        if (event == null) {
-            request.setAttribute("errorMessage", "Event does not exist");
+        HttpSession session = request.getSession();
+        String email = (String) session.getAttribute("email");
+        if (email == null) {
+            request.setAttribute("errorMessage", "There is an erorr happen. Please reload the website");
+            return false;
+        }
+        UserDAO userDAO = new UserDAO();
+        UserDTO user = userDAO.getUserByEmail(email);
+        if (user == null) {
+            request.setAttribute("errorMessage", "Please log in first");
             return false;
         }
 
-        EventStatusDAO statusDAO = new EventStatusDAO();
-        EventStatusDTO status = statusDAO.getStatusByID(event.getStatusID());
-
-        CatetoryDAO catetoryDAO = new CatetoryDAO();
-        CatetoryDTO catetory = catetoryDAO.getCatetoryByID(event.getCatetoryID());
-
-        LocationDAO locationDAO = new LocationDAO();
-        LocationDTO location = locationDAO.getLocationByID(event.getLocationID());
-
         ClubDAO clubDAO = new ClubDAO();
-        ClubDTO club = clubDAO.getClubByID(event.getClubID());
+        ClubDTO club = clubDAO.getClubByEmail(email);
+        if (club == null) {
+            request.setAttribute("errorMessage", "This club does not exist or you do not have permission");
+            return false;
+        }
 
-        request.setAttribute("event", event);
-        request.setAttribute("startDate", new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(event.getStartDate()));
-        request.setAttribute("endDate", new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(event.getEndDate()));
-        request.setAttribute("catetoryName", catetory.getCatetoryName());
-        request.setAttribute("locationName", location.getLocationName());
-        request.setAttribute("statusDescription", status.getStatusDescription());
-        request.setAttribute("clubName", club.getClubName());
+        EventDAO eventDAO = new EventDAO();
+        ArrayList<EventDTO> eventList = eventDAO.getEventByClub(page, club.getClubID());
+        request.setAttribute("eventList", eventList);
         return true;
     }
 
@@ -95,14 +90,14 @@ public class ViewEventController extends HttpServlet {
             throws ServletException, IOException {
         try {
             if (processRequest(request, response)) {
-                request.getRequestDispatcher(Routers.VIEW_EVENT_PAGE).forward(request, response);
-            } else {
-                request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+                request.getRequestDispatcher(Routers.VIEW_REGISTRATION_PAGE).forward(request, response);
             }
+            request.getRequestDispatcher(Routers.EVENT_MANAGEMENT_PAGE).forward(request, response);
         } catch (Exception ex) {
             log(ex.getMessage());
             request.setAttribute("errorMessage", ex.getMessage());
             request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
         }
     }
+
 }

@@ -246,7 +246,7 @@ public class GetParam {
         }
 
         Date date = Helper.convertStringToDate(value); //convert date in String type to date in Date type
-        Date today = Helper.getTodayTime(); //get current date in Date type
+        Date today = Helper.getCurrentDate(); //get current date in Date type
 
         if (today.after(date)) {
             //input date  is after current day

@@ -1,0 +1,53 @@
+.club {
+    height: 450px;
+    position: relative;
+    color: black;
+    transition: all 0.3s ease;
+    text-transform: capitalize;
+    margin: 40px 0;
+}
+
+.club:hover {
+    color: black;
+}
+
+.club:hover img {
+    box-shadow: 0 15px 35px var(--black-shadow);
+}
+
+.club-img {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    padding: 10px;
+}
+
+.club-img img {
+    height: 100%;
+    width: 100%;
+}
+
+.club-content {
+    position: absolute;
+    background-color: #fff;
+    bottom: -20px;
+    width: 90%;
+    height: 80px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: 1px solid #f1f1f1;
+    left: 35px;
+}
+
+.club-content h2 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.club-content h3 {
+    font-size: 12px;
+    font-weight: 400;
+}

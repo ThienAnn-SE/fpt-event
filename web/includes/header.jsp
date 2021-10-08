@@ -16,9 +16,9 @@
             </button>
             <div class="collapse navbar-collapse">
                 <div class="navbar-nav">
-                    <a class="item nav-link active" href="#">home</a>
-                    <a class="item nav-link" href="#">event</a>
-                    <a class="item nav-link" href="#">club</a>
+                    <a class="item nav-link active" href="HomePageController">home</a>
+                    <a class="item nav-link" href="SearchEventController">event</a>
+                    <a class="item nav-link" href="ViewClubController">club</a>
                     <a class="item nav-link" href="ViewUserController">view profile</a>
                     <a class="nav-link" href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force">
                         <button class="button">

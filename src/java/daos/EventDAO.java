@@ -67,7 +67,7 @@ public class EventDAO {
         try {
             conn = DBHelpers.makeConnection();
             String sql = "INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID,"
-                    + " createDate, startDate, endDate, avgVote, content, ticketFee)"
+                    + " createDate, startDate, endDate, slot, avgVote, content, ticketFee)"
                     + " VALUES (?,?,?,?,?,?,?,?,?,?,?)";
             preStm = conn.prepareStatement(sql);
 
@@ -76,12 +76,13 @@ public class EventDAO {
             preStm.setInt(3, locationID);
             preStm.setInt(4, catetoryID);
             preStm.setInt(5, 300);
-            preStm.setDate(6, java.sql.Date.valueOf(createDate.toString()));
-            preStm.setDate(7, java.sql.Date.valueOf(startDate.toString()));
-            preStm.setDate(8, java.sql.Date.valueOf(endDate.toString()));
-            preStm.setDouble(9, 0);
-            preStm.setNString(10, content);
-            preStm.setInt(11, ticketFee);
+            preStm.setDate(6, java.sql.Date.valueOf(Helper.convertDateToSQLString(createDate)));
+            preStm.setTimestamp(7, java.sql.Timestamp.valueOf(Helper.convertDateTimeToSQLString(startDate)));
+            preStm.setTimestamp(8, java.sql.Timestamp.valueOf(Helper.convertDateTimeToSQLString(startDate)));
+            preStm.setInt(9, 0);
+            preStm.setDouble(10, 0);
+            preStm.setNString(11, content);
+            preStm.setInt(12, ticketFee);
 
             isSuccess = preStm.executeUpdate() > 0;
         } finally {
@@ -94,11 +95,11 @@ public class EventDAO {
         boolean isSuccess = false;
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "UPDATE tblFUEvents set eventStatus = ? WHERE eventID = ?";
+            String sql = "UPDATE tblFUEvents set statusID = ? WHERE eventID = ?";
             preStm = conn.prepareStatement(sql);
 
-            preStm.setInt(1, eventID);
-            preStm.setInt(2, eventStatus);
+            preStm.setInt(1, eventStatus);
+            preStm.setInt(2, eventID);
 
             isSuccess = preStm.executeUpdate() > 0;
         } finally {
@@ -107,17 +108,129 @@ public class EventDAO {
         return isSuccess;
     }
 
+    public ArrayList<EventDTO> getEventForHomepage() throws Exception {
+        ArrayList<EventDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT TOP 3 *"
+                    + " FROM tblFUEvents"
+                    + " WHERE statusID = 500"
+                    + " ORDER BY startDate ASC";
+            preStm = conn.prepareStatement(sql);
+            rs = preStm.executeQuery();
+            while (rs.next()) {
+                int eventID = rs.getInt("eventID");
+                String eventName = rs.getString("eventName");
+                int clubID = rs.getInt("clubID");
+                int locationID = rs.getInt("locationID");
+                int catetoryID = rs.getInt("catetoryID");
+                int statusID = rs.getInt("statusID");
+                Date createDate = rs.getDate("createDate");
+                Date startDate = rs.getDate("startDate");
+                Date endDate = rs.getDate("endDate");
+                int slot = rs.getInt("slot");
+                double avgVote = rs.getDouble("avgVote");
+                String content = rs.getString("content");
+                int ticketFee = rs.getInt("ticketFee");
+
+                EventDTO dto = new EventDTO(eventID, eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee);
+                list.add(dto);
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return list;
+    }
+
     public ArrayList<EventDTO> getTop9Event(int count) throws Exception {
         ArrayList<EventDTO> list = new ArrayList<>();
         try {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
-                String sql = "select * \n"
-                        + "from (select ROW_NUMBER() over (order by eventID asc) as rn, * from tblFUEvents) as b\n"
-                        + "where rn >= (?*9-8) and rn <= (?*9)";
+                String sql = "SELECT *"
+                        + " FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b"
+                        + " WHERE rn >= (?*9-8) AND rn <= (?*9) AND (statusID != 400)"
+                        + " ORDER BY startDate ASC";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, count);
                 preStm.setInt(2, count);
+                rs = preStm.executeQuery();
+                while (rs.next()) {
+                    int eventID = rs.getInt("eventID");
+                    String eventName = rs.getString("eventName");
+                    int clubID = rs.getInt("clubID");
+                    int locationID = rs.getInt("locationID");
+                    int catetoryID = rs.getInt("catetoryID");
+                    int statusID = rs.getInt("statusID");
+                    Date createDate = rs.getDate("createDate");
+                    Date startDate = rs.getDate("startDate");
+                    Date endDate = rs.getDate("endDate");
+                    int slot = rs.getInt("slot");
+                    double avgVote = rs.getDouble("avgVote");
+                    String content = rs.getString("content");
+                    int ticketFee = rs.getInt("ticketFee");
+
+                    EventDTO dto = new EventDTO(eventID, eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee);
+                    list.add(dto);
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return list;
+    }
+
+    public ArrayList<EventDTO> getEventByCatetory(int count, int catetoryID) throws Exception {
+        ArrayList<EventDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT *"
+                        + " FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b"
+                        + " WHERE catetoryID =? AND (rn >= (?*9-8) AND rn <= (?*9))";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, catetoryID);
+                preStm.setInt(2, count);
+                preStm.setInt(3, count);
+                rs = preStm.executeQuery();
+                list = new ArrayList<>();
+                while (rs.next()) {
+                    int eventID = rs.getInt("eventID");
+                    String eventName = rs.getString("eventName");
+                    int clubID = rs.getInt("clubID");
+                    int locationID = rs.getInt("locationID");
+                    int statusID = rs.getInt("statusID");
+                    Date createDate = rs.getDate("createDate");
+                    Date startDate = rs.getDate("startDate");
+                    Date endDate = rs.getDate("endDate");
+                    int slot = rs.getInt("slot");
+                    double avgVote = rs.getDouble("avgVote");
+                    String content = rs.getString("content");
+                    int ticketFee = rs.getInt("ticketFee");
+
+                    EventDTO dto = new EventDTO(eventID, eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee);
+                    list.add(dto);
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return list;
+    }
+
+    public ArrayList<EventDTO> getEventByPrice(int count, int maxPrice, int minPrice) throws Exception {
+        ArrayList<EventDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT *"
+                        + " FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b"
+                        + " WHERE (ticketFee >= ? AND ticketFee <= ?) AND (rn >= (?*9-8) AND rn <= (?*9))";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, minPrice);
+                preStm.setInt(2, maxPrice);
+                preStm.setInt(3, count);
+                preStm.setInt(4, count);
                 rs = preStm.executeQuery();
                 list = new ArrayList<>();
                 while (rs.next()) {
@@ -130,26 +243,66 @@ public class EventDAO {
                     Date createDate = rs.getDate("createDate");
                     Date startDate = rs.getDate("startDate");
                     Date endDate = rs.getDate("endDate");
+                    int slot = rs.getInt("slot");
                     double avgVote = rs.getDouble("avgVote");
                     String content = rs.getString("content");
                     int ticketFee = rs.getInt("ticketFee");
-                    
-                    EventDTO dto = new EventDTO(eventID, eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee);
+
+                    EventDTO dto = new EventDTO(eventID, eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee);
                     list.add(dto);
                 }
             }
         } finally {
             closeConnection();
         }
-                  return list;
+        return list;
     }
-  
+
+    public ArrayList<EventDTO> getEventByName(int count, String searchName) throws Exception {
+        ArrayList<EventDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT *"
+                        + " FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b"
+                        + " WHERE (eventName LIKE %?%) AND (rn >= (?*9-8) AND rn <= (?*9))";
+                preStm = conn.prepareStatement(sql);
+                preStm.setString(1, searchName);
+                preStm.setInt(2, count);
+                preStm.setInt(3, count);
+                rs = preStm.executeQuery();
+                list = new ArrayList<>();
+                while (rs.next()) {
+                    int eventID = rs.getInt("eventID");
+                    String eventName = rs.getString("eventName");
+                    int clubID = rs.getInt("clubID");
+                    int locationID = rs.getInt("locationID");
+                    int catetoryID = rs.getInt("catetoryID");
+                    int statusID = rs.getInt("statusID");
+                    Date createDate = rs.getDate("createDate");
+                    Date startDate = rs.getDate("startDate");
+                    Date endDate = rs.getDate("endDate");
+                    int slot = rs.getInt("slot");
+                    double avgVote = rs.getDouble("avgVote");
+                    String content = rs.getString("content");
+                    int ticketFee = rs.getInt("ticketFee");
+
+                    EventDTO dto = new EventDTO(eventID, eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee);
+                    list.add(dto);
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return list;
+    }
+
     public EventDTO getEventByID(int eventID) throws NamingException, SQLException {
         EventDTO event = null;
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "SELECT eventName, clubID, locationID, statusID,"
-                    + " createDate, startDate, endDate, avgVote, content, fee"
+            String sql = "SELECT eventName, clubID, locationID, catetoryID, statusID,"
+                    + " createDate, startDate, endDate, slot, avgVote, content, ticketFee"
                     + " FROM tblFUEvents WHERE eventID = ?";
             preStm = conn.prepareStatement(sql);
             preStm.setInt(1, eventID);
@@ -159,15 +312,17 @@ public class EventDAO {
                 String eventName = rs.getNString("eventName");
                 int clubID = rs.getInt("clubID");
                 int locationID = rs.getInt("locationID");
+                int catetoryID = rs.getInt("catetoryID");
                 int statusID = rs.getInt("statusID");
-                Date createDate = Helper.convertStringToDate(rs.getDate("createDate").toString());
-                Date startDate = Helper.convertStringToDate(rs.getDate("startDate").toString());
-                Date endDate = Helper.convertStringToDate(rs.getDate("endDate").toString());
+                Date createDate = rs.getDate("createDate");
+                Date startDate = rs.getTimestamp("startDate");
+                Date endDate = rs.getTimestamp("endDate");
+                int slot = rs.getInt("slot");
                 Double avgVote = rs.getDouble("avgVote");
                 String contend = rs.getNString("content");
                 int ticketFee = rs.getInt("ticketFee");
 
-                event = new EventDTO(eventID, eventName, clubID, locationID, statusID, statusID, createDate, startDate, endDate, avgVote, contend, ticketFee);
+                event = new EventDTO(eventID, eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, contend, ticketFee);
             }
         } finally {
             this.closeConnection();
@@ -175,12 +330,68 @@ public class EventDAO {
         return event;
     }
 
+    public ArrayList<EventDTO> getEventByClub(int page, int clubID) throws NamingException, SQLException {
+        ArrayList<EventDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT *"
+                    + " FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b"
+                    + " WHERE (clubID = ?) AND (rn >= (?*9-8) AND rn <= (?*9))";
+            preStm = conn.prepareStatement(sql);
+            preStm.setInt(1, clubID);
+            preStm.setInt(2, page);
+            preStm.setInt(3, page);
+            rs = preStm.executeQuery();
+            while (rs.next()) {
+                int eventID = rs.getInt("eventID");
+                String eventName = rs.getNString("eventName");
+                int locationID = rs.getInt("locationID");
+                int catetoryID = rs.getInt("catetoryID");
+                int statusID = rs.getInt("statusID");
+                Date createDate = Helper.convertStringToDate(rs.getDate("createDate").toString());
+                Date startDate = Helper.convertStringToDate(rs.getDate("startDate").toString());
+                Date endDate = Helper.convertStringToDate(rs.getDate("endDate").toString());
+                int slot = rs.getInt("slot");
+                Double avgVote = rs.getDouble("avgVote");
+                String contend = rs.getNString("content");
+                int ticketFee = rs.getInt("ticketFee");
+                list.add(new EventDTO(eventID, eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, contend, ticketFee));
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return list;
+    }
+
+    public ArrayList<EventDTO> getEventForUpdateStatus() throws NamingException, SQLException {
+        ArrayList<EventDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT eventID, createDate, startDate, endDate"
+                    + " FROM tblFUEvents"
+                    + " WHERE statusID != 400"
+                    + " ORDER BY startDate ASC";
+            preStm = conn.prepareStatement(sql);
+            rs = preStm.executeQuery();
+            while (rs.next()) {
+                int eventID = rs.getInt("eventID");
+                Date createDate = rs.getDate("createDate");
+                Date startDate = rs.getTimestamp("startDate");
+                Date endDate = rs.getTimestamp("endDate");
+                list.add(new EventDTO(eventID, createDate, startDate, endDate));
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return list;
+    }
+
     public ArrayList<EventDTO> getAllEvents() throws NamingException, SQLException {
         ArrayList<EventDTO> list = new ArrayList<>();
         try {
             conn = DBHelpers.makeConnection();
             String sql = "SELECT eventID, eventName, clubID, locationID, statusID,"
-                    + " createDate, startDate, endDate, avgVote, content, fee"
+                    + " createDate, startDate, endDate, slot, avgVote, content, fee"
                     + " FROM tblFUEvents";
             preStm = conn.prepareStatement(sql);
             rs = preStm.executeQuery();
@@ -193,16 +404,17 @@ public class EventDAO {
                 Date createDate = Helper.convertStringToDate(rs.getDate("createDate").toString());
                 Date startDate = Helper.convertStringToDate(rs.getDate("startDate").toString());
                 Date endDate = Helper.convertStringToDate(rs.getDate("endDate").toString());
+                int slot = rs.getInt("slot");
                 Double avgVote = rs.getDouble("avgVote");
                 String contend = rs.getNString("content");
                 int ticketFee = rs.getInt("ticketFee");
 
-                list.add(new EventDTO(eventID, eventName, clubID, locationID, statusID, statusID, createDate, startDate, endDate, avgVote, contend, ticketFee));
+                list.add(new EventDTO(eventID, eventName, clubID, locationID, statusID, statusID, createDate, startDate, endDate, slot, avgVote, contend, ticketFee));
             }
         } finally {
             this.closeConnection();
         }
-      return list;
+        return list;
     }
 
 }

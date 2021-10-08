@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.naming.NamingException;
 import utils.DBHelpers;
 
@@ -41,7 +43,8 @@ public class EventRegisterDAO {
         }
     }
 
-    public boolean addNewEventRegistration(EventRegisterDTO dto) throws NamingException, SQLException {
+    public boolean addNewEventRegistration(EventRegisterDTO dto)
+            throws NamingException, SQLException {
         boolean isSuccess = false;
         try {
             conn = DBHelpers.makeConnection();
@@ -52,10 +55,33 @@ public class EventRegisterDAO {
             preStm.setString(2, dto.getEmail());
             preStm.setDate(3, java.sql.Date.valueOf(dto.getRegisterDate().toString()));
 
-            isSuccess = preStm.executeUpdate()> 0;
+            isSuccess = preStm.executeUpdate() > 0;
         } finally {
             this.closeConnection();
         }
         return isSuccess;
+    }
+
+    public ArrayList<EventRegisterDTO> getRegisterList(int eventID)
+            throws SQLException, NamingException {
+        ArrayList<EventRegisterDTO> registerList = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT * "
+                    + "FROM tblEventRegisters "
+                    + "WHERE eventID=?";
+            preStm = conn.prepareStatement(sql);
+            preStm.setInt(1, eventID);
+            rs = preStm.executeQuery();
+            if (rs.next()) {
+                String userEmail = rs.getString("email");
+                Date registerDate = rs.getDate("createDate");
+                registerList.add(new EventRegisterDTO(eventID, userEmail, registerDate));
+            }
+        } finally {
+            this.closeConnection();
+        }
+
+        return registerList;
     }
 }
