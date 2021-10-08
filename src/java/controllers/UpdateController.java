@@ -69,7 +69,7 @@ public class UpdateController extends HttpServlet {
 
         try {
             //execute update to database
-            String dob = Helper.convertDateToString(dayOfBirth);
+            String dob = Helper.convertDateToSQLString(dayOfBirth);
             result = dao.updateUser(email, name, dob, gender, phoneNumber);
 
             //check update result

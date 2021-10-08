@@ -28,6 +28,13 @@ public class ClubDTO {
         this.clubPhoneNumber = clubPhoneNumber;
     }
 
+    public ClubDTO(String clubName, String clubDescription, String clubEmail, String clubPhoneNumber) {
+        this.clubName = clubName;
+        this.clubDescription = clubDescription;
+        this.clubEmail = clubEmail;
+        this.clubPhoneNumber = clubPhoneNumber;
+    }
+
     public ClubDTO() {
     }
 

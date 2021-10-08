@@ -12,6 +12,7 @@ import java.util.Date;
  * @author thien
  */
 public class EventDTO {
+
     private int eventID;
     private String eventName;
     private int clubID;
@@ -21,11 +22,12 @@ public class EventDTO {
     private Date createDate;
     private Date startDate;
     private Date endDate;
+    private int slot;
     private double avgVote;
     private String content;
     private int ticketFee;
 
-    public EventDTO(int eventID, String eventName, int clubID, int locationID, int catetoryID, int statusID, Date createDate, Date startDate, Date endDate, double avgVote, String content, int ticketFee) {
+    public EventDTO(int eventID, String eventName, int clubID, int locationID, int catetoryID, int statusID, Date createDate, Date startDate, Date endDate, int slot, double avgVote, String content, int ticketFee) {
         this.eventID = eventID;
         this.eventName = eventName;
         this.clubID = clubID;
@@ -35,9 +37,17 @@ public class EventDTO {
         this.createDate = createDate;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.slot = slot;
         this.avgVote = avgVote;
         this.content = content;
         this.ticketFee = ticketFee;
+    }
+
+    public EventDTO(int eventID, Date createDate, Date startDate, Date endDate) {
+        this.eventID = eventID;
+        this.createDate = createDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public EventDTO() {
@@ -113,6 +123,14 @@ public class EventDTO {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public int getSlot() {
+        return slot;
+    }
+
+    public void setSlot(int slot) {
+        this.slot = slot;
     }
 
     public double getAvgVote() {

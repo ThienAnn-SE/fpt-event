@@ -5,13 +5,22 @@
  */
 package controllers;
 
+import constant.Routers;
+import daos.EventDAO;
+import daos.UserDAO;
+import dtos.EventDTO;
+import dtos.EventRegisterDTO;
+import dtos.UserDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import utils.GetParam;
+import utils.Helper;
+import utils.PaymentServices;
 
 /**
  *
@@ -21,20 +30,70 @@ import javax.servlet.http.HttpServletResponse;
 public class RegisterEventController extends HttpServlet {
 
     /**
+     * Processes requests for HTTP <code>POST</code> methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @return
+     * @throws Exception if a error occurs
+     */
+    protected boolean postHandler(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+
+        return true;
+    }
+
+    /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
      * @param request servlet request
      * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @return
+     * @throws Exception if a error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected boolean getHandler(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
         response.setContentType("text/html;charset=UTF-8");
+        //Initialized resources
+        UserDAO userDAO = new UserDAO();
+        EventDAO eventDAO = new EventDAO();
+
+        //Get parameter
+        Integer eventID = GetParam.getIntParams(request, "txtEventID", "Event ID", 10, Integer.MAX_VALUE, null);
+
+        if (eventID == null) {
+            return false;
+        }
+        //check existed event by ID
+        EventDTO event = eventDAO.getEventByID(eventID);
+        if (event == null) {
+            request.setAttribute("errorMessage", "Event is not existed");
+            return false;
+        }
+
+        //get user email
+        HttpSession session = request.getSession();
+        String email = (String) session.getAttribute("email");
+        if (email == null) {
+            request.setAttribute("errorMessage", "Please log in first");
+            return false;
+        }
+
+        UserDTO user = userDAO.getUserByEmail(email);
+
+        if (user == null) {
+            request.setAttribute("errorMessage", "This user is not exist");
+            return false;
+        }
+
+        //check isBanned?
+        //on success
+        request.setAttribute("user", user);
+        request.setAttribute("event", event);
+        return true;
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -46,7 +105,17 @@ public class RegisterEventController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            if (getHandler(request, response)) {
+                response.sendRedirect(Routers.REVIEW_PAYMENT_PAGE);
+            } else {
+                request.getRequestDispatcher(Routers.SEARCH_EVENT_PAGE + "?" + request.getQueryString());
+            }
+        } catch (Exception ex) {
+            log(ex.getMessage());
+            request.setAttribute("errorMessage", ex.getMessage());
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+        }
     }
 
     /**
@@ -60,17 +129,26 @@ public class RegisterEventController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-    }
+        try {
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+            String btAction = GetParam.getStringParam(request, "btAction", "Action", 1, 50, null);
+
+            if (btAction == null) {
+                request.setAttribute("errorMessage", "No action have been done");
+                request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+            } else {
+                if (btAction.equalsIgnoreCase("pay")) {
+                    request.getRequestDispatcher(Routers.EXECUTE_PAYMENT_CONTROLLER).forward(request, response); 
+                }
+                if (postHandler(request, response)) {
+                    response.sendRedirect(Routers.HOME_PAGE);
+                }
+            }
+        } catch (Exception ex) {
+            log(ex.getMessage());
+            request.setAttribute("errorMessage", ex.getMessage());
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+        }
+    }
 
 }

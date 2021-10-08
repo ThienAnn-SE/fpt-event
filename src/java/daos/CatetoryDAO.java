@@ -43,24 +43,24 @@ public class CatetoryDAO {
     }
     
     public CatetoryDTO getCatetoryByID(int id) throws SQLException, NamingException{
-        CatetoryDTO category = null;
+        CatetoryDTO catetory = null;
         try {
             conn = DBHelpers.makeConnection();
             if(conn != null){
                 String sql = "SELECT * "
-                        + " FROM tblCategories "
-                        + " WHERE categoryID = ? ";
+                        + " FROM tblCatetories "
+                        + " WHERE catetoryID = ? ";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, id);
                 rs = preStm.executeQuery();
                 if(rs.next()){
-                    category = new CatetoryDTO(rs.getInt("categoryID"), rs.getString("categoryName"));
+                    catetory = new CatetoryDTO(rs.getInt("catetoryID"), rs.getString("catetoryName"));
                 }
             }
         } finally {
             this.closeConnection();
         }
-        return category;
+        return catetory;
     }
     
     public ArrayList<CatetoryDTO> getAllCatetories() throws SQLException, NamingException{
@@ -69,11 +69,11 @@ public class CatetoryDAO {
             conn = DBHelpers.makeConnection();
             if(conn != null){
                 String sql = "SELECT * "
-                        + " FROM tblCategories ";
+                        + " FROM tblCatetories ";
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();
                 while(rs.next()){
-                   CatetoryDTO category = new CatetoryDTO(rs.getInt("categoryID"), rs.getString("categoryName"));
+                   CatetoryDTO category = new CatetoryDTO(rs.getInt("catetoryID"), rs.getString("catetoryName"));
                    list.add(category);
                 }
             }

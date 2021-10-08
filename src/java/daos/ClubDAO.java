@@ -120,4 +120,25 @@ public class ClubDAO {
         }
         return list;
     }
+
+    public boolean updateClubInformation(ClubDTO club, String userEmail) throws SQLException, NamingException {
+        boolean isSuccess = false;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "UPDATE tblClubDetails SET clubName=?, clubDescription=?, clubPhoneNumber=?, clubEmail=? WHERE userEmail=?";
+                preStm = conn.prepareStatement(sql);
+                preStm.setString(1, club.getClubName());
+                preStm.setString(2, club.getClubDescription());
+                preStm.setString(3, club.getClubPhoneNumber());
+                preStm.setString(4, club.getClubEmail());
+                preStm.setString(5, userEmail);
+                
+                isSuccess = preStm.executeUpdate() > 0;
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return isSuccess;
+    }
 }

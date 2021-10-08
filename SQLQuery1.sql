@@ -58,8 +58,9 @@ create table tblFUEvents(
 	catetoryID		integer			foreign key	references tblCatetories,
 	statusID		integer			foreign key references tblEventStatuses,
 	createDate		date			not null,
-	startDate		date			not null,
-	endDate			date			not null,
+	startDate		datetime		not null,
+	endDate			datetime		not null,
+	slot			int				not null,
 	avgVote			float			not null,
 	imageURL		varchar(max),
 	content			ntext			not null,
@@ -134,7 +135,7 @@ create table tblPayments(
 	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('nhinyse177341@fpt.edu.vn','Nguyễn Yến Nhi','2003-2-16',0,'0528265622',1,500)
 	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('thanhldse171878@fpt.edu.vn','Lý Dương Thành','2003-6-11',1,'0528065692',1,500)
 	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('mynlhss172290@fpt.edu.vn','Nguyễn Lý Huyền My','2003-8-22',0,'0928115692',1,500)
-	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('trangntmss171002@fpt.edu.vn','Ngọc Trương Minh Trang','2003-9-26',0,'0528065692',1,500)
+	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('trangntmss171002@fpt.edu.vn','Ngọc Trương Minh Trang','2003-9-26',0,'0528165692',1,500)
 	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('diemtbsa170121@fpt.edu.vn','Trần Bích Diễm','2003-9-1',0,'0523015690',1,500)
 	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('maithsa171010@fpt.edu.vn','Trương Huyền Mai','2003-12-4',0,'0521060642',1,500)
 	INSERT INTO tblUsers(userEmail,userName, dateOfBirth, gender, phoneNumber, roleID, statusID) VALUES ('huongvqss1710948@fpt.edu.vn','Vương Quốc Hương','2003-3-7',1,'0328005491',1,500)
@@ -168,4 +169,30 @@ create table tblPayments(
 	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (450,'Đã hết chỗ')
 
 
-	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('A',10,10,10,300,'9-10-2021','10-10-2021','11-11-2021',5,'none',0)
+	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee) VALUES ('I',10,10,10,300,'2021-10-5','2021/10/7 08:30:00','2021-10-7 09:10:30',100,5,'none',0)
+	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('B',10,10,10,500,'2021-10-5','2021-11-12','2021-11-30',5,'none',0)
+	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('C',10,10,10,300,'2021-10-5','2021-11-13','2021-11-30',5,'none',0)
+	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('D',10,10,10,500,'2021-10-5','2021-11-14','2021-11-30',5,'none',0)
+	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('E',10,10,10,450,'2021-10-5','2021-11-15','2021-11-30',5,'none',0)
+	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('F',10,10,10,530,'2021-10-5','2021-11-12','2021-11-30',5,'none',0)
+	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('G',10,10,10,500,'2021-10-5','2021-11-11','2021-11-30',5,'none',0)
+	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('H',10,10,10,400,'2021-10-5','2021-11-21','2021-11-30',5,'none',0)
+
+	SELECT * FROM tblFUEvents
+
+	SELECT TOP 3 * FROM tblFUEvents
+	WHERE statusID = 500
+	ORDER BY startDate ASC
+
+	SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b
+	LEFT JOIN tblCatetories on b.catetoryID = tblCatetories.catetoryID
+	WHERE (rn >= (1*7-6) AND rn <= (1*7)) AND tblCatetories.catetoryID = 10 AND (statusID = 500 OR statusID = 300)
+	ORDER BY startDate ASC
+	 
+	SELECT * FROM tblFUEvents
+	WHERE startDate >= '2021-11-11' AND endDate <= '2021-11-11'
+	
+	SELECT eventID, startDate, endDate
+	FROM tblFUEvents
+	WHERE statusID != 400
+	ORDER BY startDate ASC

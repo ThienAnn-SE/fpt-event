@@ -6,24 +6,27 @@ import javax.servlet.http.HttpSession;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Timer;
 
 public class Helper {
 
     /**
      * Ensure that access only from authorized users
      *
-     * @param request  servlet request
+     * @param request servlet request
      * @param response servlet response
-     * @param minRole  minimum user's role to be passed
-     * @param maxRole  maximum user's role to be passed
-     * @param page     move to this page if user can not be passed
+     * @param minRole minimum user's role to be passed
+     * @param maxRole maximum user's role to be passed
+     * @param page move to this page if user can not be passed
      * @return false if the access is illegal
      * @throws java.lang.Exception
      */
     public static boolean protectedRouter(HttpServletRequest request, HttpServletResponse response, int minRole,
-                                          int maxRole, String page) throws Exception {
+            int maxRole, String page) throws Exception {
 
         if (!isLogin(request) || !correctRole(request, minRole, maxRole)) {
             //the access is illegal
@@ -37,10 +40,10 @@ public class Helper {
     /**
      * Reformat string that is too long
      *
-     * @param str       input string
+     * @param str input string
      * @param maxLength
-     * @return  return string with first maxLength characters + "..."
-     * if the string is too long or itself if not
+     * @return return string with first maxLength characters + "..." if the
+     * string is too long or itself if not
      */
     public static String truncateContent(String str, int maxLength) {
         if (str.length() > maxLength) {
@@ -103,49 +106,90 @@ public class Helper {
      */
     public static Date convertStringToDate(String date) {
         try {
-            SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
-            return formatter1.parse(date);
+            return new SimpleDateFormat("yyyy-MM-dd").parse(date);
         } catch (ParseException e) {
             return null;
         }
     }
 
     /**
+     * Convert date in String type into date in Date type
+     *
+     * @param date
+     * @return date in Date type
+     */
+    public static Date convertStringToDateTime(String date) {
+        try {
+            return new SimpleDateFormat("ss:mm:HH yyyy-MM-dd").parse(date);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    /**
+     * get date in Date type and convert it into a date in String type to store
+     * in SQL database
+     *
+     * @param date
+     * @return converted date string
+     */
+    public static String convertDateTimeToSQLString(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+    }
+
+    /**
+     * get date in Date type and convert it into a date in String type to store
+     * in SQL database
+     *
+     * @param date
+     * @return converted date string
+     */
+    public static String convertDateToSQLString(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd").format(date);
+    }
+
+    /**
      * get date in Date type and convert it into a date in String type
+     *
      * @param date
      * @return converted date string
      */
     public static String convertDateToString(Date date) {
-        SimpleDateFormat formatter1 = new SimpleDateFormat("yyyy-MM-dd");
-        return formatter1.format(date);
+        return new SimpleDateFormat("dd-MM-yyyy").format(date);
     }
 
     /**
-     * Get today date in Date type
+     * Get today date in Date type (yyyy-MM-dd)
+     *
      * @return today date
      */
-    public static Date getTodayTime() {
+    public static Date getCurrentDate() {
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        return convertStringToDate(formatter.format(calendar.getTime()));
+        return convertStringToDate(formatter.format(new Date(System.currentTimeMillis())));
     }
 
     /**
-     * Get current date
-     * @return current date
+     * Get current date time
+     *
+     * @return current date time
      */
-    public static Date getCurrentDate() {
+    public static Date getTodayTime() {
         Date date = new Date(System.currentTimeMillis());
         return date;
     }
 
-   /* public static Integer generateOrderId() throws Exception {
+    public static boolean is3DayAfterNow(Date startDate) {
+        LocalDate now = LocalDate.parse(convertDateToSQLString(new Date(System.currentTimeMillis())));
+        LocalDate future = LocalDate.parse(convertDateToSQLString(startDate));
+        return ChronoUnit.DAYS.between(now, future) == 3;
+    }
+
+    /* public static Integer generateOrderId() throws Exception {
         OrderDAO orderDAO = new OrderDAO();
 
         ArrayList<Order> list = orderDAO.getAllOrders();
 
         return (list.size() + 1);
     }
-*/
+     */
 }
