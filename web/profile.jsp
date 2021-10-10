@@ -127,13 +127,18 @@
                             </h5>
                         </div>
 
-                        <form action="UpdateController">
+                        <form action="UpdateController" method="POST">
                             <div class="save">
                                 <i class="fal fa-save"></i>
                                 <input type="submit" value="Save" />
                             </div>
                             <h3 class="phone-number">
-                                <input type="tel" name="txtPhoneNumber" value="012 3456 789" />
+                                <input 
+                                    type="tel" 
+                                    name="txtPhoneNumber" 
+                                    placeholder="Your Phone Number" 
+                                    value=""
+                                       />
                             </h3>
                             <h5 class="dob">
                                 <span>D.O.B </span>
@@ -141,14 +146,16 @@
                                     ><input
                                         type="date"
                                         name="txtDate"
-                                        value="2000-09-17" />
+                                        placeholder="Your Day Of Birth" 
+                                        required/>
                                 </span>
                             </h5>
                             <h5 class="fullname">
                                 <input
                                     type="text"
-                                    value="nguyen thi hoang dung"
                                     name="txtUsername"
+                                    placeholder="Your Full Name"
+                                    required
                                     />
                             </h5>
                             <h5 class="gender">
