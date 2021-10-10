@@ -143,7 +143,7 @@
                     <div class="event-price">
                         <c:choose>
                             <c:when test="${event.ticketFee eq 0}">
-                                <span>Mi?n phí</span>
+                                <span>Free</span>
                             </c:when>
                             <c:otherwise>
                                 <span>${event.ticketFee}</span>
@@ -158,7 +158,7 @@
                         <ul>
                             <li>Category: <span>${catetoryName}</span></li>
                             <li>Location: <span>${locationName}</span></li>
-                            <li>From: <span>${startDate}</span> To: <span>${endDate}</span></li>
+                            <li>From: <span>${event.startDate}</span> To: <span>${event.endDate}</span></li>
                             <li>Status: <span>${statusDescription}</span></li>
                             <li>Available slots: <span>50/${event.slot}</span></li>
                         </ul>

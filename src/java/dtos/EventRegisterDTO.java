@@ -12,10 +12,14 @@ import java.util.Date;
  * @author thien
  */
 public class EventRegisterDTO {
+
     private int registerID;
     private int eventID;
     private String email;
     private Date registerDate;
+    private String eventName;
+    private String createDate;
+    private String endDate;
 
     public EventRegisterDTO() {
     }
@@ -25,7 +29,13 @@ public class EventRegisterDTO {
         this.email = email;
         this.registerDate = registerDate;
     }
-    
+
+    public EventRegisterDTO(int eventID, String eventName, String createDate, String endDate) {
+        this.eventID = eventID;
+        this.eventName = eventName;
+        this.createDate = createDate;
+        this.endDate = endDate;
+    }
 
     public EventRegisterDTO(int registerID, int eventID, String email, Date registerDate) {
         this.registerID = registerID;
@@ -65,6 +75,5 @@ public class EventRegisterDTO {
     public void setRegisterDate(Date registerDate) {
         this.registerDate = registerDate;
     }
-    
-    
+
 }

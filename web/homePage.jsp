@@ -66,9 +66,12 @@
         <div class="banner">
             <img src="./asset/img/event.jpg" />
             <div class="content">
-                <h1>event name</h1>
-                <p>location - date begin - date end</p>
-                <a href="event.html"><button>Read More</button></a>
+                <c:forEach begin="0" end="0" var="event" items="${eventList}">
+                    <c:set var="startDate" value="${event.startDate}"/>
+                    <h1>${event.eventName}</h1>
+                    <p>Begin date: ${event.startDate}</p>
+                    <a href="ViewEventController?eventID=${event.eventID}"><button>Read More</button></a>
+                </c:forEach>
             </div>
             <div class="countdown">
                 <h2 id="hour">00</h2>
@@ -85,7 +88,7 @@
                 <h2>events are upcoming</h2>
             </div>
             <div class="row"> 
-                <c:forEach var="event" items="${eventList}">
+                <c:forEach var="event" begin="1" items="${eventList}">
                     <div class="event col-md-4">
                         <div class="event-img">
                             <img src="./asset/img/trungthu.png" />
@@ -99,17 +102,31 @@
                                     <i class="fal fa-clock"></i> ${event.createDate}
                                 </li>
                                 <li class="slot">
-                                    <i class="far fa-user-alt"></i> 50/100 Slots
+                                    <i class="far fa-user-alt"></i> 50/${event.slot} Slots
                                 </li>
                                 <li class="event-category">
-                                    <i class="fal fa-folder"></i> <a href="#">Uncategorized</a>
+                                    <i class="fal fa-folder"></i>
+                                    <c:choose>
+                                        <c:when test="${event.catetoryID eq 10}">
+                                            <a href="SearchEventController?btAction=catetory&catetoryID=10">Seminar</a>
+                                        </c:when>
+                                        <c:when test="${event.catetoryID eq 15}">
+                                            <a href="SearchEventController?btAction=catetory&catetoryID=15">Entertainment</a>
+                                        </c:when>
+                                        <c:when test="${event.catetoryID eq 20}">
+                                            <a href="SearchEventController?btAction=catetory&catetoryID=20">Learning</a>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <a href="SearchEventController">Uncategorized</a>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </li>
                                 <li class="event-comment">
                                     <i class="fal fa-comments"></i> 0 Comments
                                 </li>
                             </ul>
                             <p>
-                               ${event.content}
+                                ${event.content}
                             </p>
                             <a href="RegisterEventController?eventID=${event.eventID}">
                                 <button><i class="fas fa-ticket-alt"></i> Register</button>
@@ -135,7 +152,7 @@
         <script src="./asset/js/main.js"></script>
 
         <script>
-            var countDate = new Date("Oct 10, 2021 00:00:00").getTime();
+            var countDate = new Date("${startDate}").getTime();
             function countDown() {
                 var now = new Date().getTime();
                 var distance = countDate - now;

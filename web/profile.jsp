@@ -172,7 +172,7 @@
                 </div>
                 <div class="right col-md-9">
                     <div id="calendar"></div>
-                    
+
                     <!--followed event -->
                     <div id="event-followed">
                         <div class="content">
@@ -205,7 +205,7 @@
                         </div>
                     </div>
                     <!-- end of followed event -->
-                    
+
                     <!-- registered event -->
                     <div id="event-registered">
                         <div class="content">
@@ -237,7 +237,7 @@
                         </div>
                     </div>
                     <!--end of registered event -->
-                    
+
                 </div>
             </div>
         </div>
@@ -287,28 +287,34 @@
             });
 
             $(document).ready(function () {
-                $("#calendar").evoCalendar({
-                    theme: "Orange Coral",
+            $("#calendar").evoCalendar(
+            {
+            theme: "Orange Coral",
                     calendarEvents: [
-                        {
-                            id: "bHay68s", // Event's ID (required)
+                    {
+                    id: "bHay68s", // Event's ID (required)
                             name: "New Year", // Event name (required)
                             date: "September/9/2021", // Event date (required)
                             type: "holiday", // Event type (required)
                             everyYear: true, // Same event every year (optional)
-                        },
-                        {
-                            id: "event2",
-                            name: "Vacation Leave",
-                            badge: "02/13 - 02/15", // Event badge (optional)
-                            date: ["October/13/2021", "October/15/2021"], // Date range
+                    },
+            <%-- event register list for calendar --%>
+            <c:forEach var="event" items="${eventRegisterList}">
+                    {
+                    id: "${event.eventID}",
+                            name: "${event.eventName}",
+                            date: ["${event.startDate}", "${event.endDate}"], // Date range
                             description: "Vacation leave for 3 days.", // Event description (optional)
                             type: "event",
                             color: "#63d867", // Event custom color (optional)
-                        },
+                    },
+            </c:forEach>
+            <%-- end of list --%>
                     ],
-                });
-            });
+            }
+            );
+            }
+            );
         </script>
     </body>
 </html>

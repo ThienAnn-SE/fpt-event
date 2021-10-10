@@ -19,15 +19,15 @@ public class EventDTO {
     private int locationID;
     private int catetoryID;
     private int statusID;
-    private Date createDate;
-    private Date startDate;
-    private Date endDate;
+    private String createDate;
+    private String startDate;
+    private String endDate;
     private int slot;
     private double avgVote;
     private String content;
     private int ticketFee;
 
-    public EventDTO(int eventID, String eventName, int clubID, int locationID, int catetoryID, int statusID, Date createDate, Date startDate, Date endDate, int slot, double avgVote, String content, int ticketFee) {
+    public EventDTO(int eventID, String eventName, int clubID, int locationID, int catetoryID, int statusID, String createDate, String startDate, String endDate, int slot, double avgVote, String content, int ticketFee) {
         this.eventID = eventID;
         this.eventName = eventName;
         this.clubID = clubID;
@@ -43,7 +43,7 @@ public class EventDTO {
         this.ticketFee = ticketFee;
     }
 
-    public EventDTO(int eventID, Date createDate, Date startDate, Date endDate) {
+    public EventDTO(int eventID, String createDate, String startDate, String endDate) {
         this.eventID = eventID;
         this.createDate = createDate;
         this.startDate = startDate;
@@ -101,27 +101,27 @@ public class EventDTO {
         this.statusID = statusID;
     }
 
-    public Date getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
