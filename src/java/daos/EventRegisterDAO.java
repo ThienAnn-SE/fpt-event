@@ -5,11 +5,14 @@
  */
 package daos;
 
+import dtos.EventDTO;
 import dtos.EventRegisterDTO;
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.naming.NamingException;
@@ -83,5 +86,43 @@ public class EventRegisterDAO {
         }
 
         return registerList;
+    }
+
+    public ArrayList<EventRegisterDTO> getEventRegisterListForUserPage(String userEmail)
+            throws SQLException, NamingException {
+        ArrayList<EventRegisterDTO> eventRegisterList = new ArrayList<>();
+        ArrayList<Integer> idList = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT eventID "
+                    + "FROM tblEventRegisters "
+                    + "WHERE userEmail=?";
+            preStm = conn.prepareStatement(sql);
+            preStm.setString(1, userEmail);
+            rs = preStm.executeQuery();
+            if (rs.next()) {
+                int eventID = rs.getInt("eventID");
+                idList.add(eventID);
+            }
+
+            sql = "SELECT eventID, eventName, startDate, endDate "
+                    + "FORM tblFUEvents "
+                    + "WHERE eventID in ?";
+            preStm = conn.prepareStatement(sql);
+            Array array = conn.createArrayOf("INT", new Object[]{idList.toArray()});
+            preStm.setArray(1, array);
+            rs = preStm.executeQuery();
+            if (rs.next()) {
+                int eventID = rs.getInt("eventID");
+                String eventName = rs.getString("eventName");
+                String createDate = new SimpleDateFormat("MM-dd-yyyy").format(rs.getDate("createDate"));
+                String endDate = new SimpleDateFormat("MM-dd-yyyy").format(rs.getDate("endDate"));
+                eventRegisterList.add(new EventRegisterDTO(eventID, eventName, createDate, endDate));
+            }
+
+        } finally {
+            this.closeConnection();
+        }
+        return eventRegisterList;
     }
 }

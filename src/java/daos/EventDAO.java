@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.naming.NamingException;
@@ -112,9 +113,9 @@ public class EventDAO {
         ArrayList<EventDTO> list = new ArrayList<>();
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "SELECT TOP 3 *"
+            String sql = "SELECT TOP 4 *"
                     + " FROM tblFUEvents"
-                    + " WHERE statusID = 500"
+                    + " WHERE statusID IN (300, 450, 500)"
                     + " ORDER BY startDate ASC";
             preStm = conn.prepareStatement(sql);
             rs = preStm.executeQuery();
@@ -125,9 +126,9 @@ public class EventDAO {
                 int locationID = rs.getInt("locationID");
                 int catetoryID = rs.getInt("catetoryID");
                 int statusID = rs.getInt("statusID");
-                Date createDate = rs.getDate("createDate");
-                Date startDate = rs.getDate("startDate");
-                Date endDate = rs.getDate("endDate");
+                String createDate = new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("createDate"));
+                String startDate = new SimpleDateFormat("HH:mm:ss MM-dd-yyyy").format(rs.getTimestamp("startDate"));
+                String endDate = new SimpleDateFormat("HH:mm:ss MM-dd-yyyy").format(rs.getTimestamp("endDate"));
                 int slot = rs.getInt("slot");
                 double avgVote = rs.getDouble("avgVote");
                 String content = rs.getString("content");
@@ -149,7 +150,7 @@ public class EventDAO {
             if (conn != null) {
                 String sql = "SELECT *"
                         + " FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b"
-                        + " WHERE rn >= (?*9-8) AND rn <= (?*9) AND (statusID != 400)"
+                        + " WHERE rn >= (?*9-8) AND rn <= (?*9) AND statusID NOT IN (550, 400)"
                         + " ORDER BY startDate ASC";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, count);
@@ -162,9 +163,9 @@ public class EventDAO {
                     int locationID = rs.getInt("locationID");
                     int catetoryID = rs.getInt("catetoryID");
                     int statusID = rs.getInt("statusID");
-                    Date createDate = rs.getDate("createDate");
-                    Date startDate = rs.getDate("startDate");
-                    Date endDate = rs.getDate("endDate");
+                    String createDate = new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("createDate"));
+                    String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
+                    String endDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("endDate"));
                     int slot = rs.getInt("slot");
                     double avgVote = rs.getDouble("avgVote");
                     String content = rs.getString("content");
@@ -187,7 +188,9 @@ public class EventDAO {
             if (conn != null) {
                 String sql = "SELECT *"
                         + " FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b"
-                        + " WHERE catetoryID =? AND (rn >= (?*9-8) AND rn <= (?*9))";
+                        + " WHERE catetoryID = ? AND"
+                        + " (rn >= (?*9-8) AND rn <= (?*9)) AND"
+                        + " statusID NOT IN (400, 550)";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, catetoryID);
                 preStm.setInt(2, count);
@@ -200,9 +203,9 @@ public class EventDAO {
                     int clubID = rs.getInt("clubID");
                     int locationID = rs.getInt("locationID");
                     int statusID = rs.getInt("statusID");
-                    Date createDate = rs.getDate("createDate");
-                    Date startDate = rs.getDate("startDate");
-                    Date endDate = rs.getDate("endDate");
+                    String createDate = new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("createDate"));
+                    String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
+                    String endDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("endDate"));
                     int slot = rs.getInt("slot");
                     double avgVote = rs.getDouble("avgVote");
                     String content = rs.getString("content");
@@ -225,7 +228,9 @@ public class EventDAO {
             if (conn != null) {
                 String sql = "SELECT *"
                         + " FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b"
-                        + " WHERE (ticketFee >= ? AND ticketFee <= ?) AND (rn >= (?*9-8) AND rn <= (?*9))";
+                        + " WHERE (ticketFee >= ? AND ticketFee <= ?) AND"
+                        + " (rn >= (?*9-8) AND rn <= (?*9))"
+                        + " AND statusID NOT IN (400, 550)";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, minPrice);
                 preStm.setInt(2, maxPrice);
@@ -240,9 +245,9 @@ public class EventDAO {
                     int locationID = rs.getInt("locationID");
                     int catetoryID = rs.getInt("catetoryID");
                     int statusID = rs.getInt("statusID");
-                    Date createDate = rs.getDate("createDate");
-                    Date startDate = rs.getDate("startDate");
-                    Date endDate = rs.getDate("endDate");
+                    String createDate = new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("createDate"));
+                    String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
+                    String endDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("endDate"));
                     int slot = rs.getInt("slot");
                     double avgVote = rs.getDouble("avgVote");
                     String content = rs.getString("content");
@@ -265,7 +270,9 @@ public class EventDAO {
             if (conn != null) {
                 String sql = "SELECT *"
                         + " FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b"
-                        + " WHERE (eventName LIKE %?%) AND (rn >= (?*9-8) AND rn <= (?*9))";
+                        + " WHERE (eventName LIKE %?%) AND "
+                        + "(rn >= (?*9-8) AND rn <= (?*9))"
+                        + " AND statusID NOT IN (400, 500)";
                 preStm = conn.prepareStatement(sql);
                 preStm.setString(1, searchName);
                 preStm.setInt(2, count);
@@ -279,9 +286,9 @@ public class EventDAO {
                     int locationID = rs.getInt("locationID");
                     int catetoryID = rs.getInt("catetoryID");
                     int statusID = rs.getInt("statusID");
-                    Date createDate = rs.getDate("createDate");
-                    Date startDate = rs.getDate("startDate");
-                    Date endDate = rs.getDate("endDate");
+                    String createDate = new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("createDate"));
+                    String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
+                    String endDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("endDate"));
                     int slot = rs.getInt("slot");
                     double avgVote = rs.getDouble("avgVote");
                     String content = rs.getString("content");
@@ -314,9 +321,9 @@ public class EventDAO {
                 int locationID = rs.getInt("locationID");
                 int catetoryID = rs.getInt("catetoryID");
                 int statusID = rs.getInt("statusID");
-                Date createDate = rs.getDate("createDate");
-                Date startDate = rs.getTimestamp("startDate");
-                Date endDate = rs.getTimestamp("endDate");
+                String createDate = new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("createDate"));
+                String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
+                String endDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("endDate"));
                 int slot = rs.getInt("slot");
                 Double avgVote = rs.getDouble("avgVote");
                 String contend = rs.getNString("content");
@@ -348,9 +355,9 @@ public class EventDAO {
                 int locationID = rs.getInt("locationID");
                 int catetoryID = rs.getInt("catetoryID");
                 int statusID = rs.getInt("statusID");
-                Date createDate = Helper.convertStringToDate(rs.getDate("createDate").toString());
-                Date startDate = Helper.convertStringToDate(rs.getDate("startDate").toString());
-                Date endDate = Helper.convertStringToDate(rs.getDate("endDate").toString());
+                String createDate = new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("createDate"));
+                String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
+                String endDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("endDate"));
                 int slot = rs.getInt("slot");
                 Double avgVote = rs.getDouble("avgVote");
                 String contend = rs.getNString("content");
@@ -375,9 +382,9 @@ public class EventDAO {
             rs = preStm.executeQuery();
             while (rs.next()) {
                 int eventID = rs.getInt("eventID");
-                Date createDate = rs.getDate("createDate");
-                Date startDate = rs.getTimestamp("startDate");
-                Date endDate = rs.getTimestamp("endDate");
+                String createDate = new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("createDate"));
+                String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
+                String endDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("endDate"));
                 list.add(new EventDTO(eventID, createDate, startDate, endDate));
             }
         } finally {
@@ -401,9 +408,9 @@ public class EventDAO {
                 int clubID = rs.getInt("clubID");
                 int locationID = rs.getInt("locationID");
                 int statusID = rs.getInt("statusID");
-                Date createDate = Helper.convertStringToDate(rs.getDate("createDate").toString());
-                Date startDate = Helper.convertStringToDate(rs.getDate("startDate").toString());
-                Date endDate = Helper.convertStringToDate(rs.getDate("endDate").toString());
+                String createDate = new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("createDate"));
+                String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
+                String endDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("endDate"));
                 int slot = rs.getInt("slot");
                 Double avgVote = rs.getDouble("avgVote");
                 String contend = rs.getNString("content");

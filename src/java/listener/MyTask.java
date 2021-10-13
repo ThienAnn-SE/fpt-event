@@ -9,6 +9,8 @@ import daos.EventDAO;
 import dtos.EventDTO;
 import java.util.Date;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.TimerTask;
@@ -33,16 +35,16 @@ public class MyTask extends TimerTask {
             }
             Date now = Date.from(Instant.now());
             for (int i = 0; i < eventList.size(); i++) {
-                if (eventList.get(i).getEndDate().before(now)) {
+                if (new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").parse(eventList.get(i).getEndDate()).before(now)) {
                     eventDAO.changeEventStatus(eventList.get(i).getEventID(), 550);
-                } else if (eventList.get(i).getStartDate().before(now)) {
+                } else if (new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").parse(eventList.get(i).getStartDate()).before(now)) {
                     eventDAO.changeEventStatus(eventList.get(i).getEventID(), 530);
                 }
-                if (Helper.is3DayAfterNow(eventList.get(i).getCreateDate())) {
+                if (Helper.is3DayAfterNow(new SimpleDateFormat("dd-MM-yyyy").parse(eventList.get(i).getCreateDate()))) {
                     eventDAO.changeEventStatus(eventList.get(i).getEventID(), 500);
                 }
             }
-        } catch (NamingException | SQLException ex) {
+        } catch (NamingException | SQLException | ParseException ex) {
             Logger.getLogger(MyTask.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

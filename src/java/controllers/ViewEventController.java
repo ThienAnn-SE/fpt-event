@@ -73,8 +73,6 @@ public class ViewEventController extends HttpServlet {
         ClubDTO club = clubDAO.getClubByID(event.getClubID());
 
         request.setAttribute("event", event);
-        request.setAttribute("startDate", new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(event.getStartDate()));
-        request.setAttribute("endDate", new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(event.getEndDate()));
         request.setAttribute("catetoryName", catetory.getCatetoryName());
         request.setAttribute("locationName", location.getLocationName());
         request.setAttribute("statusDescription", status.getStatusDescription());

@@ -51,7 +51,7 @@ create table tblEventStatuses(
 )
 	
 create table tblFUEvents(
-	eventID			integer			identity(10,5)	primary key,
+	eventID			integer			identity(10,1)	primary key,
 	eventName		nvarchar(50)	not null	unique,
 	clubID			integer			foreign key references tblClubDetails,
 	locationID		integer			foreign key references tblLocations,
@@ -68,21 +68,21 @@ create table tblFUEvents(
 	)
 
 create table tblFollowed(
-	followID		integer			identity(10,5)	primary key,
+	followID		integer			identity(10,1)	primary key,
 	eventID			integer			foreign key references tblFUEvents,
 	userEmail		varchar(30)		foreign key references tblUsers,
 	constraint	UC_tblFollowed	unique (eventID, userEmail)
 )
 
 create table tblLiked(
-	likeID			integer			identity(10,5)	primary key,
+	likeID			integer			identity(10,1)	primary key,
 	eventID			integer			foreign key references tblFUEvents,
 	userEmail		varchar(30)		foreign key references tblUsers,
 	constraint	UC_tblLiked	unique (eventID, userEmail)
 )
 
 create table tblEventRegisters(
-	registerID			integer			identity(10,5)	primary key,
+	registerID			integer			identity(10,1)	primary key,
 	eventID				integer			foreign key references tblFUEvents,
 	userEmail			varchar(30)		foreign key references tblUsers,
 	registerDate		date			not null,
@@ -90,14 +90,14 @@ create table tblEventRegisters(
 	)
 
 create table tblFeedbacks(
-	feedbackID		integer			identity(10,5)	primary key,
+	feedbackID		integer			identity(10,1)	primary key,
 	registerID		integer			foreign key references tblEventRegisters,
 	feedback		ntext			not null,
 	vote			float			not null	check (vote >= 0)
 	)
 
 create table tblPayments(
-	paymentID			integer			identity(10,5)	primary key,
+	paymentID			integer			identity(10,1)	primary key,
 	registerID			integer			foreign key references tblEventRegisters,
 	statusDescription	varchar(30)		not null,
 	paymentDate			date			not null,
@@ -169,7 +169,7 @@ create table tblPayments(
 	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (450,'Đã hết chỗ')
 
 
-	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee) VALUES ('I',10,10,10,300,'2021-10-5','2021/10/7 08:30:00','2021-10-7 09:10:30',100,5,'none',0)
+	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee) VALUES ('A4',10,10,10,300,'2021-10-5','2021/10/11 08:30:00','2021-10-14 12:10:30',100,5,'none',0)
 	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('B',10,10,10,500,'2021-10-5','2021-11-12','2021-11-30',5,'none',0)
 	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('C',10,10,10,300,'2021-10-5','2021-11-13','2021-11-30',5,'none',0)
 	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('D',10,10,10,500,'2021-10-5','2021-11-14','2021-11-30',5,'none',0)
@@ -179,14 +179,16 @@ create table tblPayments(
 	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('H',10,10,10,400,'2021-10-5','2021-11-21','2021-11-30',5,'none',0)
 
 	SELECT * FROM tblFUEvents
+	SELECT count(eventID) FROM tblFUEvents
+	WHERE statusID in (300 , 450, 500)
 
 	SELECT TOP 3 * FROM tblFUEvents
 	WHERE statusID = 500
 	ORDER BY startDate ASC
 
+
 	SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b
-	LEFT JOIN tblCatetories on b.catetoryID = tblCatetories.catetoryID
-	WHERE (rn >= (1*7-6) AND rn <= (1*7)) AND tblCatetories.catetoryID = 10 AND (statusID = 500 OR statusID = 300)
+	WHERE (rn >= (1*7-6) AND rn <= (1*7)) AND (statusID != 400 OR statusID = 550) and endDate >= GETDATE()
 	ORDER BY startDate ASC
 	 
 	SELECT * FROM tblFUEvents
