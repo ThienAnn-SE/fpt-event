@@ -15,6 +15,7 @@ public class EventRegisterDTO {
 
     private int registerID;
     private int eventID;
+    private int registerNum;
     private String email;
     private Date registerDate;
     private String eventName;
@@ -22,6 +23,11 @@ public class EventRegisterDTO {
     private String endDate;
 
     public EventRegisterDTO() {
+    }
+
+    public EventRegisterDTO(int eventID, int registerNum) {
+        this.eventID = eventID;
+        this.registerNum = registerNum;
     }
 
     public EventRegisterDTO(int eventID, String email, Date registerDate) {
@@ -36,6 +42,7 @@ public class EventRegisterDTO {
         this.createDate = createDate;
         this.endDate = endDate;
     }
+
 
     public EventRegisterDTO(int registerID, int eventID, String email, Date registerDate) {
         this.registerID = registerID;
@@ -58,6 +65,14 @@ public class EventRegisterDTO {
 
     public void setEventID(int eventID) {
         this.eventID = eventID;
+    }
+
+    public int getRegisterNum() {
+        return registerNum;
+    }
+
+    public void setRegisterNum(int registerNum) {
+        this.registerNum = registerNum;
     }
 
     public String getEmail() {

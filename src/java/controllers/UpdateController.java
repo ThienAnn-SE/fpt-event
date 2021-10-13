@@ -40,7 +40,7 @@ public class UpdateController extends HttpServlet {
     protected boolean postHandler(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //get param field from request and validation
-        String name = GetParam.getStringParam(request, "txtUserName", "Name", 0, 50, null);
+        String name = GetParam.getStringParam(request, "txtUsername", "Name", 0, 50, null);
         int gender = GetParam.getIntParams(request, "gender", "Gender", 0, 1, 1);
         Date dayOfBirth = GetParam.getDateParams(request, "txtDate", "Day of birth", null);
         String phoneNumber = GetParam.getPhoneParams(request, "txtPhoneNumber", "Phone number");

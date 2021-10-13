@@ -162,11 +162,11 @@ create table tblPayments(
 	INSERT INTO tblCatetories(catetoryName) VALUES ('Learning Event')
 	
 	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (300,'Vừa khởi tạo')
-	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (500,'Sắp diễn ra')
-	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (530,'Đang diễn ra')
-	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (550,'Đã diễn ra')
 	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (400,'Đã bị hủy')
-	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (450,'Đã hết chỗ')
+	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (500,'Sắp diễn ra')
+	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (530,'Đã hết chỗ')
+	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (550,'Đang diễn ra')
+	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (570,'Đã diễn ra')
 
 
 	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee) VALUES ('A4',10,10,10,300,'2021-10-5','2021/10/11 08:30:00','2021-10-14 12:10:30',100,5,'none',0)
@@ -177,9 +177,27 @@ create table tblPayments(
 	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('F',10,10,10,530,'2021-10-5','2021-11-12','2021-11-30',5,'none',0)
 	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('G',10,10,10,500,'2021-10-5','2021-11-11','2021-11-30',5,'none',0)
 	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, avgVote, content, ticketFee) VALUES ('H',10,10,10,400,'2021-10-5','2021-11-21','2021-11-30',5,'none',0)
+	
+	INSERT INTO tblEventRegisters(eventID, userEmail, registerDate) VALUES (20, 'anltse151328@fpt.edu.vn', '2021-10-6')
+	INSERT INTO tblEventRegisters(eventID, userEmail, registerDate) VALUES (30, 'anltse151328@fpt.edu.vn', '2021-10-6')
+	INSERT INTO tblEventRegisters(eventID, userEmail, registerDate) VALUES (70, 'anltse151328@fpt.edu.vn', '2021-10-6')
+	INSERT INTO tblEventRegisters(eventID, userEmail, registerDate) VALUES (40, 'anltse151328@fpt.edu.vn', '2021-10-6')
+	INSERT INTO tblEventRegisters(eventID, userEmail, registerDate) VALUES (25, 'anltse151328@fpt.edu.vn', '2021-10-6')
+	INSERT INTO tblEventRegisters(eventID, userEmail, registerDate) VALUES (55, 'anltse151328@fpt.edu.vn', '2021-10-6')
 
-	SELECT * FROM tblFUEvents
-	SELECT count(eventID) FROM tblFUEvents
+	DELETE FROM tblEventRegisters WHERE eventID = 25 AND userEmail = 'anltse151328@fpt.edu.vn'
+
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (25, 'huongvqss1710948@fpt.edu.vn','2021-10-06')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (25, 'chitthse161164@fpt.edu.vn','2021-10-06')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (25, 'duylcnss136201@fpt.edu.vn','2021-10-06')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (25, 'thaocbsa131164@fpt.edu.vn','2021-10-06')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (25, 'nhinyse177341@fpt.edu.vn','2021-10-06')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (25, 'trungtlhde161203@fpt.edu.vn','2021-10-06')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (25, 'thanhldse171878@fpt.edu.vn','2021-10-06')
+
+	SELECT * FROM tblEventRegisters 
+	SELECT * FROM tblFUEvents 
+
 	WHERE statusID in (300 , 450, 500)
 
 	SELECT TOP 3 * FROM tblFUEvents
@@ -187,14 +205,37 @@ create table tblPayments(
 	ORDER BY startDate ASC
 
 
+	SELECT * FROM tblFUEvents
+	WHERE eventID in (	SELECT eventID
+						FROM tblEventRegisters
+						WHERE userEmail = 'anltse151328@fpt.edu.vn'
+	)
+
+	SELECT eventID FROM tblEventRegisters
+	WHERE eventID in (SELECT eventID FROM tblFUEvents
+						WHERE startDate 
+
 	SELECT * FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b
-	WHERE (rn >= (1*7-6) AND rn <= (1*7)) AND (statusID != 400 OR statusID = 550) and endDate >= GETDATE()
-	ORDER BY startDate ASC
+	WHERE (rn >= (1*7-6) AND rn <= (1*7)) 
+	AND statusID not in (570,400)
+	
+	SELECT eventID
+	FROM tblFollowed
+
+	SELECT eventID, count(userEmail) as number
+	FROM tblEventRegisters
+	WHERE eventID in (20,75)
+	GROUP BY eventID
+
 	 
 	SELECT * FROM tblFUEvents
-	WHERE startDate >= '2021-11-11' AND endDate <= '2021-11-11'
+	where statusID not in (400,570)
+	order by endDate
+	offset (1-1)*9 rows fetch next 9 rows only
+
+	Update tblFUEvents set statusID = 570 where endDate > GETDATE()
 	
 	SELECT eventID, startDate, endDate
 	FROM tblFUEvents
-	WHERE statusID != 400
+	WHERE statusID not in (400,570)
 	ORDER BY startDate ASC

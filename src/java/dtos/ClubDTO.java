@@ -12,12 +12,18 @@ import java.util.Date;
  * @author thien
  */
 public class ClubDTO {
+
     private int clubID;
     private String clubName;
     private Date createDate;
     private String clubDescription;
     private String clubEmail;
     private String clubPhoneNumber;
+
+    public ClubDTO(int clubID, String clubName) {
+        this.clubID = clubID;
+        this.clubName = clubName;
+    }
 
     public ClubDTO(int clubID, String clubName, Date createDate, String clubDescription, String clubEmail, String clubPhoneNumber) {
         this.clubID = clubID;
@@ -85,6 +91,5 @@ public class ClubDTO {
     public void setClubPhoneNumber(String clubPhoneNumber) {
         this.clubPhoneNumber = clubPhoneNumber;
     }
-    
-    
+
 }

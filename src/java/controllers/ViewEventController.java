@@ -9,6 +9,7 @@ import constant.Routers;
 import daos.CatetoryDAO;
 import daos.ClubDAO;
 import daos.EventDAO;
+import daos.EventRegisterDAO;
 import daos.EventStatusDAO;
 import daos.LocationDAO;
 import dtos.CatetoryDTO;
@@ -71,7 +72,11 @@ public class ViewEventController extends HttpServlet {
 
         ClubDAO clubDAO = new ClubDAO();
         ClubDTO club = clubDAO.getClubByID(event.getClubID());
+        
+        EventRegisterDAO registerDAO = new EventRegisterDAO();
+        int registerNum = registerDAO.getRegisterNumByEventID(eventID);
 
+        request.setAttribute("registerNum", registerNum);
         request.setAttribute("event", event);
         request.setAttribute("catetoryName", catetory.getCatetoryName());
         request.setAttribute("locationName", location.getLocationName());

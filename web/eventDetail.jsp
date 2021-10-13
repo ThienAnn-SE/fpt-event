@@ -23,112 +23,72 @@
             />
     </head>
     <body>
-        <header>
-            <nav class="navbar navbar-expand-lg">
-                <div class="navbar-header container-fluid fixed-top">
-                    <a class="navbar-brand" href="homePage.html">
-                        <img class="nav logo" src="./asset/img/fu.png" />
-                    </a>
-                    <button class="navbar-toggler">
-                        <i id="toggle" class="fas fa-bars"></i>
-                    </button>
-                    <div class="collapse navbar-collapse">
-                        <div class="navbar-nav">
-                            <a class="item nav-link active" href="HomePageController">home</a>
-                            <a class="item nav-link" href="SearchEventController">event</a>
-                            <a class="item nav-link" href="#">club</a>
-                            <a
-                                class="nav-link"
-                                href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force"
+        <jsp:include page="./includes/header.jsp"></jsp:include>
+            <div class="container">
+                <div class="card row">
+                    <div class="event-imgs col-md-6">
+                        <div id="img" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-indicators">
+                                <button
+                                    type="button"
+                                    data-bs-target="#img"
+                                    data-bs-slide-to="0"
+                                    class="active"
+                                    aria-current="true"
+                                    aria-label="Slide 1"
+                                    ></button>
+                                <button
+                                    type="button"
+                                    data-bs-target="#img"
+                                    data-bs-slide-to="1"
+                                    aria-label="Slide 2"
+                                    ></button>
+                                <button
+                                    type="button"
+                                    data-bs-target="#img"
+                                    data-bs-slide-to="2"
+                                    aria-label="Slide 3"
+                                    ></button>
+                            </div>
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="./asset/img/event.png" />
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="./asset/img/trungthu.png" />
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="./asset/img/event.png" />
+                                </div>
+                            </div>
+                            <button
+                                class="carousel-control-prev"
+                                data-bs-target="#img"
+                                data-bs-slide="prev"
                                 >
-                                <button class="button">
-                                    <i class="fab fa-google"></i>
-                                    Login
-                                </button>
-                            </a>
+                                <span
+                                    class="carousel-control-prev-icon"
+                                    aria-hidden="true"
+                                    ></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button
+                                class="carousel-control-next"
+                                data-bs-target="#img"
+                                data-bs-slide="next"
+                                >
+                                <span
+                                    class="carousel-control-next-icon"
+                                    aria-hidden="true"
+                                    ></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
                         </div>
                     </div>
-                    <div class="theme-switch">
-                        <i class="far fa-moon"></i>
-                    </div>
-                    <div class="search">
-                        <div class="search-icon">
-                            <i class="far fa-search"></i>
-                        </div>
-                        <div class="search-input">
-                            <input id="search" type="text" placeholder="Search" />
-                        </div>
-                        <span class="clear"><i class="fal fa-times"></i></span>
-                    </div>
-                </div>
-            </nav>
-        </header>
 
-        <div class="container">
-            <div class="card row">
-                <div class="event-imgs col-md-6">
-                    <div id="img" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-indicators">
-                            <button
-                                type="button"
-                                data-bs-target="#img"
-                                data-bs-slide-to="0"
-                                class="active"
-                                aria-current="true"
-                                aria-label="Slide 1"
-                                ></button>
-                            <button
-                                type="button"
-                                data-bs-target="#img"
-                                data-bs-slide-to="1"
-                                aria-label="Slide 2"
-                                ></button>
-                            <button
-                                type="button"
-                                data-bs-target="#img"
-                                data-bs-slide-to="2"
-                                aria-label="Slide 3"
-                                ></button>
-                        </div>
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="./asset/img/event.png" />
-                            </div>
-                            <div class="carousel-item">
-                                <img src="./asset/img/trungthu.png" />
-                            </div>
-                            <div class="carousel-item">
-                                <img src="./asset/img/event.png" />
-                            </div>
-                        </div>
-                        <button
-                            class="carousel-control-prev"
-                            data-bs-target="#img"
-                            data-bs-slide="prev"
-                            >
-                            <span
-                                class="carousel-control-prev-icon"
-                                aria-hidden="true"
-                                ></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button
-                            class="carousel-control-next"
-                            data-bs-target="#img"
-                            data-bs-slide="next"
-                            >
-                            <span
-                                class="carousel-control-next-icon"
-                                aria-hidden="true"
-                                ></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="event-content col-md-6">
-                    <h2 class="event-title">
-                        <a href="#">${clubName}</a><i class="fas fa-caret-right"></i>
+                    <div class="event-content col-md-6">
+                        <h2 class="event-title">
+                            <a href="#">${clubName}</a><i class="fas fa-caret-right"></i>
                         <a href="#">${event.eventName}</a>
                     </h2>
                     <div class="event-rating">
@@ -160,7 +120,7 @@
                             <li>Location: <span>${locationName}</span></li>
                             <li>From: <span>${event.startDate}</span> To: <span>${event.endDate}</span></li>
                             <li>Status: <span>${statusDescription}</span></li>
-                            <li>Available slots: <span>50/${event.slot}</span></li>
+                            <li>Available slots: <span>${registerNum}/${event.slot}</span></li>
                         </ul>
                     </div>
                     <div class="event-register">
@@ -169,32 +129,33 @@
                         </div>
                         <button>Register</button>
                     </div>
-                    <c:if test="${event.eventID eq 550}">
+                    <c:if test="${event.statusID eq 550}">
                         <div class="rate">
                             <div class="post">
                                 <span>Thanks for rating!</span>
                                 <div class="edit">Edit</div>
                             </div>
                             <div class="star-icon">
-                                <span>Vote & Send feedback</span> <br/>
-                                <input type="radio" name="rate" id="rate-5" />
-                                <label for="rate-5" class="fas fa-star"></label>
-                                <input type="radio" name="rate" id="rate-4" />
-                                <label for="rate-4" class="fas fa-star"></label>
-                                <input type="radio" name="rate" id="rate-3" />
-                                <label for="rate-3" class="fas fa-star"></label>
-                                <input type="radio" name="rate" id="rate-2" />
-                                <label for="rate-2" class="fas fa-star"></label>
-                                <input type="radio" name="rate" id="rate-1" />
-                                <label for="rate-1" class="fas fa-star"></label>
+                                <span>Vote & Send feedback</span><br/>
+                                <input type="radio" name="rate" id="rate-5" value="5"/>
+                                <label form="myForm" for="rate-5" class="fas fa-star"></label>
+                                <input type="radio" name="rate" id="rate-4" value="4"/>
+                                <label form="myForm" for="rate-4" class="fas fa-star"></label>
+                                <input type="radio" name="rate" id="rate-3" value="3"/>
+                                <label form="myForm" for="rate-3" class="fas fa-star"></label>
+                                <input type="radio" name="rate" id="rate-2" value="2"/>
+                                <label form="myForm" for="rate-2" class="fas fa-star"></label>
+                                <input type="radio" name="rate" id="rate-1" value="1"/>
+                                <label form="myForm" for="rate-1" class="fas fa-star"></label>
                             </div>
-                            <form action="#">
+                            <form id="myForm" action="FeedbackController">
                                 <div id="title"></div>
-                                <textarea placeholder="Add your feedback here"></textarea>
+                                <textarea placeholder="Add your feedback here" name="feedback"></textarea>
                                 <div class="characters">
                                     <span class="signal_num">0</span>
                                     <span class="limit_num">/100</span>
                                 </div>
+                                <input type="hidden" value="${event.eventID}" name="eventID"/>
                                 <div class="btn">
                                     <button type="submit">Send</button>
                                 </div>
@@ -204,7 +165,7 @@
                 </div>
             </div>
         </div>
-
+        <jsp:include page="./includes/footer.jsp"></jsp:include>
         <script src="./asset/js/main.js"></script>
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"

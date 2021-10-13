@@ -125,10 +125,22 @@
                                         <i class="fal fa-clock"></i> ${event.createDate}
                                     </li>
                                     <li class="slot">
-                                        <i class="far fa-user-alt"></i> 50/100 Slots
+                                        <c:set  var="registerNum" value="${0}"/>
+                                        <c:forEach var="register" items="${registerNumList}">
+                                            <c:if test="${register.eventID  eq event.eventID}">
+                                                <c:set var="registerNum" value="${register.registerNum}"/>
+                                            </c:if>
+                                        </c:forEach>
+                                        <i class="far fa-user-alt"></i> ${registerNum}/${event.slot}Slots
                                     </li>
                                     <li class="event-category">
-                                        <i class="fal fa-folder"></i> <a href="#">Uncategorized</a>
+                                        <i class="fal fa-folder"></i> <a href="SearchEventController?btAction=catetory&catetoryID=${event.catetoryID}">
+                                            <c:forEach var="catetory" items="${catetoryList}">
+                                                <c:if test="${event.catetoryID eq catetory.catetoryID}">
+                                                    ${catetory.catetoryName}
+                                                </c:if>
+                                            </c:forEach>
+                                        </a>
                                     </li>
                                     <li class="event-comment">
                                         <i class="fal fa-comments"></i> 0 Comments
@@ -152,17 +164,16 @@
                     </a>
 
                     <c:forEach begin="1" end="${endPage}" var="i">
-                    <a class="page-link num" href="SearchEventController?page=${i}">${i}</a>
+                        <a class="page-link num" href="SearchEventController?page=${i}">${i}</a>
                     </c:forEach>
 
                     <c:set scope="request" var="next" value="${(index+1 >= endPage) ? endPage : (index+1)}"/>
-                    <a class="page-link btn-next" href="SearchEventController?page=${next}">
+                    <a class="page-link btn-next" href="SearchEventController?page=${next}${lastSearch}">
                         <span>Next <i class="fas fa-chevron-right"></i></span>
                     </a>
                 </div>
             </div>
         </div>
-
 
         <script src="./asset/js/main.js"></script>
 

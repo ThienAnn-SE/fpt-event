@@ -18,7 +18,7 @@ public class Routers {
     public final static String GOOGLE_GET_TOKEN_LINK = "https://accounts.google.com/o/oauth2/token";
     public final static String GOOGLE_GRANT_TYPE = "authorization_code";
     public final static String GOOGLE_REDIRECT_URI = "http://localhost:8080/fpt-event/GoogleLoginController";
-    
+
     public final static String HOME_PAGE = "homePage.jsp";
     public final static String LOGIN_PAGE = "login.jsp";
     public final static String UPDATE_PAGE = "update.jsp";
@@ -33,13 +33,16 @@ public class Routers {
     public final static String VIEW_CLUB_PAGE = "club.jsp";
     public final static String EVENT_MANAGEMENT_PAGE = "eventManagement.jsp";
     public final static String VIEW_REGISTRATION_PAGE = "registration.jsp";
-            
+    public final static String VIEW_CLUB_DETAIL_PAGE = "clubDetail.jsp";
+
     public final static String UPDATE_CONTROLLER = "UpdateController";
     public final static String REGISTER_CONTROLLER = "RegisterController";
     public final static String VIEW_USER_CONTROLLER = "ViewUserController";
     public final static String VIEW_EVENT_CONTROLLER = "ViewEventController";
+    public final static String VIEW_CLUB_CONTROLLER = "ViewClubController";
     public final static String EXECUTE_PAYMENT_CONTROLLER = "ExecutePaymentController";
     public final static String REGISTER_EVENT_CONTROLLER = "RegisterEventController";
     public final static String FOLLOW_EVENT_CONTROLLER = "FollowEventController";
     public final static String SEARCH_EVENT_CONTROLLER = "SearchEventController";
+    public final static String HOME_PAGE_CONTROLLER = "HomePageController";
 }

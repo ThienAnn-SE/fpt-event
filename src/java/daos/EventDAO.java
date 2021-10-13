@@ -109,6 +109,29 @@ public class EventDAO {
         return isSuccess;
     }
 
+    public ArrayList<EventDTO> getEventForUpdateStatus() throws NamingException, SQLException {
+        ArrayList<EventDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT eventID, createDate, startDate, endDate"
+                    + " FROM tblFUEvents"
+                    + " WHERE statusID != 400"
+                    + " ORDER BY startDate ASC";
+            preStm = conn.prepareStatement(sql);
+            rs = preStm.executeQuery();
+            while (rs.next()) {
+                int eventID = rs.getInt("eventID");
+                String createDate = new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("createDate"));
+                String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
+                String endDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("endDate"));
+                list.add(new EventDTO(eventID, createDate, startDate, endDate));
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return list;
+    }
+
     public ArrayList<EventDTO> getEventForHomepage() throws Exception {
         ArrayList<EventDTO> list = new ArrayList<>();
         try {
@@ -143,18 +166,18 @@ public class EventDAO {
         return list;
     }
 
-    public ArrayList<EventDTO> getTop9Event(int count) throws Exception {
+    public ArrayList<EventDTO> getEventForSearchPage(int count) throws Exception {
         ArrayList<EventDTO> list = new ArrayList<>();
         try {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
                 String sql = "SELECT *"
-                        + " FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b"
-                        + " WHERE rn >= (?*9-8) AND rn <= (?*9) AND statusID NOT IN (550, 400)"
-                        + " ORDER BY startDate ASC";
+                        + " FROM tblFUEvents"
+                        + " WHERE statusID NOT IN (400, 570)"
+                        + " ORDER BY startDate"
+                        + " OFFSET (?-1)*9 ROWS FETCH NEXT 9 ROWS ONLY";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, count);
-                preStm.setInt(2, count);
                 rs = preStm.executeQuery();
                 while (rs.next()) {
                     int eventID = rs.getInt("eventID");
@@ -179,6 +202,26 @@ public class EventDAO {
             closeConnection();
         }
         return list;
+    }
+
+    public int getRecordNumForSearchPage() throws SQLException, NamingException {
+        int pageNum = 0;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT COUNT(eventID) as number"
+                        + " FROM tblFUEvents"
+                        + " WHERE statusID NOT IN (400,570)";
+                preStm = conn.prepareStatement(sql);
+                rs = preStm.executeQuery();
+                while (rs.next()) {
+                    pageNum = rs.getInt("number");
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return pageNum;
     }
 
     public ArrayList<EventDTO> getEventByCatetory(int count, int catetoryID) throws Exception {
@@ -187,14 +230,13 @@ public class EventDAO {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
                 String sql = "SELECT *"
-                        + " FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b"
-                        + " WHERE catetoryID = ? AND"
-                        + " (rn >= (?*9-8) AND rn <= (?*9)) AND"
-                        + " statusID NOT IN (400, 550)";
+                        + " FROM tblFUEvents"
+                        + " WHERE catetoryID = ? AND statusID NOT IN (400, 570)"
+                        + " ORDER BY startDate"
+                        + " OFFSET (?-1)*9 ROWS FETCH NEXT 9 ROWS ONLY";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, catetoryID);
                 preStm.setInt(2, count);
-                preStm.setInt(3, count);
                 rs = preStm.executeQuery();
                 list = new ArrayList<>();
                 while (rs.next()) {
@@ -221,21 +263,41 @@ public class EventDAO {
         return list;
     }
 
+    public int getRecordNumForCatetorySearch(int catetoryID) throws SQLException, NamingException {
+        int pageNum = 0;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT COUNT(eventID) as number"
+                        + " FROM tblFUEvents"
+                        + " WHERE catetoryID = ? AND statusID NOT IN (400,570)";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, catetoryID);
+                rs = preStm.executeQuery();
+                while (rs.next()) {
+                    pageNum = rs.getInt("number");
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return pageNum;
+    }
+
     public ArrayList<EventDTO> getEventByPrice(int count, int maxPrice, int minPrice) throws Exception {
         ArrayList<EventDTO> list = new ArrayList<>();
         try {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
                 String sql = "SELECT *"
-                        + " FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b"
-                        + " WHERE (ticketFee >= ? AND ticketFee <= ?) AND"
-                        + " (rn >= (?*9-8) AND rn <= (?*9))"
-                        + " AND statusID NOT IN (400, 550)";
+                        + " FROM tblFUEvents"
+                        + " WHERE (ticketFee >= ? AND ticketFee <= ?) AND statusID NOT IN (400, 570)"
+                        + " ORDER BY startDate"
+                        + " OFFSET (?-1)*9 ROWS FETCH NEXT 9 ROWS ONLY";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, minPrice);
                 preStm.setInt(2, maxPrice);
                 preStm.setInt(3, count);
-                preStm.setInt(4, count);
                 rs = preStm.executeQuery();
                 list = new ArrayList<>();
                 while (rs.next()) {
@@ -263,16 +325,38 @@ public class EventDAO {
         return list;
     }
 
+    public int getRecordNumForPriceSearch(int min, int max) throws SQLException, NamingException {
+        int pageNum = 0;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT COUNT(eventID) as number"
+                        + " FROM tblFUEvents"
+                        + " WHERE (ticketFee >= ? AND ticketFee <= ?) AND statusID NOT IN (400,570)";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, min);
+                preStm.setInt(2, max);
+                rs = preStm.executeQuery();
+                while (rs.next()) {
+                    pageNum = rs.getInt("number");
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return pageNum;
+    }
+
     public ArrayList<EventDTO> getEventByName(int count, String searchName) throws Exception {
         ArrayList<EventDTO> list = new ArrayList<>();
         try {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
                 String sql = "SELECT *"
-                        + " FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b"
-                        + " WHERE (eventName LIKE %?%) AND "
-                        + "(rn >= (?*9-8) AND rn <= (?*9))"
-                        + " AND statusID NOT IN (400, 500)";
+                        + " FROM tblFUEvents"
+                        + " WHERE (eventName LIKE %?%) AND statusID NOT IN (400,570)"
+                        + " ORDER BY startDate"
+                        + " OFFSET (?-1)*9 ROWS FETCH NEXT 9 ROWS ONLY";
                 preStm = conn.prepareStatement(sql);
                 preStm.setString(1, searchName);
                 preStm.setInt(2, count);
@@ -302,6 +386,27 @@ public class EventDAO {
             closeConnection();
         }
         return list;
+    }
+
+    public int getRecordNumForEventNameSearch(String searchName) throws SQLException, NamingException {
+        int pageNum = 0;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT COUNT(eventID) as number"
+                        + " FROM tblFUEvents"
+                        + " WHERE eventName like %?% AND statusID NOT IN (400,570)";
+                preStm = conn.prepareStatement(sql);
+                preStm.setString(1, searchName);
+                rs = preStm.executeQuery();
+                while (rs.next()) {
+                    pageNum = rs.getInt("number");
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return pageNum;
     }
 
     public EventDTO getEventByID(int eventID) throws NamingException, SQLException {

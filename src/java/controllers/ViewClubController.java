@@ -7,68 +7,27 @@ package controllers;
 
 import constant.Routers;
 import daos.ClubDAO;
-import daos.UserDAO;
 import dtos.ClubDTO;
-import dtos.UserDTO;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import utils.GetParam;
 
 /**
  *
  * @author thien
  */
-@WebServlet(name = "ViewClubController", urlPatterns = {"/ViewClubController"})
+@WebServlet(name = "ViewClubDetailController", urlPatterns = {"/ViewClubDetailController"})
 public class ViewClubController extends HttpServlet {
-
-    /**
-     * Processes requests for HTTP <code>POST</code> methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @return
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected boolean postHandler(HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-        response.setContentType("text/html;charset=UTF-8");
-        String clubName = GetParam.getStringParam(request, "clubName", "Club name", 0, 50, null);
-        String clubDescription = GetParam.getStringParam(request, "clubDescription", "Club description", 0, 1000, null);
-        String phoneNumber = GetParam.getPhoneParams(request, "phoneNumber", "Club phone number");
-        String clubEmail = GetParam.getEmailParams(request, "clubEmail", "Club email");
-
-        HttpSession session = request.getSession();
-        String userEmail = (String) session.getAttribute("email");
-
-        if (clubName == null || clubDescription == null || phoneNumber == null
-                || clubEmail == null || userEmail == null) {
-            return false;
-        }
-
-        UserDAO userDAO = new UserDAO();
-        UserDTO user = userDAO.getUserByEmail(userEmail);
-        if (user == null) {
-            request.setAttribute("errorMessage", "Please log in first");
-            return false;
-        }
-
-        ClubDAO clubDAO = new ClubDAO();
-        ClubDTO club = clubDAO.getClubByEmail(userEmail);
-        if (club == null) {
-            request.setAttribute("errorMessage", "There is no available club right now. Please comeback later!");
-            return false;
-        }
-
-        return clubDAO.updateClubInformation(new ClubDTO(clubName, clubDescription, clubEmail, phoneNumber), userEmail);
-    }
 
     /**
      * Processes requests for HTTP <code>GET</code> methods.
@@ -78,31 +37,43 @@ public class ViewClubController extends HttpServlet {
      * @return
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @throws java.sql.SQLException
+     * @throws javax.naming.NamingException
      */
-    protected boolean getHandler(HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
+    protected boolean getAllClubList(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException, NamingException {
         response.setContentType("text/html;charset=UTF-8");
-        HttpSession session = (HttpSession) request.getSession();
-        String email = (String) session.getAttribute("email");
-
-        if (email == null) {
-            return false;
-        }
-
-        UserDAO userDAO = new UserDAO();
-        UserDTO user = userDAO.getUserByEmail(email);
-        if (user == null) {
-            request.setAttribute("errorMessage", "Please log in first");
-            return false;
-        }
-
         ClubDAO clubDAO = new ClubDAO();
-        ClubDTO club = clubDAO.getClubByEmail(email);
-        if (club == null) {
-            request.setAttribute("errorMessage", "There is no available club right now. Please comeback later!");
+        ArrayList<ClubDTO> clubList = clubDAO.getAllClubs();
+        if (clubList == null) {
+            request.setAttribute("errorMesssage", "There is an error happen, no club found");
             return false;
         }
+        request.setAttribute("clubList", clubList);
+        return true;
+    }
 
+    /**
+     * Processes requests for HTTP <code>GET</code> methods.
+     *
+     * @param clubID
+     * @param request servlet request
+     * @param response servlet response
+     * @return
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     * @throws java.sql.SQLException
+     * @throws javax.naming.NamingException
+     */
+    protected boolean getClubByID(int clubID, HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException, NamingException {
+        response.setContentType("text/html;charset=UTF-8");
+        ClubDAO clubDAO = new ClubDAO();
+        ClubDTO club = clubDAO.getClubByID(clubID);
+        if (club == null) {
+            request.setAttribute("errorMesssage", "Club does not exist");
+            return false;
+        }
         request.setAttribute("club", club);
         return true;
     }
@@ -119,38 +90,26 @@ public class ViewClubController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            if (getHandler(request, response)) {
-                request.getRequestDispatcher(Routers.VIEW_CLUB_PAGE).forward(request, response);
+            Integer clubID = GetParam.getIntParams(request, "clubID", "Club ID", 10, 500, null);
+            if (clubID == null) {
+                if (getAllClubList(request, response)) {
+                    request.getRequestDispatcher(Routers.VIEW_CLUB_PAGE).forward(request, response);
+                } else {
+                    request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+                }
             } else {
-                request.getRequestDispatcher(Routers.HOME_PAGE).forward(request, response);
+                if (getClubByID(clubID, request, response)) {
+                    request.getRequestDispatcher(Routers.VIEW_CLUB_DETAIL_PAGE).forward(request, response);
+                } else {
+                    request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+                }
             }
-        } catch (Exception ex) {
+
+        } catch (SQLException | NamingException ex) {
             log(ex.getMessage());
             request.setAttribute("errorMessage", ex.getMessage());
             request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
         }
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            if (postHandler(request, response)) {
-                response.sendRedirect(Routers.VIEW_CLUB_PAGE);
-            }
-            request.getRequestDispatcher(Routers.VIEW_CLUB_PAGE).forward(request, response);
-        } catch (Exception ex) {
-            log(ex.getMessage());
-            request.setAttribute("errorMessage", ex.getMessage());
-            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
-        }
-    }
 }
