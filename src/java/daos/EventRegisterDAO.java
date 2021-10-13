@@ -162,6 +162,7 @@ public class EventRegisterDAO {
                     eventRegisterList.add(new EventDTO(eventID, eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, contend, ticketFee));
                 }
             }
+
         } finally {
             this.closeConnection();
         }

@@ -197,11 +197,13 @@ create table tblPayments(
 
 	SELECT * FROM tblEventRegisters 
 	SELECT * FROM tblFUEvents 
+
 	WHERE statusID in (300 , 450, 500)
 
 	SELECT TOP 3 * FROM tblFUEvents
 	WHERE statusID = 500
 	ORDER BY startDate ASC
+
 
 	SELECT * FROM tblFUEvents
 	WHERE eventID in (	SELECT eventID
@@ -224,6 +226,7 @@ create table tblPayments(
 	FROM tblEventRegisters
 	WHERE eventID in (20,75)
 	GROUP BY eventID
+
 	 
 	SELECT * FROM tblFUEvents
 	where statusID not in (400,570)

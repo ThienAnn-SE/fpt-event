@@ -475,6 +475,29 @@ public class EventDAO {
         return list;
     }
 
+    public ArrayList<EventDTO> getEventForUpdateStatus() throws NamingException, SQLException {
+        ArrayList<EventDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT eventID, createDate, startDate, endDate"
+                    + " FROM tblFUEvents"
+                    + " WHERE statusID != 400"
+                    + " ORDER BY startDate ASC";
+            preStm = conn.prepareStatement(sql);
+            rs = preStm.executeQuery();
+            while (rs.next()) {
+                int eventID = rs.getInt("eventID");
+                String createDate = new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("createDate"));
+                String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
+                String endDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("endDate"));
+                list.add(new EventDTO(eventID, createDate, startDate, endDate));
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return list;
+    }
+
     public ArrayList<EventDTO> getAllEvents() throws NamingException, SQLException {
         ArrayList<EventDTO> list = new ArrayList<>();
         try {
