@@ -11,6 +11,9 @@ import daos.UserDAO;
 import dtos.UserDTO;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.mail.MessagingException;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import utils.AutoMailerHelper;
 import utils.GetParam;
 import utils.GoogleHelpers;
 
@@ -83,20 +87,20 @@ public class GoogleLoginController extends HttpServlet {
                     session.setAttribute("name", user.getName());
                     session.setAttribute("avatar", request.getAttribute("avatar"));
                     session.setAttribute("role", user.getRole());
-                    response.sendRedirect(Routers.HOME_PAGE);
+                    request.getRequestDispatcher(Routers.HOME_PAGE_CONTROLLER).forward(request, response);
                 } else {
                     if (firstLoginRegister(email)) {
                         HttpSession session = request.getSession();
                         session.setAttribute("email", email);
                         session.setAttribute("avatar", request.getAttribute("avatar"));
                         session.setAttribute("role", user.getRole());
-                        response.sendRedirect(Routers.HOME_PAGE);
+                        request.getRequestDispatcher(Routers.HOME_PAGE_CONTROLLER).forward(request, response);
                     } else {
                         request.setAttribute("error", "Internal error");
                         request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
                     }
                 }
-            } catch (SQLException | NamingException ex) {
+            } catch (SQLException | NamingException | MessagingException ex) {
                 log(ex.getMessage());
                 request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
             }
@@ -117,10 +121,15 @@ public class GoogleLoginController extends HttpServlet {
         processRequest(request, response);
     }
 
-    private boolean firstLoginRegister(String email) {
+    private boolean firstLoginRegister(String email) throws MessagingException {
         UserDAO dao = new UserDAO();
         try {
-            return dao.addUser(new UserDTO(email, 1, 300));
+            if (dao.addUser(new UserDTO(email, 1, 300))) {
+                AutoMailerHelper sendMail = new AutoMailerHelper();
+                sendMail.sendAccountRegistrationMail(email);
+                return true;
+            }
+            return false;
         } catch (SQLException | NamingException ex) {
             log(ex.getMessage());
             return false;

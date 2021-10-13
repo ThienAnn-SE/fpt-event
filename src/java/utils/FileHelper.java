@@ -1,7 +1,9 @@
 package utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,7 +26,7 @@ public class FileHelper {
         String UPLOAD_DIR = "images";
 
         try {
-            String fileName =  UUID.randomUUID() + getFileName(filePart);
+            String fileName = UUID.randomUUID() + getFileName(filePart);
             String applicationPath = request.getServletContext().getRealPath("");
             String basePath = applicationPath + File.separator + UPLOAD_DIR + File.separator;
             File theDir = new File(basePath);
@@ -63,6 +65,7 @@ public class FileHelper {
 
     /**
      * Get file name
+     *
      * @param part url of the file which we will to get file name
      * @return file name
      */
@@ -74,5 +77,20 @@ public class FileHelper {
         }
 
         return null;
+    }
+
+    public static String readHTMLFile(String fileName) {
+        StringBuilder contentBuilder = new StringBuilder();
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(fileName));
+            String str;
+            while ((str = in.readLine()) != null) {
+                contentBuilder.append(str);
+            }
+            in.close();
+        } catch (IOException e) {
+            return null;
+        }
+        return contentBuilder.toString();
     }
 }

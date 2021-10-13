@@ -29,56 +29,17 @@
             />
     </head>
     <body>
-        <header>
-            <nav class="navbar navbar-expand-lg">
-                <div class="navbar-header container-fluid fixed-top">
-                    <a class="navbar-brand" href="homePage.html">
-                        <img class="nav logo" src="./asset/img/fu.png" />
-                    </a>
-                    <button class="navbar-toggler">
-                        <i id="toggle" class="fas fa-bars"></i>
-                    </button>
-                    <div class="collapse navbar-collapse">
-                        <div class="navbar-nav">
-                            <a class="item nav-link active" href="homePage.html">home</a>
-                            <a class="item nav-link" href="event.html">event</a>
-                            <a class="item nav-link" href="#">club</a>
-                            <a
-                                class="nav-link"
-                                href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force"
-                                >
-                                <button class="button">
-                                    <i class="fab fa-google"></i>
-                                    Login
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="theme-switch">
-                        <i class="far fa-moon"></i>
-                    </div>
-                    <div class="search">
-                        <div class="search-icon">
-                            <i class="far fa-search"></i>
-                        </div>
-                        <div class="search-input">
-                            <input id="search" type="text" placeholder="Search" />
-                        </div>
-                        <span class="clear"><i class="fal fa-times"></i></span>
-                    </div>
-                </div>
-            </nav>
-        </header>
+        <jsp:include page="./includes/header.jsp"></jsp:include>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="left col-md-3">
-                    <div class="info-card">
-                        <div class="circle"></div>
-                        <div class="circle"></div>
-                        <h3 class="info">Profile Card</h3>
-                        <h3 class="school">FPT University</h3>
-                        <img src="${avatar}" class="avatar" />
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="left col-md-3">
+                        <div class="info-card">
+                            <div class="circle"></div>
+                            <div class="circle"></div>
+                            <h3 class="info">Profile Card</h3>
+                            <h3 class="school">FPT University</h3>
+                            <img src="${avatar}" class="avatar" />
                         <div class="show-card">
                             <div class="edit">
                                 <a href="#"><i class="fal fa-edit"></i> Edit</a>
@@ -117,7 +78,7 @@
                             </h5>
                             <h5 class="gender">
                                 <c:choose>
-                                    <c:when test="${user.gender}">
+                                    <c:when test="${user.gender eq true}">
                                         <i class="fal fa-mars"></i>
                                     </c:when>
                                     <c:otherwise>
@@ -127,13 +88,18 @@
                             </h5>
                         </div>
 
-                        <form action="UpdateController">
+                        <form action="UpdateController" method="POST">
                             <div class="save">
                                 <i class="fal fa-save"></i>
                                 <input type="submit" value="Save" />
                             </div>
                             <h3 class="phone-number">
-                                <input type="tel" name="txtPhoneNumber" value="012 3456 789" />
+                                <input 
+                                    type="tel" 
+                                    name="txtPhoneNumber" 
+                                    placeholder="Your Phone Number" 
+                                    value="${user.phoneNumber}"
+                                    />
                             </h3>
                             <h5 class="dob">
                                 <span>D.O.B </span>
@@ -141,14 +107,18 @@
                                     ><input
                                         type="date"
                                         name="txtDate"
-                                        value="2000-09-17" />
+                                        placeholder="Your Day Of Birth" 
+                                        value="${user.dayOfBirth}"
+                                        required/>
                                 </span>
                             </h5>
                             <h5 class="fullname">
                                 <input
                                     type="text"
-                                    value="nguyen thi hoang dung"
                                     name="txtUsername"
+                                    placeholder="Your Full Name"
+                                    value="${user.name}"
+                                    required
                                     />
                             </h5>
                             <h5 class="gender">
@@ -165,82 +135,127 @@
 
                     </div>
                     <div class="nav">
-                        <a class="nav-link schedular active" href="#">view schedular</a>
+                        <a class="nav-link schedular active" href="#">view schedule</a>
                         <a class="nav-link followed" href="#">view followed events</a>
                         <a class="nav-link registered" href="#">view registered events</a>
                     </div>
                 </div>
+
                 <div class="right col-md-9">
                     <div id="calendar"></div>
+                    <%-- --%>
 
-                    <!--followed event -->
                     <div id="event-followed">
-                        <div class="content">
-                            <div class="header">
-                                <img src="./asset/img/trungthu.png" />
-                                <div>
-                                    <p><a href="#">Club Name </a><i class="fas fa-caret-right"></i> <a href="#">Event Name</a></p>
-                                    <span>Sep 30 2021 - 14:00</span>
-                                </div>
-                            </div>
-                            <p class="text">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, temporibus? Quibusdam quo labore nam quidem illo exercitationem rerum, facere ut laudantium molestiae dignissimos modi neque inventore tenetur eius quisquam expedita!
-                            </p>
-                            <div class="event-img row">
-                                <img src="./asset/img/event.png" class="col-md-4"/>
-                                <img src="./asset/img/event.png" class="col-md-4"/>
-                                <img src="./asset/img/event.png" class="col-md-4"/>
-                            </div>
-
-                            <div class="text-bottom">
-                                <div class="total-follow">
-                                    <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" />
-                                    <span>100</span>
-                                </div>
-                                <div class="slot">
-                                    <p>Available slots: <span>50/100</span></p> 
-                                </div>
-                            </div>
-                            <div class="footer"></div>
-                        </div>
+                        <c:choose>
+                            <c:when test="${empty eventFollowedList}">
+                                <h3> You did not follow any event!!!</h3>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach var="event" items="${eventFollowedList}">
+                                    <div class="content">
+                                        <div class="header">
+                                            <img src="./asset/img/trungthu.png" />
+                                            <div>
+                                                <p ><a href="ViewClubDetail?clubID=${event.clubID}">
+                                                        <c:forEach var="club" items="${club}">
+                                                            <c:if test="${event.clubID eq club.clubID}">
+                                                                ${club.clubName}
+                                                            </c:if>
+                                                        </c:forEach></a>
+                                                    <i class="fas fa-caret-right"></i> <a href="ViewEventController?eventID=${event.eventID}">${event.eventName}/a></p>
+                                                <span>${event.startDate}</span>
+                                            </div>
+                                        </div>
+                                        <p class="text">
+                                            ${event.content}
+                                        </p>
+                                        <div class="event-img row">
+                                            <img src="./asset/img/event.png" class="col-md-4"/>
+                                            <img src="./asset/img/event.png" class="col-md-4"/>
+                                            <img src="./asset/img/event.png" class="col-md-4"/>
+                                        </div>
+                                        <div class="text-bottom">
+                                            <div class="total-follow">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" />
+                                                <span>100</span> <%-- tym --%>
+                                            </div>
+                                            <div class="slot">
+                                                <c:set  var="registerNum" value="${0}"/>
+                                                <c:forEach var="register" items="${registerNumList_follow}">
+                                                    <c:if test="${register.eventID  eq event.eventID}">
+                                                        <c:set var="registerNum" value="${register.registerNum}"/>
+                                                    </c:if>
+                                                </c:forEach>
+                                                <p>Available slots: <span>${registerNum}/${event.slot}</span></p> 
+                                            </div>
+                                        </div>
+                                        <div class="footer"></div>
+                                    </div>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>            
                     </div>
+
                     <!-- end of followed event -->
 
                     <!-- registered event -->
-                    <div id="event-registered">
-                        <div class="content">
-                            <div class="header">
-                                <img src="./asset/img/trungthu.png" />
-                                <div>
-                                    <p><a href="#">Club Name </a><i class="fas fa-caret-right"></i> <a href="#">Event Name</a></p>
-                                    <span>Sep 30 2021 - 14:00</span>
-                                </div>
-                            </div>
-                            <p class="text">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, temporibus? Quibusdam quo labore nam quidem illo exercitationem rerum, facere ut laudantium molestiae dignissimos modi neque inventore tenetur eius quisquam expedita!
-                            </p>
-                            <div class="event-img row">
-                                <img src="./assset/img/event.png" class="col-md-4"/>
-                                <img src="./asset/img/event.png" class="col-md-4"/>
-                                <img src="./asset/img/event.png" class="col-md-4"/>
-                            </div>
-                            <div class="text-bottom">
-                                <div class="total-follow">
-                                    <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" />
-                                    <span>100</span>
-                                </div>
-                                <div class="slot">
-                                    <p>Available slots: <span>50/100</span></p> 
-                                </div>
-                            </div>
-                            <div class="footer"></div>
-                        </div>
-                    </div>
-                    <!--end of registered event -->
 
+                    <div id="event-registered">
+                        <c:choose>
+                            <c:when test="${empty eventRegisterList}">
+                                <h3> you don't have any event registration!!!</h3>
+                            </c:when>
+                            <c:otherwise>
+                                <c:forEach var="event" items="${eventRegisterList}">
+                                    <div class="content">
+                                        <div class="header">
+                                            <img src="./asset/img/trungthu.png" />
+                                            <div>
+                                                <p ><a href="ViewClubDetail?clubID=${event.clubID}">
+                                                        <c:forEach var="club" items="${club}">
+                                                            <c:if test="${event.clubID eq club.clubID}">
+                                                                ${club.clubName}
+                                                            </c:if>
+                                                        </c:forEach></a>
+                                                    <i class="fas fa-caret-right"></i> <a href="ViewEventController?eventID=${event.eventID}">${event.eventName}</a></p>
+                                                <span>${event.startDate}</span>
+                                            </div>
+                                        </div>
+                                        <p class="text">
+                                            ${event.content}
+                                        </p>
+                                        <div class="event-img row">
+                                            <img src="./asset/img/event.png" class="col-md-4"/>
+                                            <img src="./asset/img/event.png" class="col-md-4"/>
+                                            <img src="./asset/img/event.png" class="col-md-4"/>
+                                        </div>
+                                        <div class="text-bottom">
+                                            <div class="total-follow">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" />
+                                                <span>100</span> <%-- tym --%>
+                                            </div>
+                                            <div class="slot">
+                                                <c:set  var="registerNum" value="${0}"/>
+                                                <c:forEach var="register" items="${registerNumList_register}">
+                                                    <c:if test="${register.eventID  eq event.eventID}">
+                                                        <c:set var="registerNum" value="${register.registerNum}"/>
+                                                    </c:if>
+                                                </c:forEach>
+                                                <p>Available slots: <span>${registerNum}/${event.slot}</span></p> 
+                                            </div>
+                                        </div>
+                                        <div class="footer"></div>
+                                    </div>
+                                </c:forEach>
+                            </c:otherwise>
+                        </c:choose>          
+                    </div>
+
+                    <%-- --%>
                 </div>
             </div>
         </div>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="./asset/js/evo-calendar.js"></script>
         <script src="./asset/js/main.js"></script>
@@ -287,34 +302,30 @@
             });
 
             $(document).ready(function () {
-            $("#calendar").evoCalendar(
-            {
-            theme: "Orange Coral",
+                $("#calendar").evoCalendar({
+                    theme: "Orange Coral",
                     calendarEvents: [
-                    {
-                    id: "bHay68s", // Event's ID (required)
+                        {
+                            id: "bHay68s", // Event's ID (required)
                             name: "New Year", // Event name (required)
                             date: "September/9/2021", // Event date (required)
                             type: "holiday", // Event type (required)
                             everyYear: true, // Same event every year (optional)
-                    },
-            <%-- event register list for calendar --%>
+                        },
             <c:forEach var="event" items="${eventRegisterList}">
-                    {
-                    id: "${event.eventID}",
+                        {
+                            id: "${event.eventID}",
                             name: "${event.eventName}",
+                            badge: "Taking place", // Event badge (optional)
                             date: ["${event.startDate}", "${event.endDate}"], // Date range
-                            description: "Vacation leave for 3 days.", // Event description (optional)
+                            description: "You register this event!!", // Event description (optional)
                             type: "event",
                             color: "#63d867", // Event custom color (optional)
-                    },
+                        },
             </c:forEach>
-            <%-- end of list --%>
                     ],
-            }
-            );
-            }
-            );
+                });
+            });
         </script>
     </body>
 </html>

@@ -1006,7 +1006,7 @@
       eventListEl.empty();
     _.$active.events.push(event_data);
     markup =
-      `<a href="event.html?${event_data.id}" class="event-container" data-event-index="` +
+      `<a href="ViewEventController?eventID=${event_data.id}" class="event-container" data-event-index="` +
       event_data.id +
       `">`;
     markup +=

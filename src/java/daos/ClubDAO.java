@@ -95,13 +95,34 @@ public class ClubDAO {
         return club;
     }
 
+    public ArrayList<ClubDTO> getAllClubsForUserPage() throws NamingException, SQLException {
+        ArrayList<ClubDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT clubID, clubName"
+                        + " FROM tblClubDetails";
+                preStm = conn.prepareStatement(sql);
+                rs = preStm.executeQuery();
+                while (rs.next()) {
+                    int clubID = rs.getInt("clubID");
+                    String clubName = rs.getNString("clubName");
+                    list.add(new ClubDTO(clubID, clubName));
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return list;
+    }
+
     public ArrayList<ClubDTO> getAllClubs() throws SQLException, NamingException {
         ArrayList<ClubDTO> list = new ArrayList<>();
         try {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
                 String sql = " Select * "
-                        + " From tblClubDetails ";
+                        + " From tblClubDetails";
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();
                 while (rs.next()) {
@@ -133,7 +154,7 @@ public class ClubDAO {
                 preStm.setString(3, club.getClubPhoneNumber());
                 preStm.setString(4, club.getClubEmail());
                 preStm.setString(5, userEmail);
-                
+
                 isSuccess = preStm.executeUpdate() > 0;
             }
         } finally {

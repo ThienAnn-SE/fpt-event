@@ -51,18 +51,59 @@ public class EventRegisterDAO {
         boolean isSuccess = false;
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "INSERT INTO tblEventRegister(eventID, userEmail, registerDate) VALUES (?,?,?)";
-            preStm = conn.prepareStatement(sql);
+            if (conn != null) {
+                String sql = "INSERT INTO tblEventRegister(eventID, userEmail, registerDate) VALUES (?,?,?)";
+                preStm = conn.prepareStatement(sql);
 
-            preStm.setInt(1, dto.getEventID());
-            preStm.setString(2, dto.getEmail());
-            preStm.setDate(3, java.sql.Date.valueOf(dto.getRegisterDate().toString()));
+                preStm.setInt(1, dto.getEventID());
+                preStm.setString(2, dto.getEmail());
+                preStm.setDate(3, java.sql.Date.valueOf(dto.getRegisterDate().toString()));
 
-            isSuccess = preStm.executeUpdate() > 0;
+                isSuccess = preStm.executeUpdate() > 0;
+            }
         } finally {
             this.closeConnection();
         }
         return isSuccess;
+    }
+
+    public int getRegisterID(int eventID, String userEmail) throws SQLException, NamingException {
+        int registerID = 0;
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT registerID"
+                    + " FROM tblEventRegisters"
+                    + " WHERE eventID = ? AND userEmail = ?";
+            preStm = conn.prepareStatement(sql);
+            preStm.setInt(1, eventID);
+            preStm.setString(2, userEmail);
+            rs = preStm.executeQuery();
+            if (rs.next()) {
+                registerID = rs.getInt("registerID");
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return registerID;
+    }
+
+    public int getRegisterNumByEventID(int eventID) throws NamingException, SQLException {
+        int registerNum = -1;
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT COUNT(userEmail) as num"
+                    + " FROM tblEventRegisters"
+                    + " WHERE eventID = ?";
+            preStm = conn.prepareStatement(sql);
+            preStm.setInt(1, eventID);
+            rs = preStm.executeQuery();
+            if (rs.next()) {
+                registerNum = rs.getInt("num");
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return registerNum;
     }
 
     public ArrayList<EventRegisterDTO> getRegisterList(int eventID)
@@ -70,16 +111,18 @@ public class EventRegisterDAO {
         ArrayList<EventRegisterDTO> registerList = new ArrayList<>();
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "SELECT * "
-                    + "FROM tblEventRegisters "
-                    + "WHERE eventID=?";
-            preStm = conn.prepareStatement(sql);
-            preStm.setInt(1, eventID);
-            rs = preStm.executeQuery();
-            if (rs.next()) {
-                String userEmail = rs.getString("email");
-                Date registerDate = rs.getDate("createDate");
-                registerList.add(new EventRegisterDTO(eventID, userEmail, registerDate));
+            if (conn != null) {
+                String sql = "SELECT * "
+                        + "FROM tblEventRegisters "
+                        + "WHERE eventID=?";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, eventID);
+                rs = preStm.executeQuery();
+                if (rs.next()) {
+                    String userEmail = rs.getString("email");
+                    Date registerDate = rs.getDate("createDate");
+                    registerList.add(new EventRegisterDTO(eventID, userEmail, registerDate));
+                }
             }
         } finally {
             this.closeConnection();
@@ -88,38 +131,37 @@ public class EventRegisterDAO {
         return registerList;
     }
 
-    public ArrayList<EventRegisterDTO> getEventRegisterListForUserPage(String userEmail)
+    public ArrayList<EventDTO> getEventRegisterListForUserPage(String userEmail)
             throws SQLException, NamingException {
-        ArrayList<EventRegisterDTO> eventRegisterList = new ArrayList<>();
-        ArrayList<Integer> idList = new ArrayList<>();
+        ArrayList<EventDTO> eventRegisterList = new ArrayList<>();
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "SELECT eventID "
-                    + "FROM tblEventRegisters "
-                    + "WHERE userEmail=?";
-            preStm = conn.prepareStatement(sql);
-            preStm.setString(1, userEmail);
-            rs = preStm.executeQuery();
-            if (rs.next()) {
-                int eventID = rs.getInt("eventID");
-                idList.add(eventID);
+            if (conn != null) {
+                String sql = "SELECT *"
+                        + " FROM tblFUEvents"
+                        + " WHERE eventID IN (SELECT eventID"
+                        + " FROM tblEventRegisters"
+                        + " WHERE userEmail = ?)";
+                preStm = conn.prepareStatement(sql);
+                preStm.setString(1, userEmail);
+                rs = preStm.executeQuery();
+                if (rs.next()) {
+                    int eventID = rs.getInt("eventID");
+                    String eventName = rs.getNString("eventName");
+                    int clubID = rs.getInt("clubID");
+                    int locationID = rs.getInt("locationID");
+                    int catetoryID = rs.getInt("catetoryID");
+                    int statusID = rs.getInt("statusID");
+                    String createDate = new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("createDate"));
+                    String startDate = new SimpleDateFormat("MMM dd yyyy").format(rs.getDate("startDate"));
+                    String endDate = new SimpleDateFormat("MMM dd yyyy").format(rs.getDate("endDate"));
+                    int slot = rs.getInt("slot");
+                    Double avgVote = rs.getDouble("avgVote");
+                    String contend = rs.getNString("content");
+                    int ticketFee = rs.getInt("ticketFee");
+                    eventRegisterList.add(new EventDTO(eventID, eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, contend, ticketFee));
+                }
             }
-
-            sql = "SELECT eventID, eventName, startDate, endDate "
-                    + "FORM tblFUEvents "
-                    + "WHERE eventID in ?";
-            preStm = conn.prepareStatement(sql);
-            Array array = conn.createArrayOf("INT", new Object[]{idList.toArray()});
-            preStm.setArray(1, array);
-            rs = preStm.executeQuery();
-            if (rs.next()) {
-                int eventID = rs.getInt("eventID");
-                String eventName = rs.getString("eventName");
-                String createDate = new SimpleDateFormat("MM-dd-yyyy").format(rs.getDate("createDate"));
-                String endDate = new SimpleDateFormat("MM-dd-yyyy").format(rs.getDate("endDate"));
-                eventRegisterList.add(new EventRegisterDTO(eventID, eventName, createDate, endDate));
-            }
-
         } finally {
             this.closeConnection();
         }

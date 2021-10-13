@@ -8,9 +8,11 @@ package controllers;
 import constant.Routers;
 import daos.CatetoryDAO;
 import daos.EventDAO;
+import daos.EventRegisterDAO;
 import daos.UserDAO;
 import dtos.CatetoryDTO;
 import dtos.EventDTO;
+import dtos.EventRegisterDTO;
 import dtos.UserDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -64,6 +66,9 @@ public class SearchEventController extends HttpServlet {
             }
             //on success
             if (result) {
+                CatetoryDAO catetoryDAO = new CatetoryDAO();
+                ArrayList<CatetoryDTO> catetoryList = catetoryDAO.getAllCatetories();
+                request.setAttribute("catetoryList", catetoryList);
                 request.getRequestDispatcher(Routers.SEARCH_EVENT_PAGE).forward(request, response);
             } else {
                 request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
@@ -82,14 +87,17 @@ public class SearchEventController extends HttpServlet {
         EventDAO eventDAO = new EventDAO();
         ArrayList<EventDTO> eventList;
 
-        eventList = eventDAO.getTop9Event(page);
+        eventList = eventDAO.getEventForSearchPage(page);
         if (eventList == null) {
             request.setAttribute("error", "There is no event take places now");
         } else {
-            int endPage = eventList.size() / 9;
-            if (eventList.size() % 3 != 0) {
+            int endPage = eventDAO.getRecordNumForSearchPage() / 9;
+            if (endPage % 3 != 0) {
                 endPage++;
             }
+
+            ArrayList<EventRegisterDTO> registerNum = getGegisterNumList(eventList);
+            request.setAttribute("registerNumList", registerNum);
             request.setAttribute("endPage", endPage);
         }
 
@@ -120,13 +128,16 @@ public class SearchEventController extends HttpServlet {
         if (eventList == null) {
             request.setAttribute("error", "There is no event take places now");
         } else {
-            int endPage = eventList.size() / 9;
-            if (eventList.size() % 3 != 0) {
+            int endPage = eventDAO.getRecordNumForPriceSearch(minPrice, maxPrice) / 9;
+            if (endPage % 3 != 0) {
                 endPage++;
             }
+
+            ArrayList<EventRegisterDTO> registerNum = getGegisterNumList(eventList);
+            request.setAttribute("registerNumList", registerNum);
             request.setAttribute("endPage", endPage);
         }
-
+        request.setAttribute("lastSearch", "&minPirce=" + minPrice + "&maxPrice=" + maxPrice);
         request.setAttribute("eventList", eventList);
         return true;
     }
@@ -140,7 +151,7 @@ public class SearchEventController extends HttpServlet {
         String eventName = GetParam.getStringParam(request, "eventName", "Event name", 0, 50, null);
 
         if (eventName == null) {
-            eventList = eventDAO.getTop9Event(1);
+            eventList = eventDAO.getEventForSearchPage(1);
         } else {
             eventList = eventDAO.getEventByName(page, eventName);
         }
@@ -148,12 +159,16 @@ public class SearchEventController extends HttpServlet {
         if (eventList == null) {
             request.setAttribute("errorMessage", "There is no event take places now");
         } else {
-            int endPage = eventList.size() / 9;
-            if (eventList.size() % 3 != 0) {
+            int endPage = eventDAO.getRecordNumForEventNameSearch(eventName) / 9;
+            if (endPage % 3 != 0) {
                 endPage++;
             }
+
+            ArrayList<EventRegisterDTO> registerNum = getGegisterNumList(eventList);
+            request.setAttribute("registerNumList", registerNum);
             request.setAttribute("endPage", endPage);
         }
+        request.setAttribute("lastSearch", "&eventName=" + eventName);
         request.setAttribute("eventList", eventList);
         return true;
     }
@@ -175,13 +190,28 @@ public class SearchEventController extends HttpServlet {
         if (eventList == null) {
             request.setAttribute("error", "There is no event take places now");
         } else {
-            int endPage = eventList.size() / 9;
-            if (eventList.size() % 3 != 0) {
+            int endPage = eventDAO.getRecordNumForCatetorySearch(catetoryID) / 9;
+            if (endPage % 3 != 0) {
                 endPage++;
             }
+
+            ArrayList<EventRegisterDTO> registerNum = getGegisterNumList(eventList);
+            request.setAttribute("registerNumList", registerNum);
             request.setAttribute("endPage", endPage);
         }
+        request.setAttribute("lastSearch", "&catetoryID=" + catetoryID);
         request.setAttribute("eventList", eventList);
         return true;
+    }
+
+    private ArrayList<EventRegisterDTO> getGegisterNumList(ArrayList<EventDTO> dto) throws NamingException, SQLException {
+        EventRegisterDAO registerDAO = new EventRegisterDAO();
+        ArrayList<EventRegisterDTO> registerNumList = new ArrayList<>();
+        for (int i = 0; i < dto.size(); i++) {
+            int eventID = dto.get(i).getEventID();
+            int registerNum = registerDAO.getRegisterNumByEventID(eventID);
+            registerNumList.add(new EventRegisterDTO(eventID, registerNum));
+        }
+        return registerNumList;
     }
 }

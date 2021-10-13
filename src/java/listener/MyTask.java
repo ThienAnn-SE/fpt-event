@@ -36,9 +36,9 @@ public class MyTask extends TimerTask {
             Date now = Date.from(Instant.now());
             for (int i = 0; i < eventList.size(); i++) {
                 if (new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").parse(eventList.get(i).getEndDate()).before(now)) {
-                    eventDAO.changeEventStatus(eventList.get(i).getEventID(), 550);
+                    eventDAO.changeEventStatus(eventList.get(i).getEventID(), 570);
                 } else if (new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").parse(eventList.get(i).getStartDate()).before(now)) {
-                    eventDAO.changeEventStatus(eventList.get(i).getEventID(), 530);
+                    eventDAO.changeEventStatus(eventList.get(i).getEventID(), 550);
                 }
                 if (Helper.is3DayAfterNow(new SimpleDateFormat("dd-MM-yyyy").parse(eventList.get(i).getCreateDate()))) {
                     eventDAO.changeEventStatus(eventList.get(i).getEventID(), 500);
