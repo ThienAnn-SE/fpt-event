@@ -143,7 +143,27 @@
 
                 <div class="right col-md-9">
                     <div id="calendar"></div>
-                    <%-- --%>
+
+
+                    <!--followed event -->
+                    <div id="event-followed">
+                        <div class="content">
+                            <div class="header">
+                                <img src="./asset/img/trungthu.png" />
+                                <div>
+                                    <p><a href="#">Club Name </a><i class="fas fa-caret-right"></i> <a href="#">Event Name</a></p>
+                                    <span>Sep 30 2021 - 14:00</span>
+                                </div>
+                            </div>
+                            <p class="text">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, temporibus? Quibusdam quo labore nam quidem illo exercitationem rerum, facere ut laudantium molestiae dignissimos modi neque inventore tenetur eius quisquam expedita!
+                            </p>
+                            <div class="event-img row">
+                                <img src="./asset/img/event.png" class="col-md-4"/>
+                                <img src="./asset/img/event.png" class="col-md-4"/>
+                                <img src="./asset/img/event.png" class="col-md-4"/>
+                            </div>
+
 
                     <div id="event-followed">
                         <c:choose>
@@ -250,8 +270,7 @@
                             </c:otherwise>
                         </c:choose>          
                     </div>
-
-                    <%-- --%>
+                    <!--end of registered event -->
                 </div>
             </div>
         </div>
@@ -302,15 +321,17 @@
             });
 
             $(document).ready(function () {
-                $("#calendar").evoCalendar({
-                    theme: "Orange Coral",
+            $("#calendar").evoCalendar(
+            {
+            theme: "Orange Coral",
                     calendarEvents: [
-                        {
-                            id: "bHay68s", // Event's ID (required)
+                    {
+                    id: "bHay68s", // Event's ID (required)
                             name: "New Year", // Event name (required)
                             date: "September/9/2021", // Event date (required)
                             type: "holiday", // Event type (required)
                             everyYear: true, // Same event every year (optional)
+
                         },
             <c:forEach var="event" items="${eventRegisterList}">
                         {
@@ -323,9 +344,12 @@
                             color: "#63d867", // Event custom color (optional)
                         },
             </c:forEach>
+
                     ],
-                });
-            });
+            }
+            );
+            }
+            );
         </script>
     </body>
 </html>

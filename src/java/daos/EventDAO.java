@@ -490,7 +490,7 @@ public class EventDAO {
                 num = rs.getInt("num");
             }
         } finally {
-            this.closeConnection();
+
         }
         return num;
     }

@@ -107,17 +107,17 @@
 
             <script src="./asset/js/main.js"></script>
 
-            <script>
-                var countDate = new Date("${startDate}").getTime();
-                function countDown() {
-                    var now = new Date().getTime();
-                    var distance = countDate - now;
-                    var day = Math.floor(distance / (1000 * 60 * 60 * 24));
-                    var hour = Math.floor(
-                            (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-                            );
-                    var minute = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    var second = Math.floor((distance % (1000 * 60)) / 1000);
+        <script>
+            var countDate = new Date("${startDate}").getTime();
+            function countDown() {
+                var now = new Date().getTime();
+                var distance = countDate - now;
+                var day = Math.floor(distance / (1000 * 60 * 60 * 24));
+                var hour = Math.floor(
+                        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+                        );
+                var minute = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var second = Math.floor((distance % (1000 * 60)) / 1000);
 
                     if (day > 0) {
                         hour = day * 24 + hour;
