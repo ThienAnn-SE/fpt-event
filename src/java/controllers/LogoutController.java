@@ -35,9 +35,12 @@ public class LogoutController extends HttpServlet {
             throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
+            session.removeAttribute("email");
+            session.removeAttribute("role");
+            session.removeAttribute("avatar");
             session.invalidate();
         } finally {
-            response.sendRedirect(Routers.LOGIN_PAGE + "?message=Logout successfully");
+            response.sendRedirect(Routers.HOME_PAGE_CONTROLLER);
         }
     }
 

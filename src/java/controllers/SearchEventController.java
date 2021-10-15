@@ -66,6 +66,7 @@ public class SearchEventController extends HttpServlet {
             }
             //on success
             if (result) {
+                request.setAttribute("page", page);
                 CatetoryDAO catetoryDAO = new CatetoryDAO();
                 ArrayList<CatetoryDTO> catetoryList = catetoryDAO.getAllCatetories();
                 request.setAttribute("catetoryList", catetoryList);
@@ -92,7 +93,7 @@ public class SearchEventController extends HttpServlet {
             request.setAttribute("error", "There is no event take places now");
         } else {
             int endPage = eventDAO.getRecordNumForSearchPage() / 9;
-            if (endPage % 3 != 0) {
+            if (endPage % 9 != 0 || endPage == 0 ) {
                 endPage++;
             }
 
@@ -129,7 +130,7 @@ public class SearchEventController extends HttpServlet {
             request.setAttribute("error", "There is no event take places now");
         } else {
             int endPage = eventDAO.getRecordNumForPriceSearch(minPrice, maxPrice) / 9;
-            if (endPage % 3 != 0) {
+            if (endPage % 9 != 0 || endPage == 0) {
                 endPage++;
             }
 
@@ -137,7 +138,7 @@ public class SearchEventController extends HttpServlet {
             request.setAttribute("registerNumList", registerNum);
             request.setAttribute("endPage", endPage);
         }
-        request.setAttribute("lastSearch", "&minPirce=" + minPrice + "&maxPrice=" + maxPrice);
+        request.setAttribute("lastSearch", "&minPirce=" + minPrice + "&maxPrice=" + maxPrice + "&btAction=price");
         request.setAttribute("eventList", eventList);
         return true;
     }
@@ -160,7 +161,7 @@ public class SearchEventController extends HttpServlet {
             request.setAttribute("errorMessage", "There is no event take places now");
         } else {
             int endPage = eventDAO.getRecordNumForEventNameSearch(eventName) / 9;
-            if (endPage % 3 != 0) {
+            if (endPage % 9 != 0 || endPage == 0) {
                 endPage++;
             }
 
@@ -168,7 +169,7 @@ public class SearchEventController extends HttpServlet {
             request.setAttribute("registerNumList", registerNum);
             request.setAttribute("endPage", endPage);
         }
-        request.setAttribute("lastSearch", "&eventName=" + eventName);
+        request.setAttribute("lastSearch", "&eventName=" + eventName+ "&btAction=name");
         request.setAttribute("eventList", eventList);
         return true;
     }
@@ -191,7 +192,7 @@ public class SearchEventController extends HttpServlet {
             request.setAttribute("error", "There is no event take places now");
         } else {
             int endPage = eventDAO.getRecordNumForCatetorySearch(catetoryID) / 9;
-            if (endPage % 3 != 0) {
+            if (endPage % 9 != 0 || endPage == 0) {
                 endPage++;
             }
 
@@ -199,7 +200,7 @@ public class SearchEventController extends HttpServlet {
             request.setAttribute("registerNumList", registerNum);
             request.setAttribute("endPage", endPage);
         }
-        request.setAttribute("lastSearch", "&catetoryID=" + catetoryID);
+        request.setAttribute("lastSearch", "&catetoryID=" + catetoryID + "&btAction=catetory");
         request.setAttribute("eventList", eventList);
         return true;
     }

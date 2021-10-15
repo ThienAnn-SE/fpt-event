@@ -42,11 +42,16 @@ body {
     overflow-x: hidden;
 }
 
+header {
+    margin-bottom: 100px;
+}
+
 .navbar-header {
     height: 74px;
     background-color: var(--white);
     box-shadow: 2px 2px 10px var(--black-shadow);
 }
+
 
 .nav.logo {
     width: 120px;

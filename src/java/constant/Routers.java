@@ -31,9 +31,9 @@ public class Routers {
     public final static String VIEW_PAYMENT_RECEIPT_PAGE = "receipt.jsp";
     public final static String SEARCH_EVENT_PAGE = "search.jsp";
     public final static String VIEW_CLUB_PAGE = "club.jsp";
-    public final static String EVENT_MANAGEMENT_PAGE = "eventManagement.jsp";
-    public final static String VIEW_REGISTRATION_PAGE = "registration.jsp";
+    public final static String VIEW_MANAGEMENT_PAGE = "leader.jsp";
     public final static String VIEW_CLUB_DETAIL_PAGE = "clubDetail.jsp";
+    public final static String USER_MANAGEMENT_PAGE = "admin-table.jsp";
 
     public final static String UPDATE_CONTROLLER = "UpdateController";
     public final static String REGISTER_CONTROLLER = "RegisterController";

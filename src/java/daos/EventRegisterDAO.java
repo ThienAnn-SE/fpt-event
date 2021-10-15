@@ -118,7 +118,7 @@ public class EventRegisterDAO {
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, eventID);
                 rs = preStm.executeQuery();
-                if (rs.next()) {
+                while (rs.next()) {
                     String userEmail = rs.getString("email");
                     Date registerDate = rs.getDate("createDate");
                     registerList.add(new EventRegisterDTO(eventID, userEmail, registerDate));
@@ -145,7 +145,7 @@ public class EventRegisterDAO {
                 preStm = conn.prepareStatement(sql);
                 preStm.setString(1, userEmail);
                 rs = preStm.executeQuery();
-                if (rs.next()) {
+                while (rs.next()) {
                     int eventID = rs.getInt("eventID");
                     String eventName = rs.getNString("eventName");
                     int clubID = rs.getInt("clubID");

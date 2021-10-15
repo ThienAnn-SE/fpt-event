@@ -138,7 +138,7 @@ public class EventDAO {
             conn = DBHelpers.makeConnection();
             String sql = "SELECT TOP 4 *"
                     + " FROM tblFUEvents"
-                    + " WHERE statusID IN (300, 450, 500)"
+                    + " WHERE statusID IN (300, 500, 550) AND startDate >= GETDATE()"
                     + " ORDER BY startDate ASC";
             preStm = conn.prepareStatement(sql);
             rs = preStm.executeQuery();
@@ -447,12 +447,13 @@ public class EventDAO {
         try {
             conn = DBHelpers.makeConnection();
             String sql = "SELECT *"
-                    + " FROM (SELECT ROW_NUMBER() OVER (ORDER BY eventID ASC) AS rn, * FROM tblFUEvents) AS b"
-                    + " WHERE (clubID = ?) AND (rn >= (?*9-8) AND rn <= (?*9))";
+                    + " FROM tblFUEvents"
+                    + " WHERE (clubID = ?)"
+                    + " ORDER BY startDate"
+                    + " OFFSET (?-1)*5 ROWS FETCH NEXT 5 ROWS ONLY";
             preStm = conn.prepareStatement(sql);
             preStm.setInt(1, clubID);
             preStm.setInt(2, page);
-            preStm.setInt(3, page);
             rs = preStm.executeQuery();
             while (rs.next()) {
                 int eventID = rs.getInt("eventID");
@@ -475,27 +476,23 @@ public class EventDAO {
         return list;
     }
 
-    public ArrayList<EventDTO> getEventForUpdateStatus() throws NamingException, SQLException {
-        ArrayList<EventDTO> list = new ArrayList<>();
+    public int getRecordNumForClub(int clubID) throws NamingException, SQLException {
+        int num = 0;
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "SELECT eventID, createDate, startDate, endDate"
+            String sql = "SELECT COUNT(eventID) as num"
                     + " FROM tblFUEvents"
-                    + " WHERE statusID != 400"
-                    + " ORDER BY startDate ASC";
+                    + " WHERE clubID = ?";
             preStm = conn.prepareStatement(sql);
+            preStm.setInt(1, clubID);
             rs = preStm.executeQuery();
-            while (rs.next()) {
-                int eventID = rs.getInt("eventID");
-                String createDate = new SimpleDateFormat("dd-MM-yyyy").format(rs.getDate("createDate"));
-                String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
-                String endDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("endDate"));
-                list.add(new EventDTO(eventID, createDate, startDate, endDate));
+            if (rs.next()) {
+                num = rs.getInt("num");
             }
         } finally {
-            this.closeConnection();
+
         }
-        return list;
+        return num;
     }
 
     public ArrayList<EventDTO> getAllEvents() throws NamingException, SQLException {
