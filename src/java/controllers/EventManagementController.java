@@ -6,17 +6,25 @@
 package controllers;
 
 import constant.Routers;
+import daos.CatetoryDAO;
 import daos.ClubDAO;
 import daos.EventDAO;
+import daos.EventRegisterDAO;
+import daos.LocationDAO;
 import daos.UserDAO;
+import dtos.CatetoryDTO;
 import dtos.ClubDTO;
 import dtos.EventDTO;
+import dtos.EventRegisterDTO;
+import dtos.LocationDTO;
 import dtos.UserDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -45,22 +53,12 @@ public class EventManagementController extends HttpServlet {
     protected boolean processRequest(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         response.setContentType("text/html;charset=UTF-8");
-        Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 0, 500, null);
         Integer page = GetParam.getIntParams(request, "page", "Page", 1, 50, 1);
-        if (eventID == null) {
-            return false;
-        }
 
         HttpSession session = request.getSession();
         String email = (String) session.getAttribute("email");
         if (email == null) {
-            request.setAttribute("errorMessage", "There is an erorr happen. Please reload the website");
-            return false;
-        }
-        UserDAO userDAO = new UserDAO();
-        UserDTO user = userDAO.getUserByEmail(email);
-        if (user == null) {
-            request.setAttribute("errorMessage", "Please log in first");
+            request.setAttribute("errorMessage", "There is an error happen. Please reload the website");
             return false;
         }
 
@@ -71,8 +69,34 @@ public class EventManagementController extends HttpServlet {
             return false;
         }
 
+        CatetoryDAO catetoryDAO = new CatetoryDAO();
+        ArrayList<CatetoryDTO> catetoryList = catetoryDAO.getAllCatetories();
+        if (catetoryList == null) {
+            request.setAttribute("errorMessage", "There is an error happen. No catetory found");
+            return false;
+        }
+
+        LocationDAO locationDAO = new LocationDAO();
+        ArrayList<LocationDTO> locationList = locationDAO.getAllLocations();
+        if (locationList == null) {
+            request.setAttribute("errorMessage", "There is an error happen. No location found");
+        }
+
         EventDAO eventDAO = new EventDAO();
         ArrayList<EventDTO> eventList = eventDAO.getEventByClub(page, club.getClubID());
+
+        ArrayList<EventRegisterDTO> registerNumList = getGegisterNumList(eventList);
+
+        int endPage = eventDAO.getRecordNumForClub(club.getClubID());
+        if (endPage % 5 != 0) {
+            endPage++;
+        }
+        
+        request.setAttribute("page", page);
+        request.setAttribute("endPage", endPage);
+        request.setAttribute("registerNumList", registerNumList);
+        request.setAttribute("locationList", locationList);
+        request.setAttribute("catetoryList", catetoryList);
         request.setAttribute("eventList", eventList);
         return true;
     }
@@ -90,14 +114,26 @@ public class EventManagementController extends HttpServlet {
             throws ServletException, IOException {
         try {
             if (processRequest(request, response)) {
-                request.getRequestDispatcher(Routers.VIEW_REGISTRATION_PAGE).forward(request, response);
+                request.getRequestDispatcher(Routers.VIEW_MANAGEMENT_PAGE).forward(request, response);
+            } else {
+                request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
             }
-            request.getRequestDispatcher(Routers.EVENT_MANAGEMENT_PAGE).forward(request, response);
         } catch (Exception ex) {
             log(ex.getMessage());
             request.setAttribute("errorMessage", ex.getMessage());
             request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
         }
+    }
+
+    private ArrayList<EventRegisterDTO> getGegisterNumList(ArrayList<EventDTO> dto) throws NamingException, SQLException {
+        EventRegisterDAO registerDAO = new EventRegisterDAO();
+        ArrayList<EventRegisterDTO> registerNumList = new ArrayList<>();
+        for (int i = 0; i < dto.size(); i++) {
+            int eventID = dto.get(i).getEventID();
+            int registerNum = registerDAO.getRegisterNumByEventID(eventID);
+            registerNumList.add(new EventRegisterDTO(eventID, registerNum));
+        }
+        return registerNumList;
     }
 
 }

@@ -60,15 +60,21 @@ public class RegisterEventController extends HttpServlet {
         EventDAO eventDAO = new EventDAO();
 
         //Get parameter
-        Integer eventID = GetParam.getIntParams(request, "txtEventID", "Event ID", 10, Integer.MAX_VALUE, null);
+        Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 10, Integer.MAX_VALUE, null);
+        Integer registerNum = GetParam.getIntParams(request, "registerNum", "Number of registration", 0, 500, null);
 
-        if (eventID == null) {
+        if (eventID == null || registerNum == null) {
             return false;
         }
         //check existed event by ID
         EventDTO event = eventDAO.getEventByID(eventID);
         if (event == null) {
             request.setAttribute("errorMessage", "Event is not existed");
+            return false;
+        }
+
+        if (registerNum >= event.getSlot()) {
+            request.setAttribute("errorMessage", "Event is full");
             return false;
         }
 
@@ -88,6 +94,10 @@ public class RegisterEventController extends HttpServlet {
         }
 
         //check isBanned?
+        if (user.getStatus() == 500) {
+            request.setAttribute("errorMessage", "You are not allow to register");
+            return false;
+        }
         //on success
         request.setAttribute("user", user);
         request.setAttribute("event", event);
@@ -109,7 +119,7 @@ public class RegisterEventController extends HttpServlet {
             if (getHandler(request, response)) {
                 response.sendRedirect(Routers.REVIEW_PAYMENT_PAGE);
             } else {
-                request.getRequestDispatcher(Routers.SEARCH_EVENT_PAGE + "?" + request.getQueryString());
+                request.getRequestDispatcher(Routers.SEARCH_EVENT_PAGE + "?" + request.getQueryString()).forward(request, response);
             }
         } catch (Exception ex) {
             log(ex.getMessage());
@@ -138,10 +148,11 @@ public class RegisterEventController extends HttpServlet {
                 request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
             } else {
                 if (btAction.equalsIgnoreCase("pay")) {
-                    request.getRequestDispatcher(Routers.EXECUTE_PAYMENT_CONTROLLER).forward(request, response); 
-                }
-                if (postHandler(request, response)) {
-                    response.sendRedirect(Routers.HOME_PAGE);
+                    request.getRequestDispatcher(Routers.EXECUTE_PAYMENT_CONTROLLER).forward(request, response);
+                } else {
+                    if (postHandler(request, response)) {
+                        response.sendRedirect(Routers.HOME_PAGE);
+                    }
                 }
             }
         } catch (Exception ex) {

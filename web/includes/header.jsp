@@ -27,8 +27,14 @@
                             </button>
                         </a>
                     </c:if>
-                    <c:if test="${role eq 1 or role eq 2}">
+                    <c:if test="${role eq 1 or role eq 2 or role eq 3}">
                         <a class="item nav-link" href="ViewUserController">view profile</a>
+                    </c:if>
+                    <c:if test="${role eq 4 or role eq 5}">
+                        <a class="item nav-link" href="EventManagementController">club management</a>
+                    </c:if>
+                    <c:if test="${not empty role}">
+                        <a class="item nav-link" href="#" data-toggle="modal" data-target="#logoutModal">log out</a>
                     </c:if>
                 </div>
             </div>
@@ -46,4 +52,22 @@
             </div>
         </div>
     </nav>
+
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <a class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</a>
+                    <a class="btn btn-primary" href="LogoutController">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./asset/vendor/jquery/jquery.min.js"></script>
+    <script src="./asset/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </header>

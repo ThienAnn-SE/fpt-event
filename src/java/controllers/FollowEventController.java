@@ -5,13 +5,22 @@
  */
 package controllers;
 
+import constant.Routers;
+import daos.EventFollowDAO;
+import dtos.EventFollowDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import utils.GetParam;
 
 /**
  *
@@ -28,11 +37,28 @@ public class FollowEventController extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @throws javax.naming.NamingException
+     * @throws java.sql.SQLException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, NamingException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
-        
+        Integer eventID = GetParam.getIntParams(request, "eventID", "EventID", 0, 0, null);
+        String btAction = GetParam.getStringParam(request, "btAction", "Action", 0, 50, null);
+
+        HttpSession session = request.getSession();
+        String userEmail = (String) session.getAttribute("email");
+
+        if (eventID == null || btAction == null) {
+            throw new NullPointerException("Missing parameter");
+        }
+
+        EventFollowDAO followDAO = new EventFollowDAO();
+        if (btAction.equalsIgnoreCase("follow")) {
+            followDAO.addNewFollow(new EventFollowDTO(eventID, userEmail));
+            System.out.println("follow success");
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -47,7 +73,13 @@ public class FollowEventController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (NamingException | SQLException ex) {
+            log(ex.getMessage());
+            request.setAttribute("errorMessage", ex.getMessage());
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+        }
     }
 
     /**
@@ -61,7 +93,13 @@ public class FollowEventController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (NamingException | SQLException ex) {
+            log(ex.getMessage());
+            request.setAttribute("errorMessage", ex.getMessage());
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+        }
     }
 // </editor-fold> 
 }

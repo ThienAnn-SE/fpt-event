@@ -93,9 +93,9 @@ public class UserDAO {
             String sql = "SELECT * FROM tblUsers";
             preStm = conn.prepareStatement(sql);
             rs = preStm.executeQuery();
-            if (rs.next()) {
+            while (rs.next()) {
                 String email = rs.getString("userEmail");
-                String name = rs.getString("userName");
+                String name = rs.getNString("userName");
                 Date dateOfBirth = rs.getDate("dateOfBirth");
                 boolean gender = rs.getBoolean("gender");
                 String phoneNumber = rs.getString("phoneNumber");

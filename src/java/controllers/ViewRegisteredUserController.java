@@ -88,9 +88,9 @@ public class ViewRegisteredUserController extends HttpServlet {
             throws ServletException, IOException {
         try {
             if(processRequest(request, response)){
-                request.getRequestDispatcher(Routers.VIEW_REGISTRATION_PAGE).forward(request, response);
+                request.getRequestDispatcher("viewRegistrationPage").forward(request, response);
             }
-            request.getRequestDispatcher(Routers.EVENT_MANAGEMENT_PAGE).forward(request, response);
+            request.getRequestDispatcher(Routers.VIEW_MANAGEMENT_PAGE).forward(request, response);
         } catch (Exception ex) {
             log(ex.getMessage());
             request.setAttribute("errorMessage", ex.getMessage());

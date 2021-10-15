@@ -118,7 +118,8 @@
                             </div>
                             <div class="event-content">
                                 <h2 class="event-name">
-                                    <i class="fal fa-heart"></i> <a href="ViewEventController?eventID=${event.eventID}">${event.eventName}</a>
+                                    <i class="fal fa-heart" onclick="doLike(${event.eventID}, 'follow')"></i> 
+                                    <a href="ViewEventController?eventID=${event.eventID}">${event.eventName}</a>
                                 </h2>
                                 <ul class="event-detail">
                                     <li class="create-date">
@@ -143,13 +144,13 @@
                                         </a>
                                     </li>
                                     <li class="event-comment">
-                                        <i class="fal fa-comments"></i> 0 Comments
+                                        <i class="fal fa-comments"></i> <span class="fb-comments-count" data-href="http://localhost:8080/${event.eventID}"></span> Comments
                                     </li>
                                 </ul>
                                 <p>
                                     ${e.content}
                                 </p>
-                                <a href="#"><button><i class="fas fa-ticket-alt"></i> Register</button></a>
+                                <a href="RegisterEventController?registerNum=${registerNum}&eventID=${event.eventID}"><button><i class="fas fa-ticket-alt"></i> Register</button></a>
                                 <a class="read-more" href="ViewEventController?eventID=${event.eventID}"
                                    >continue reading <i class="fal fa-chevron-right"></i
                                     ></a>
@@ -158,98 +159,123 @@
                     </c:forEach>
                 </div>
                 <div class="pagination">
-                    <c:set scope="request" var="pre" value="${(index-1 <= 1) ? 1 : (index-1)}"/>
-                    <a class="page-link btn-prev" href="SearchEventController?page=${pre}">
-                        <span><i class="fas fa-chevron-left"></i> Previous</span>
-                    </a>
-
                     <c:forEach begin="1" end="${endPage}" var="i">
-                        <a class="page-link num" href="SearchEventController?page=${i}">${i}</a>
+                        <a class="page-link num ${page == i ? "active" : ""}" href="SearchEventController?page=${i}${lastSearch}">${i}</a>
                     </c:forEach>
-
-                    <c:set scope="request" var="next" value="${(index+1 >= endPage) ? endPage : (index+1)}"/>
-                    <a class="page-link btn-next" href="SearchEventController?page=${next}${lastSearch}">
-                        <span>Next <i class="fas fa-chevron-right"></i></span>
-                    </a>
                 </div>
             </div>
+
+            <div class="modal fade" id="myModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Notification</h4>
+                            <button type="button" class="close" data-dismiss="modal">×</button>
+                        </div>
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            Follow event successfully!!!
+                        </div>
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <script src="./asset/js/main.js"></script>
 
         <script>
-            var prevs = document.querySelectorAll(".prev");
-            var nexts = document.querySelectorAll(".next");
-            var numbers = document.querySelectorAll('input[type="number"]');
-            var range1 = document.getElementById("range1");
-            var range2 = document.getElementById("range2");
-            var slider1 = document.getElementById("slider1");
-            var slider2 = document.getElementById("slider2");
-            for (pre of prevs) {
-                pre.addEventListener("click", function () {
-                    var price = this.parentElement.classList;
-                    if (price.value == "min") {
-                        if (numbers[0].value > 0) {
-                            numbers[0].value = parseInt(numbers[0].value) - 1000;
-                            slider1.value = numbers[0].value;
-                            range1.innerHTML = slider1.value;
-                        }
-                    } else if (price.value == "max") {
-                        if (numbers[1].value > 0) {
-                            numbers[1].value = parseInt(numbers[1].value) - 1000;
-                            slider2.value = numbers[1].value;
-                            range2.innerHTML = slider2.value;
-                        }
-                    }
-                });
+                                        var prevs = document.querySelectorAll(".prev");
+                                        var nexts = document.querySelectorAll(".next");
+                                        var numbers = document.querySelectorAll('input[type="number"]');
+                                        var range1 = document.getElementById("range1");
+                                        var range2 = document.getElementById("range2");
+                                        var slider1 = document.getElementById("slider1");
+                                        var slider2 = document.getElementById("slider2");
+                                        for (pre of prevs) {
+                                        pre.addEventListener("click", function () {
+                                        var price = this.parentElement.classList;
+                                        if (price.value == "min") {
+                                        if (numbers[0].value > 0) {
+                                        numbers[0].value = parseInt(numbers[0].value) - 1000;
+                                        slider1.value = numbers[0].value;
+                                        range1.innerHTML = slider1.value;
+                                        }
+                                        } else if (price.value == "max") {
+                                        if (numbers[1].value > 0) {
+                                        numbers[1].value = parseInt(numbers[1].value) - 1000;
+                                        slider2.value = numbers[1].value;
+                                        range2.innerHTML = slider2.value;
+                                        }
+                                        }
+                                        });
+                                        }
+                                        for (next of nexts) {
+                                        next.addEventListener("click", function () {
+                                        var price = this.parentElement.classList;
+                                        if (price.value == "min") {
+                                        if (numbers[0].value < 500000) {
+                                        numbers[0].value = parseInt(numbers[0].value) + 1000;
+                                        slider1.value = numbers[0].value;
+                                        range1.innerHTML = slider1.value;
+                                        }
+                                        } else if (price.value == "max") {
+                                        if (numbers[1].value < 500000) {
+                                        numbers[1].value = parseInt(numbers[1].value) + 1000;
+                                        slider2.value = numbers[1].value;
+                                        range2.innerHTML = slider2.value;
+                                        }
+                                        }
+                                        });
+                                        }
+                                        numbers[0].addEventListener("input", function () {
+                                        slider1.value = numbers[0].value;
+                                        range1.innerHTML = slider1.value;
+                                        });
+                                        numbers[1].addEventListener("input", function () {
+                                        slider2.value = numbers[1].value;
+                                        range2.innerHTML = slider2.value;
+                                        });
+                                        slider1.addEventListener("input", function () {
+                                        numbers[0].value = slider1.value;
+                                        range1.innerHTML = slider1.value;
+                                        });
+                                        slider2.addEventListener("input", function () {
+                                        numbers[1].value = slider2.value;
+                                        range2.innerHTML = slider2.value;
+                                        });
+                                        document.querySelectorAll('.event-name i').forEach((item) => {
+                                        item.addEventListener("click", () => {
+                                        item.classList.toggle('followed');
+                                        if (item.classList.contains('followed')) {
+                                        item.className = 'fas fa-heart followed';
+                                        item.style.color = 'red';
+                                        } else {
+                                        item.className = 'fal fa-heart';
+                                        item.style.color = 'var(--black)';
+                                        }
+                                        });
+                                        });
+        </script>
+        <script>
+            function doLike(eventID, btAction){
+            const data{
+            eventID: eventID,
+                    btAction: btAction
             }
-            for (next of nexts) {
-                next.addEventListener("click", function () {
-                    var price = this.parentElement.classList;
-                    if (price.value == "min") {
-                        if (numbers[0].value < 500000) {
-                            numbers[0].value = parseInt(numbers[0].value) + 1000;
-                            slider1.value = numbers[0].value;
-                            range1.innerHTML = slider1.value;
-                        }
-                    } else if (price.value == "max") {
-                        if (numbers[1].value < 500000) {
-                            numbers[1].value = parseInt(numbers[1].value) + 1000;
-                            slider2.value = numbers[1].value;
-                            range2.innerHTML = slider2.value;
-                        }
-                    }
-                });
+            $.ajax({
+            url: "FollowEventServlet",
+                    data: data,
+                    success: function (data, textStatus, jqXHR){
+                    $("#myModal").modal();
+                    },
+            })
             }
-            numbers[0].addEventListener("input", function () {
-                slider1.value = numbers[0].value;
-                range1.innerHTML = slider1.value;
-            });
-            numbers[1].addEventListener("input", function () {
-                slider2.value = numbers[1].value;
-                range2.innerHTML = slider2.value;
-            });
-            slider1.addEventListener("input", function () {
-                numbers[0].value = slider1.value;
-                range1.innerHTML = slider1.value;
-            });
-            slider2.addEventListener("input", function () {
-                numbers[1].value = slider2.value;
-                range2.innerHTML = slider2.value;
-            });
-
-            document.querySelectorAll('.event-name i').forEach((item) => {
-                item.addEventListener("click", () => {
-                    item.classList.toggle('followed');
-                    if (item.classList.contains('followed')) {
-                        item.className = 'fas fa-heart followed';
-                        item.style.color = 'red';
-                    } else {
-                        item.className = 'fal fa-heart';
-                        item.style.color = 'var(--black)';
-                    }
-                });
-            });
         </script>
     </body>
 </html>

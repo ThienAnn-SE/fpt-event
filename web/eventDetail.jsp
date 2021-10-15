@@ -23,6 +23,8 @@
             />
     </head>
     <body>
+        <div id="fb-root"></div>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v12.0&appId=147519300929894&autoLogAppEvents=1" nonce="8orVztj5"></script>
         <jsp:include page="./includes/header.jsp"></jsp:include>
             <div class="container">
                 <div class="card row">
@@ -127,7 +129,7 @@
                         <div class="num">
                             <input type="number" value="1" readonly />
                         </div>
-                        <button>Register</button>
+                        <a href="RegisterEventController?registerNum=${registerNum}&eventID=${event.eventID}"><button>Register</button></a>
                     </div>
                     <c:if test="${event.statusID eq 550}">
                         <div class="rate">
@@ -162,8 +164,9 @@
                             </form>
                         </div>
                     </c:if>
-                </div>
-            </div>
+                    <div class="fb-comments" data-href="http://localhost:8080/${event.eventID}" data-width="" data-numposts="3"></div>
+                </div>         
+            </div>      
         </div>
         <jsp:include page="./includes/footer.jsp"></jsp:include>
         <script src="./asset/js/main.js"></script>

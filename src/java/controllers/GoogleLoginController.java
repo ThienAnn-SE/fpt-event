@@ -90,6 +90,7 @@ public class GoogleLoginController extends HttpServlet {
                     request.getRequestDispatcher(Routers.HOME_PAGE_CONTROLLER).forward(request, response);
                 } else {
                     if (firstLoginRegister(email)) {
+                        user = dao.getUserByEmail(email);
                         HttpSession session = request.getSession();
                         session.setAttribute("email", email);
                         session.setAttribute("avatar", request.getAttribute("avatar"));
