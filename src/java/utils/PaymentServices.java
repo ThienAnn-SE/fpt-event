@@ -74,7 +74,7 @@ public class PaymentServices {
     private RedirectUrls getRedirectURLs() {
         RedirectUrls redirectUrls = new RedirectUrls();
         redirectUrls.setCancelUrl("http://localhost:8080/fpt-event/SearchEventController");
-        redirectUrls.setReturnUrl("http://localhost:8080/fpt-event/ReviewPaymentController");
+        redirectUrls.setReturnUrl("http://localhost:8080/fpt-event/ExecutePaymentController");
 
         return redirectUrls;
     }

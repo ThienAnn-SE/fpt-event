@@ -120,7 +120,7 @@ public class EventRegisterDAO {
                 rs = preStm.executeQuery();
                 while (rs.next()) {
                     String userEmail = rs.getString("email");
-                    Date registerDate = rs.getDate("createDate");
+                    String registerDate = new SimpleDateFormat("dd/MM/yyyy").format(rs.getDate("createDate"));
                     registerList.add(new EventRegisterDTO(eventID, userEmail, registerDate));
                 }
             }

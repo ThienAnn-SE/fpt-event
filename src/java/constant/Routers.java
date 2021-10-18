@@ -34,6 +34,8 @@ public class Routers {
     public final static String VIEW_MANAGEMENT_PAGE = "leader.jsp";
     public final static String VIEW_CLUB_DETAIL_PAGE = "clubDetail.jsp";
     public final static String USER_MANAGEMENT_PAGE = "admin-table.jsp";
+    public final static String ADMIN_FORM_PAGE = "admin-form.jsp";
+    public final static String ADMIN_REQUEST_PAGE = "admin-request.jsp";
 
     public final static String UPDATE_CONTROLLER = "UpdateController";
     public final static String REGISTER_CONTROLLER = "RegisterController";

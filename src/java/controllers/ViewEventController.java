@@ -8,12 +8,14 @@ package controllers;
 import constant.Routers;
 import daos.CatetoryDAO;
 import daos.ClubDAO;
+import daos.CommentDAO;
 import daos.EventDAO;
 import daos.EventRegisterDAO;
 import daos.EventStatusDAO;
 import daos.LocationDAO;
 import dtos.CatetoryDTO;
 import dtos.ClubDTO;
+import dtos.CommentDTO;
 import dtos.EventDTO;
 import dtos.EventStatusDTO;
 import dtos.LocationDTO;
@@ -25,6 +27,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import utils.GetParam;
 
 /**
@@ -48,34 +51,47 @@ public class ViewEventController extends HttpServlet {
             throws Exception {
         response.setContentType("text/html;charset=UTF-8");
 
+        //initialize resources
+        EventDAO eventDAO = new EventDAO();
+        EventStatusDAO statusDAO = new EventStatusDAO();
+        CatetoryDAO catetoryDAO = new CatetoryDAO();
+        LocationDAO locationDAO = new LocationDAO();
+        ClubDAO clubDAO = new ClubDAO();
+        EventRegisterDAO registerDAO = new EventRegisterDAO();
+        CommentDAO commentDAO = new CommentDAO();
+        
+        //get parameter
         Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 10, 5000, null);
 
+        //check paramter
         if (eventID == null) {
             return false;
         }
 
-        EventDAO eventDAO = new EventDAO();
+        //get event
         EventDTO event = eventDAO.getEventByID(eventID);
+
+        //check event is exist
         if (event == null) {
             request.setAttribute("errorMessage", "Event does not exist");
             return false;
         }
 
-        EventStatusDAO statusDAO = new EventStatusDAO();
+        //get status 
         EventStatusDTO status = statusDAO.getStatusByID(event.getStatusID());
-
-        CatetoryDAO catetoryDAO = new CatetoryDAO();
+        //get catetory
         CatetoryDTO catetory = catetoryDAO.getCatetoryByID(event.getCatetoryID());
-
-        LocationDAO locationDAO = new LocationDAO();
+        //get location
         LocationDTO location = locationDAO.getLocationByID(event.getLocationID());
-
-        ClubDAO clubDAO = new ClubDAO();
+        //get club
         ClubDTO club = clubDAO.getClubByID(event.getClubID());
-        
-        EventRegisterDAO registerDAO = new EventRegisterDAO();
+        //get register num of event
         int registerNum = registerDAO.getRegisterNumByEventID(eventID);
+        //get comment list
+        ArrayList<CommentDTO> commentList = commentDAO.getCommentListByEventID(eventID);
 
+        //set data
+        request.setAttribute("commentList", commentList);
         request.setAttribute("registerNum", registerNum);
         request.setAttribute("event", event);
         request.setAttribute("catetoryName", catetory.getCatetoryName());

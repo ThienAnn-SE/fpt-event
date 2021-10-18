@@ -67,13 +67,29 @@ public class UserDAO {
         return isSuccess;
     }
 
+    public boolean changeUserStatus(String email, int status) throws NamingException, SQLException {
+        boolean isSuccess;
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "UPDATE tblUsers SET statusID = ? WHERE userEmail = ?";
+            preStm = conn.prepareStatement(sql);
+            preStm.setInt(1, status);
+            preStm.setString(2, email);
+
+            isSuccess = preStm.executeUpdate() > 0;
+        } finally {
+            this.closeConnection();
+        }
+        return isSuccess;
+    }
+
     public boolean updateUser(String email, String name, String dateOfBirth, int gender, String phoneNumber) throws NamingException, SQLException {
         boolean isSuccess = false;
         try {
             conn = DBHelpers.makeConnection();
             String sql = "UPDATE tblUsers SET userName=?, dateOfBirth=?, gender=?, phoneNumber=? WHERE userEmail=?";
             preStm = conn.prepareStatement(sql);
-            preStm.setString(1, name);
+            preStm.setNString(1, name);
             preStm.setDate(2, java.sql.Date.valueOf(dateOfBirth));
             preStm.setInt(3, gender);
             preStm.setString(4, phoneNumber);
@@ -84,6 +100,29 @@ public class UserDAO {
             this.closeConnection();
         }
         return isSuccess;
+    }
+
+    public ArrayList<UserDTO> getUserBanList() throws NamingException, SQLException {
+        ArrayList<UserDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "SELECT *"
+                    + " FROM tblUsers"
+                    + " WHERE statusID in (400, 450)"
+                    + " ORDER by statusID DESC";
+            preStm = conn.prepareStatement(sql);
+
+            rs = preStm.executeQuery();
+            while (rs.next()) {
+                String email = rs.getString("userEmail");
+                String name = rs.getString("userName");
+                int statusID = rs.getInt("statusID");
+                list.add(new UserDTO(email, name, statusID));
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return list;
     }
 
     public ArrayList<UserDTO> getAllUsers() throws SQLException, NamingException {
