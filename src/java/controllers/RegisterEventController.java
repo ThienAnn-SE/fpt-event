@@ -7,11 +7,13 @@ package controllers;
 
 import constant.Routers;
 import daos.EventDAO;
+import daos.EventRegisterDAO;
 import daos.UserDAO;
 import dtos.EventDTO;
 import dtos.EventRegisterDTO;
 import dtos.UserDTO;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -39,8 +41,23 @@ public class RegisterEventController extends HttpServlet {
      */
     protected boolean postHandler(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        //get Parameter
+        Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 0, 5000, null);
+        String email = GetParam.getStringParam(request, "email", "Email", 0, 50, null);
 
-        return true;
+        //check parameter
+        if (eventID == null || email == null) {
+            return false;
+        }
+
+        //get current date
+        String registerDate = new SimpleDateFormat("yyyy-MM-dd").format(System.currentTimeMillis());
+
+        //initialize resouce
+        EventRegisterDAO registerDAO = new EventRegisterDAO();
+
+        //add registration
+        return registerDAO.addNewEventRegistration(new EventRegisterDTO(eventID, email, registerDate));
     }
 
     /**
@@ -61,9 +78,8 @@ public class RegisterEventController extends HttpServlet {
 
         //Get parameter
         Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 10, Integer.MAX_VALUE, null);
-        Integer registerNum = GetParam.getIntParams(request, "registerNum", "Number of registration", 0, 500, null);
 
-        if (eventID == null || registerNum == null) {
+        if (eventID == null) {
             return false;
         }
         //check existed event by ID
@@ -73,6 +89,10 @@ public class RegisterEventController extends HttpServlet {
             return false;
         }
 
+        //check avaialable remaining event slot to register
+        EventRegisterDAO registerDAO = new EventRegisterDAO();
+        int registerNum = registerDAO.getRegisterNumByEventID(eventID);
+
         if (registerNum >= event.getSlot()) {
             request.setAttribute("errorMessage", "Event is full");
             return false;
@@ -81,20 +101,10 @@ public class RegisterEventController extends HttpServlet {
         //get user email
         HttpSession session = request.getSession();
         String email = (String) session.getAttribute("email");
-        if (email == null) {
-            request.setAttribute("errorMessage", "Please log in first");
-            return false;
-        }
-
         UserDTO user = userDAO.getUserByEmail(email);
 
-        if (user == null) {
-            request.setAttribute("errorMessage", "This user is not exist");
-            return false;
-        }
-
-        //check isBanned?
-        if (user.getStatus() == 500) {
+        //check isBanned/new/invalid?
+        if (user.getStatus() != 500) {
             request.setAttribute("errorMessage", "You are not allow to register");
             return false;
         }
@@ -117,7 +127,7 @@ public class RegisterEventController extends HttpServlet {
             throws ServletException, IOException {
         try {
             if (getHandler(request, response)) {
-                response.sendRedirect(Routers.REVIEW_PAYMENT_PAGE);
+                request.getRequestDispatcher(Routers.REVIEW_PAYMENT_PAGE).forward(request, response);
             } else {
                 request.getRequestDispatcher(Routers.SEARCH_EVENT_PAGE + "?" + request.getQueryString()).forward(request, response);
             }
@@ -143,18 +153,17 @@ public class RegisterEventController extends HttpServlet {
 
             String btAction = GetParam.getStringParam(request, "btAction", "Action", 1, 50, null);
 
-            if (btAction == null) {
-                request.setAttribute("errorMessage", "No action have been done");
-                request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+            if (btAction.equalsIgnoreCase("pay")) {
+                //
+                request.getRequestDispatcher(Routers.EXECUTE_PAYMENT_CONTROLLER).forward(request, response);
             } else {
-                if (btAction.equalsIgnoreCase("pay")) {
-                    request.getRequestDispatcher(Routers.EXECUTE_PAYMENT_CONTROLLER).forward(request, response);
+                if (postHandler(request, response)) {
+                    request.getRequestDispatcher(Routers.SEARCH_EVENT_CONTROLLER).forward(request, response);
                 } else {
-                    if (postHandler(request, response)) {
-                        response.sendRedirect(Routers.HOME_PAGE);
-                    }
+                    request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
                 }
             }
+
         } catch (Exception ex) {
             log(ex.getMessage());
             request.setAttribute("errorMessage", ex.getMessage());

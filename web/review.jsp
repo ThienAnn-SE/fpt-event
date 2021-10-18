@@ -4,6 +4,7 @@
     Author     : thien
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -22,37 +23,33 @@
                 <table class="table table-borderless">
                     <tr>
                         <td colspan="2"><b>Transaction Details:</b></td>
-                        <td>
-                            <input type="hidden" name="paymentId" value="${param.paymentId}" />
-                            <input type="hidden" name="PayerID" value="${param.PayerID}" />
-                        </td>
                     </tr>
                     <tr>
                         <td>Description:</td>
-                        <td>${transaction.description}</td>
+                        <td>You are going to register for the event "${event.eventName}"</td>
                     </tr>
                     <tr>
                         <td>Subtotal:</td>
-                        <td>${transaction.amount.details.subtotal} VND</td>
+                        <td>${event.ticketFee}VND</td>
                     </tr>
                     <tr>
                         <td>Total:</td>
-                        <td>${transaction.amount.total} VND</td>
+                        <td>${event.ticketFee} VND</td>
                     </tr>
                     <tr>
                         <td colspan="2"><b>Payer Information:</b></td>
                     </tr>
                     <tr>
                         <td>First Name:</td>
-                        <td>${payer.firstName}</td>
+                        <td>${user.name}</td>
                     </tr>
                     <tr>
                         <td>Email:</td>
-                        <td>${payer.email}</td>
+                        <td>${user.email}</td>
                     </tr> 
                     <tr>
                         <td>Phone number:</td>
-                        <td>${payer.phone}</td>
+                        <td>${user.phone}</td>
                     </tr>
                     <tr>
                         <td colspan="2" align="center" >
@@ -62,6 +59,10 @@
                         </td>          
                     </tr>
                 </table>
+                <c:if test="${event.ticketFee ne 0}">
+                    <c:set var="action" value="pay"/>
+                </c:if>
+                <input name="btAction" type="hidden" value="${action}">
             </form>
     </body>
 </html>

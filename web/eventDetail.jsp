@@ -21,6 +21,10 @@
             integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
             crossorigin="anonymous"
             />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </head>
     <body>
         <div id="fb-root"></div>
@@ -129,7 +133,7 @@
                         <div class="num">
                             <input type="number" value="1" readonly />
                         </div>
-                        <a href="RegisterEventController?registerNum=${registerNum}&eventID=${event.eventID}"><button>Register</button></a>
+                        <a href="RegisterEventController?eventID=${event.eventID}"><button>Register</button></a>
                     </div>
                     <c:if test="${event.statusID eq 550}">
                         <div class="rate">
@@ -163,12 +167,93 @@
                                 </div>
                             </form>
                         </div>
-                    </c:if>
-                    <div class="fb-comments" data-href="http://localhost:8080/${event.eventID}" data-width="" data-numposts="3"></div>
+                    </c:if>                   
                 </div>         
             </div>      
         </div>
+        <div class="container mt-3 mb-4 p-3 border">
+            <%--  <c:if test="${not empty sessionScope.email}"> --%>
+            <div class="media border p-3 mt-3">
+                <img src="${sessionScope.avatar}" alt="Avatar" class=" mt-3 ml-3 mr-3 rounded-circle" style="width:60px;">
+                <form action="CommentController" class="w-100" method="POST">
+                    <input type="hidden" name="eventID" value="${event.eventID}"/>
+                    <div class="form-group">
+                        <div class="media-body">
+                            <textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Add a comment"></textarea>
+                            <div class="clearfix mt-3">
+                                <label for="comment" class="float-left">Signed in as <strong>${sessionScope.email}</strong></label>
+                                <button type="submit" class="btn btn-success float-right" name="btAction">Post a Comment</button>
+                            </div> 
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <hr class="sidebar-divider">
+            <%-- </c:if> --%>
+            <div>
+                <h3 class="mx-3 text-center">Comments</h3>
+            </div>
+            <c:if test="${commentList eq null}">
+                <div>
+                    <p class="font-weight-light text-center"><i>There are not any comments yet. Please be the first one!</i></p>
+                </div>
+            </c:if>
+            <c:forEach var="comment" items="${commentList}">
+                <div class="media border p-3 mt-3 my-3">
+                    <img src="${comment.avatar}" alt="Avatar" class="align-self-center ml-3 m-3 rounded-circle" style="width:60px;">
+                    <div class="card w-100">
+                        <div class="media-body">
+                            <div class="card-header">
+                                <h6><strong>${comment.email}</strong><i> - Posted on ${comment.postDate}</i></h6>
+                            </div>
+                            <div class="card-body">
+                                <p>${comment.comment}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" data-href="CommentController?commentID=?${comment.commentID} data-toggle="modal" data-target="#report" class="align-self-center ml-3 btn btn-outline-danger">
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </c:forEach>
+
+            <div class="media border p-3 mt-3">
+                <img src="https://lh3.googleusercontent.com/a-/AOh14GhBGHTX_SAPLO3B2iVYu8tf00G-2AQpJ4_gx9qj=s96-c" alt="Ann" class="align-self-center ml-3 m-3 rounded-circle" style="width:60px;">
+                <div class="card w-100">
+                    <div class="media-body">
+                        <div class="card-header">
+                            <h6><strong>John Doe</strong><i> - Posted on February 19, 2016</i></h6>
+                        </div>
+                        <div class="card-body">
+                            <p>Lorem ipsum...</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" data-href="SearchEventController" data-toggle="modal" data-target="#report" class="align-self-center ml-3 btn btn-outline-danger"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></a>
+            </div>
+
+            <!-- report modal -->
+            <div class="modal fade" id="report" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            Report this comment
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to report this comment
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn btn-light" data-dismiss="modal">Cancel</a>
+                            <a class="btn btn-danger btn-ok">Report</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
         <jsp:include page="./includes/footer.jsp"></jsp:include>
+
         <script src="./asset/js/main.js"></script>
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
@@ -176,6 +261,10 @@
             crossorigin="anonymous">
         </script>
         <script>
+            $('#report').on('show.bs.modal', function (e) {
+                $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+            });
+
             let form = document.querySelector(".container form"),
                     textarea = document.querySelector("form textarea"),
                     signal_num = document.querySelector(".signal_num"),

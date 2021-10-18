@@ -5,13 +5,12 @@
  */
 package dtos;
 
-
-
 /**
  *
  * @author thien
  */
 public class UserDTO {
+
     private String email;
     private String name;
     private String dayOfBirth;
@@ -25,8 +24,12 @@ public class UserDTO {
         this.role = role;
         this.status = status;
     }
-    
-    
+
+    public UserDTO(String email, String name, int status) {
+        this.email = email;
+        this.name = name;
+        this.status = status;
+    }
 
     public UserDTO(String email, String name, String dayOfBirth, boolean gender, String phoneNumber, int role, int status) {
         this.email = email;
@@ -40,7 +43,6 @@ public class UserDTO {
 
     public UserDTO() {
     }
-    
 
     public String getEmail() {
         return email;
@@ -98,5 +100,4 @@ public class UserDTO {
         this.status = status;
     }
 
-    
 }

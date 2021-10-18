@@ -150,7 +150,7 @@
                                 <p>
                                     ${e.content}
                                 </p>
-                                <a href="RegisterEventController?registerNum=${registerNum}&eventID=${event.eventID}"><button><i class="fas fa-ticket-alt"></i> Register</button></a>
+                                <a href="RegisterEventController?eventID=${event.eventID}"><button><i class="fas fa-ticket-alt"></i> Register</button></a>
                                 <a class="read-more" href="ViewEventController?eventID=${event.eventID}"
                                    >continue reading <i class="fal fa-chevron-right"></i
                                     ></a>
