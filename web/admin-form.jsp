@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="vi-VN">
-    <%@taglib uri="http://java.sun.com/jsp/jstl/core"
-              prefix="c"%>
     <head>
-
+        <%@taglib uri="http://java.sun.com/jsp/jstl/core"
+                  prefix="c"%>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Admin dashboard</title>
+        <title>Admin form</title>
 
         <!-- Custom fonts for this template -->
         <link href="./asset/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -36,10 +35,9 @@
 
                 <!-- Sidebar - Brand -->
                 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="AdminDashboardController">
-                    <div class="sidebar-brand-icon rotate-n-15">
-                        <i class="fas fa-laugh-wink"></i>
+                    <div class="sidebar-brand-icon">
+                        <image src="./asset/img/FPTU_EVENT.png" style="width:  100px"/>
                     </div>
-                    <div class="sidebar-brand-text mx-3">FU EVENT MANAGEMET</div>
                 </a>
 
                 <!-- Divider -->
@@ -57,25 +55,52 @@
 
                 <!-- Heading -->
                 <div class="sidebar-heading">
-                    Selections
+                    Management
                 </div>
+
                 <!-- Nav Item - Tables -->
                 <li class="nav-item">
                     <a class="nav-link" href="UserManagementController">
-                        <i class="fas fa-fw fa-table"></i>
-                        <span>Tables</span></a>
+                        <i class="fa fa-user-circle"></i>
+                        <span>Users</span>
+                    </a>
                 </li>
-
-                <li class="nav-item active">
-                    <a class="nav-link" href="AdminFormController">
-                        <i class="fa fa-list-ul"></i>
-                        <span>Form</span></a>
+                <li class="nav-item">
+                    <a class="nav-link" href="AdminClubManagementController">
+                        <i class="fa fa-users"></i>
+                        <span>Club</span>
+                    </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="">
-                        <i class="fa fa-envelope"></i>
-                        <span>Request</span>
+                    <a class="nav-link" href="AdminCategoryController">
+                        <i class="fa fa-list"></i>
+                        <span>Category</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="AdminLocationController">
+                        <i class="fa fa-location-arrow"></i>
+                        <span>Location</span>
+                    </a>
+                </li>
+
+                <hr class="sidebar-divider">
+
+                <div class="sidebar-heading">
+                    Process
+                </div>
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="AdminFormController">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <span>Ban user request</span></a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-comment"></i>
+                        <span>Comment report</span>
                     </a>
                 </li>
 
@@ -146,156 +171,186 @@
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h3 class="m-0 font-weight-bold text-primary text-center">User banning form</h3>
-                                <div class="card-body">
-                                    <!-- start of form -->
-                                    <form action="AdminFormController" class="needs-validation" novalidate>
-                                        <div class="form-group">
-                                            <label for="email">User email:</label>
-                                            <input type="text" class="form-control" id="email" placeholder="Enter user email" name="email" required>
-                                            <div class="valid-feedback">Valid.</div>
-                                            <div class="invalid-feedback">Please fill out this field.</div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="btAction">Select action:</label>
-                                            <select class="form-control" id="btAction" name="btAction" required>
-                                                <option disabled selected hidden value="">---Choose action---</option>
-                                                <option value="ban">Ban user temporary</option>
-                                                <option value="invalid">Invalid user from system</option>
-                                            </select>
-                                            <div class="valid-feedback">Valid.</div>
-                                            <div class="invalid-feedback">Please choose action to do.</div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="reason">Reason:</label>
-                                            <textarea class="form-control" rows="4" id="reason" name="reason" placeholder="Please enter the reason" required></textarea>
-                                            <div class="characters">
-                                                <span class="signal_num">0</span>
-                                                <span class="limit_num">/100</span>
-                                            </div>
-                                            <div class="valid-feedback">Valid.</div>
-                                            <div class="invalid-feedback">Please fill out this field.</div>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card shadow mb-4">
-                            <div class="card-header py-3">
-                                Club banning request
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th>From</th>
-                                                <th>User email</th>
-                                                <th>Send date</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th>From</th>
-                                                <th>User email</th>
-                                                <th>Send date</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </tfoot>
-                                        <tbody>
-                                            <tr>                                              
-                                                <td>
-                                                    <p></p>
-                                                </td>
-                                                <td>
-                                                    <p></p>
-                                                </td>
-                                                <td>
-                                                    <p></p>
-                                                </td>
-                                                <td>
-                                                    <p></p>
-                                                </td>
-                                                <td>
-                                                    <p></p>
-                                                </td>
-                                            </tr>
-                                        </tbody>                                   
-                                    </table>
-                                </div>
+                                <!-- start of form -->
+                                <form action="AdminFormController" method="POST" class="needs-validation" novalidate>
+                                    <div class="form-group">
+                                        <label for="email">User email:</label>
+                                        <input type="text" class="form-control" id="email" placeholder="Enter user email" name="email" value="${param.userEmail}" required>
+                                        <div class="valid-feedback">Valid.</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="btAction">Select action:</label>
+                                        <select class="form-control" id="btAction" name="btAction" required>
+                                            <option value="" disabled selected hidden>---Choose action---</option>
+                                            <option value="ban">Ban user temporary</option>
+                                            <option value="invalid">Invalid user from system</option>
+                                        </select>
+                                        <div class="valid-feedback">Valid.</div>
+                                        <div class="invalid-feedback">Please choose action to do.</div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reason">Reason:</label>
+                                        <textarea class="form-control" rows="4" id="reason" name="reason" placeholder="Maximum 100 characters..." required></textarea>
+                                        <div class="valid-feedback">Valid.</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </form>
                             </div>
                         </div>
-
+                        <c:if test="${not empty errorMessage or not empty successMessage}">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Notification</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="text-center text-success">${successMessage}</p>
+                                    <p class="text-center text-danger">${errorMessage}</p>
+                                </div>
+                            </div>
+                        </c:if>
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
-                                <h6 class="m-0 font-weight-bold text-primary">Banned user list</h6>
+                                <h5 class="m-0 font-weight-bold text-primary">Club banning request</h5>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th>Email</th>
-                                                <th>Name</th>                                              
-                                                <th>Status</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th>Email</th>
-                                                <th>Name</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </tfoot>
-                                        <tbody>
-                                            <c:forEach var="user" items="${userBanList}">
+                                <c:if test="${empty banRequestList}">
+                                    <h4 class="text-center">There are no request at the moment</h4>
+                                </c:if>
+                                <c:if test="${not empty banRequestList}">
+                                    <div class="table table-responsive">
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <thead>
                                                 <tr>
-                                            <form action="CancelBanController">
-                                                <td>
-                                                    <p>${user.email}</p>
-                                                    <input type="hidden" name="email" value="${user.email}"/>
-                                                </td>
-                                                <td>
-                                                    <c:if test="${empty user.name}">
-                                                        <p class="text-danger">missing</p>   
-                                                    </c:if>
-                                                    <p> ${user.name}</p>
-                                                    <input type="hidden" name="name" value="${user.name}"/>
-                                                </td>                                                   
-                                                <td>
-                                                    <p>
-                                                        <c:choose>
-                                                            <c:when test="${user.status eq 400}">
-                                                                <span class="badge badge-pill badge-danger">Invalid</span>
-                                                            </c:when>
-                                                            <c:when test="${user.status eq 450}">
-                                                                <span class="badge badge-pill badge-warning">Ban</span>
-                                                            </c:when>
-                                                        </c:choose> 
-                                                    </p>
-                                                </td>
-                                                <td>
-                                                    <button type="submit" class="btn badge-danger">Cancel</button>
-                                                </td>
-                                            </form>
-                                            </tr>
-                                        </c:forEach>
-                                        </tbody>                                   
-                                    </table>
-                                </div>
+                                                    <th>From</th>
+                                                    <th>User email</th>
+                                                    <th>Send date</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                                <tr>
+                                                    <th>From</th>
+                                                    <th>User email</th>
+                                                    <th>Send date</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </tfoot>
+                                            <tbody>
+                                                <c:forEach var="request" items="${banRequestList}">
+                                                    <tr>                                              
+                                                        <td>
+                                                            <c:forEach var="club" items="${clubList}">
+                                                                <c:if test="${request.clubID eq club.clubID}">
+                                                                    <p>${club.clubName}</p>
+                                                                </c:if>
+                                                            </c:forEach>
+                                                        </td>
+                                                        <td>
+                                                            <p>${request.userEmail}</p>
+                                                        </td>
+                                                        <td>
+                                                            <p>${request.sendDate}</p>
+                                                        </td>
+                                                        <td>
+                                                            <c:if test="${request.requestStatus}">
+                                                                <button class="btn btn-success" disabled>
+                                                                    Processed
+                                                                </button>
+                                                            </c:if>
+                                                            <c:if test="${not request.requestStatus}">
+                                                                <button class="btn btn-warning" disabled>
+                                                                    Pending
+                                                                </button>
+                                                            </c:if>
+                                                        </td>
+                                                        <td>
+                                                            <a class="btn btn-primary" href="BanUserController?userEmail=${request.userEmail}">
+                                                                Ban
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </tbody>                                   
+                                        </table>
+                                    </div>
+                                </c:if>
                             </div>
                         </div>
 
-
-
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                                <h5 class="m-0 font-weight-bold text-primary">Banned user list</h5>
+                            </div>
+                            <div class="card-body">
+                                <c:if test="${empty userBanList}">
+                                    <h4 class="text-center">There are no banned user at the moment</h4>
+                                </c:if>
+                                <c:if test="${not empty userBanList}">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Email</th>
+                                                    <th>Name</th>                                              
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tfoot>
+                                                <tr>
+                                                    <th>Email</th>
+                                                    <th>Name</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </tfoot>
+                                            <tbody>
+                                                <c:forEach var="user" items="${userBanList}">
+                                                    <tr>
+                                                <form action="CancelBanController">
+                                                    <td>
+                                                        <p>${user.email}</p>
+                                                        <input type="hidden" name="email" value="${user.email}"/>
+                                                    </td>
+                                                    <td>
+                                                        <c:if test="${empty user.name}">
+                                                            <p class="text-danger">missing</p>   
+                                                        </c:if>
+                                                        <p> ${user.name}</p>
+                                                        <input type="hidden" name="name" value="${user.name}"/>
+                                                    </td>                                                   
+                                                    <td>
+                                                        <p>
+                                                            <c:choose>
+                                                                <c:when test="${user.status eq 400}">
+                                                                    <span class="badge badge-pill badge-danger">Invalid</span>
+                                                                </c:when>
+                                                                <c:when test="${user.status eq 450}">
+                                                                    <span class="badge badge-pill badge-warning">Ban</span>
+                                                                </c:when>
+                                                            </c:choose> 
+                                                        </p>
+                                                    </td>
+                                                    <td>
+                                                        <button type="submit" class="btn badge-danger">Cancel</button>
+                                                    </td>
+                                                </form>
+                                                </tr>
+                                            </c:forEach>
+                                            </tbody>                                   
+                                        </table>
+                                    </div>
+                                </c:if>
+                            </div>
+                        </div>
                     </div>
-                    <!-- /.container-fluid -->
-
+                    <!-- container-fluid -->
                 </div>
                 <!-- End of Main Content -->
 
@@ -340,7 +395,15 @@
             </div>
         </div>
         <script>
-// Disable form submissions if there are invalid fields
+            // Disable form submissions if there are invalid fields
+
+            $(document).ready(function () {
+                // Show the Modal on load
+                $("#myModal").modal("show");
+            });
+
+        </script>
+        <script>
             (function () {
                 'use strict';
                 window.addEventListener('load', function () {
@@ -358,27 +421,6 @@
                     });
                 }, false);
             })();
-
-            let form = document.querySelector(".container form"),
-                    textarea = document.querySelector("form textarea"),
-                    signal_num = document.querySelector(".signal_num"),
-                    submit = document.querySelector("button[type=submit]");
-
-            textarea.addEventListener("keyup", () => {
-                let length = textarea.value.length;
-                signal_num.innerText = length;
-                if (length > 0)
-                    form.classList.add("active");
-                else
-                    form.classList.remove("active");
-                if (length > 100) {
-                    form.classList.add("error");
-                    submit.disabled = true;
-                } else {
-                    form.classList.remove("error");
-                    submit.disabled = false;
-                }
-            });
         </script>
         <!-- Bootstrap core JavaScript-->
         <script src="./asset/vendor/jquery/jquery.min.js"></script>

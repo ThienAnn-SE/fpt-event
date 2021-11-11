@@ -50,13 +50,12 @@ public class UpdateController extends HttpServlet {
             return false;
         }
 
-
         //date of birth validation
-        if(dayOfBirth == null){
+        if (dayOfBirth == null) {
             request.setAttribute("txtDateError", "Day of birth is required");
             return false;
         }
-        
+
         if (dayOfBirth.after(Helper.getCurrentDate()) || dayOfBirth.before(Helper.convertStringToDate("1920-01-01"))) {
             request.setAttribute("txtDateError", "Invalid date of birth");
             return false;
@@ -76,6 +75,10 @@ public class UpdateController extends HttpServlet {
             if (!result) {
                 request.setAttribute("errorMessage", "Internal error!");
             }
+
+            if (dao.getUserByEmail(email).getStatus() == 300) {
+                dao.changeUserStatus(email, 500);
+            }
         } catch (SQLException | NamingException ex) {
             log(ex.getMessage());
             return false;
@@ -94,34 +97,10 @@ public class UpdateController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //get email field for checking existence of user in database
-        HttpSession session = request.getSession();
-        String email = (String) session.getAttribute("email");
-        UserDAO dao = new UserDAO();
-        try {
-            if (email == null || dao.getUserByEmail(email) == null) {
-                request.getRequestDispatcher(Routers.USER_INFO_PAGE).forward(request, response);
-            }
-            request.setAttribute("email", email);
-        } catch (SQLException | NamingException ex) {
-            log(ex.getMessage());
-            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
-        }
         if (postHandler(request, response)) {
             response.sendRedirect(Routers.VIEW_USER_CONTROLLER + "?message=Update successfully");
         } else {
             request.getRequestDispatcher(Routers.USER_INFO_PAGE).forward(request, response);
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }

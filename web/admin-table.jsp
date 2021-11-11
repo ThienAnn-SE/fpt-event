@@ -36,10 +36,9 @@
 
                 <!-- Sidebar - Brand -->
                 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="AdminDashboardController">
-                    <div class="sidebar-brand-icon rotate-n-15">
-                        <i class="fas fa-laugh-wink"></i>
+                    <div class="sidebar-brand-icon">
+                        <image src="./asset/img/FPTU_EVENT.png" style="width:  100px"/>
                     </div>
-                    <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
                 </a>
 
                 <!-- Divider -->
@@ -57,26 +56,52 @@
 
                 <!-- Heading -->
                 <div class="sidebar-heading">
-                    Selections
+                    Management
                 </div>
 
                 <!-- Nav Item - Tables -->
                 <li class="nav-item active">
-                    <a class="nav-link" href="tables.html">
-                        <i class="fas fa-fw fa-table"></i>
-                        <span>Tables</span></a>
+                    <a class="nav-link" href="UserManagementController">
+                        <i class="fa fa-user-circle"></i>
+                        <span>Users</span>
+                    </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="AdminClubManagementController">
+                        <i class="fa fa-users"></i>
+                        <span>Club</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="AdminCategoryController">
+                        <i class="fa fa-list"></i>
+                        <span>Category</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="AdminLocationController">
+                        <i class="fa fa-location-arrow"></i>
+                        <span>Location</span>
+                    </a>
+                </li>
+
+                <hr class="sidebar-divider">
+
+                <div class="sidebar-heading">
+                    Process
+                </div>
 
                 <li class="nav-item">
                     <a class="nav-link" href="AdminFormController">
-                        <i class="fa fa-list-ul"></i>
-                        <span>Form</span></a>
+                        <i class="fa fa-exclamation-circle"></i>
+                        <span>Ban user request</span></a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="">
-                        <i class="fa fa-envelope"></i>
-                        <span>Request</span>
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-comment"></i>
+                        <span>Comment report</span>
                     </a>
                 </li>
 
@@ -109,9 +134,9 @@
                             <li class="nav-item dropdown no-arrow">
                                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">${sessionScope.email}</span>
                                     <img class="img-profile rounded-circle"
-                                         src="img/undraw_profile.svg">
+                                         src="${sessionScope.avatar}">
                                 </a>
                                 <!-- Dropdown - User Information -->
                                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

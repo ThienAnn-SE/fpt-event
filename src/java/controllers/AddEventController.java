@@ -6,15 +6,16 @@
 package controllers;
 
 import constant.Routers;
-import daos.CatetoryDAO;
+import daos.CategoryDAO;
 import daos.ClubDAO;
 import daos.EventDAO;
 import daos.LocationDAO;
-import dtos.CatetoryDTO;
+import dtos.CategoryDTO;
 import dtos.ClubDTO;
 import dtos.EventDTO;
 import dtos.LocationDTO;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
@@ -24,6 +25,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import utils.FileHelper;
 import utils.GetParam;
 import utils.Helper;
 
@@ -44,20 +47,24 @@ public class AddEventController extends HttpServlet {
      */
     protected boolean getHandler(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
         //intialize resourse
-        CatetoryDAO catetoryDAO = new CatetoryDAO();
+        CategoryDAO categoryDAO = new CategoryDAO();
         ClubDAO clubDAO = new ClubDAO();
         LocationDAO locationDAO = new LocationDAO();
 
-        //get catetory list
-        ArrayList<CatetoryDTO> catetoryList = catetoryDAO.getAllCatetories();
-        if (catetoryList == null) {
-            request.setAttribute("catetoryError", "Catetory list is empty");
+        //get category list
+        ArrayList<CategoryDTO> categoryList = categoryDAO.getAllCategories();
+        if (categoryList == null) {
+            request.setAttribute("categoryError", "Category list is empty");
             return false;
         }
         //get host club
-        ClubDTO club = clubDAO.getClubByEmail((String) request.getAttribute("email"));
+        HttpSession session = request.getSession();
+        String email = (String) session.getAttribute("email");
+        ClubDTO club = clubDAO.getClubByEmail(email);
         if (club == null) {
             request.setAttribute("clubError", "Can not find the club");
             return false;
@@ -70,8 +77,8 @@ public class AddEventController extends HttpServlet {
         }
 
         //on success validation
-        request.setAttribute("catetoryList", catetoryList);
-        request.setAttribute("club", club);
+        request.setAttribute("clubID", club.getClubID());
+        request.setAttribute("categoryList", categoryList);
         request.setAttribute("locationList", locationList);
         return true;
     }
@@ -87,41 +94,51 @@ public class AddEventController extends HttpServlet {
      */
     protected boolean postHandler(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
         //initialized resource
         EventDAO eventDAO = new EventDAO();
-
         //get and validate params
-        String eventName = GetParam.getStringParam(request, "txtEventName", "Event name", 10, 50, null);
-        Integer clubID = GetParam.getIntParams(request, "txtClubID", "Club ID", 1, 500, null);
-        Integer locationID = GetParam.getIntParams(request, "txtLocationID", "Location", 1, 500, null);
-        Integer catetoryID = GetParam.getIntParams(request, "txtCatetoryID", "Catetory", 1, 500, null);
+        String eventName = GetParam.getStringParam(request, "eventName", "Event name", 10, 100, null);
+        Integer clubID = GetParam.getIntParams(request, "clubID", "Club ID", 1, 500, null);
+        Integer locationID = GetParam.getIntParams(request, "locationID", "Location", 1, 500, null);
+        Integer categoryID = GetParam.getIntParams(request, "categoryID", "Category", 1, 500, null);
         Date createDate = Helper.getCurrentDate();
-        Date startDate = GetParam.getDateFromNowToFuture(request, "txtStartDate", "Start date", null);
-        Date endDate = GetParam.getDateFromNowToFuture(request, "txtEndDate", "End date", null);
-        String content = GetParam.getStringParam(request, "txtContent", "Content", 0, Integer.MAX_VALUE, null);
-        int fee = GetParam.getIntParams(request, "txtFee", "Fee", 0, 1, 0);
+        Date registerEndDate = GetParam.getDateFromNowToFuture(request, "registerEndDate", "Registration end date", null);
+        Date startDate = GetParam.getDateFromNowToFuture(request, "startDate", "Start date", null);
+        Date endDate = GetParam.getDateFromNowToFuture(request, "endDate", "End date", null);
+        Integer slot = GetParam.getIntParams(request, "slot", "Slot", 0, 5000, null);
+        String imageURL = GetParam.getFileParam(request, "imageURL", "Image", 1024 * 1024, FileHelper.imageExtension);
+        String content = GetParam.getStringParam(request, "content", "Content", 0, Integer.MAX_VALUE, null);
+        Integer ticketFee = GetParam.getIntParams(request, "ticketFee", "Fee", 0, 10000000, 0);
         //
-        if (eventName == null || clubID == null || locationID == null || catetoryID == null
-                || startDate == null || endDate == null || content == null) {
+        if (eventName == null || clubID == null || locationID == null || categoryID == null || registerEndDate == null
+                || startDate == null || endDate == null || slot == null || content == null || imageURL == null) {
+            return false;
+        }
+        if (registerEndDate.after(startDate)) {
+            request.setAttribute("endDateError", "Registration end date must before event start date");
             return false;
         }
 
         if (startDate.after(endDate)) {
-            request.setAttribute("errorMessage", "End date must after start date");
+            request.setAttribute("registerEndDateError", "Event end date must after event start date");
             return false;
         }
 
         //check event name is vailable
-        if (!eventDAO.checkExistedEventByEventName(eventName)) {
-            request.setAttribute("txtEventNameError", "Event name is already taken");
+        if (eventDAO.checkExistedEventByEventName(eventName) != null) {
+            request.setAttribute("eventNameError", "Event name is already taken");
             return false;
         }
-        //check available day
-
-        //check available location
+        //check available time and location
+        SimpleDateFormat frm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (eventDAO.checkAvailabeTimeAndPlace(frm.format(startDate), frm.format(endDate), locationID)) {
+            request.setAttribute("locationIDError", "The location at that time is unavailable, please change the time or try another location");
+            return false;
+        }
         //add event
-        return eventDAO.addEvent(eventName, clubID, locationID, catetoryID, createDate, startDate, endDate, content, fee);
+        return eventDAO.addEvent(eventName, clubID, locationID, categoryID, createDate, startDate, endDate, registerEndDate, slot, imageURL, content, ticketFee);
     }
 
     /**
@@ -139,7 +156,7 @@ public class AddEventController extends HttpServlet {
             if (getHandler(request, response)) {
                 request.getRequestDispatcher(Routers.ADD_EVENT_PAGE).forward(request, response);
             } else {
-
+                request.getRequestDispatcher(Routers.EVENT_MANAGEMENT_CONTROLLER).forward(request, response);
             }
         } catch (Exception ex) {
             log(ex.getMessage());
@@ -161,9 +178,9 @@ public class AddEventController extends HttpServlet {
             throws ServletException, IOException {
         try {
             if (postHandler(request, response)) {
-                response.sendRedirect(""+"?message=Add event successfully");
+                response.sendRedirect(Routers.EVENT_MANAGEMENT_CONTROLLER + "?success=true");
             } else {
-                request.getRequestDispatcher("").forward(request, response);
+                doGet(request, response);
             }
         } catch (Exception ex) {
             log(ex.getMessage());

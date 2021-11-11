@@ -5,6 +5,7 @@
  */
 package controllers;
 
+import constant.Routers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author thien
  */
 @WebServlet(name = "CancelBanController", urlPatterns = {"/CancelBanController"})
-public class CancelBanController extends HttpServlet {
+public class BanUserController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,7 +33,7 @@ public class CancelBanController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
+        request.getRequestDispatcher(Routers.ADMIN_FORM_PAGE).forward(request, response);
     }
 
     /**

@@ -28,9 +28,9 @@ public class Helper {
     public static boolean protectedRouter(HttpServletRequest request, HttpServletResponse response, int minRole,
             int maxRole, String page) throws Exception {
 
-        if (!isLogin(request) || !correctRole(request, minRole, maxRole)) {
+        if (!correctRole(request, minRole, maxRole)) {
             //the access is illegal
-            request.setAttribute("errorMessage", "Action is not allow, please login first");
+            request.setAttribute("errorMessage", "Action is not allow because of your role");
             request.getRequestDispatcher(page).forward(request, response);
             return false;
         }

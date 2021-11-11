@@ -17,10 +17,10 @@ public class CommentReportDTO {
     private String reportedComment;
     private String sendDate;
     private String approvalDate;
-    private boolean reportStatus;
+    private int reportStatus;
     private int violationTimes;
 
-    public CommentReportDTO(int reportID, int commentID, String userEmail, String reportedComment, String sendDate, boolean reportStatus) {
+    public CommentReportDTO(int reportID, int commentID, String userEmail, String reportedComment, String sendDate, int reportStatus) {
         this.reportID = reportID;
         this.commentID = commentID;
         this.userEmail = userEmail;
@@ -29,7 +29,7 @@ public class CommentReportDTO {
         this.reportStatus = reportStatus;
     }
 
-    public CommentReportDTO(int reportID, int commentID, String userEmail, boolean reportStatus, int violationTimes) {
+    public CommentReportDTO(int reportID, int commentID, String userEmail, int reportStatus, int violationTimes) {
         this.reportID = reportID;
         this.commentID = commentID;
         this.userEmail = userEmail;
@@ -41,6 +41,11 @@ public class CommentReportDTO {
         this.commentID = commentID;
         this.userEmail = userEmail;
         this.sendDate = sendDate;
+    }
+
+    public CommentReportDTO(String userEmail, int violationTimes) {
+        this.userEmail = userEmail;
+        this.violationTimes = violationTimes;
     }
 
     public CommentReportDTO() {
@@ -94,11 +99,11 @@ public class CommentReportDTO {
         this.approvalDate = approvalDate;
     }
 
-    public boolean isReportStatus() {
+    public int isReportStatus() {
         return reportStatus;
     }
 
-    public void setReportStatus(boolean reportStatus) {
+    public void setReportStatus(int reportStatus) {
         this.reportStatus = reportStatus;
     }
 

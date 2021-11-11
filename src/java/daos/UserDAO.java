@@ -206,4 +206,58 @@ public class UserDAO {
         }
         return user;
     }
+
+    public ArrayList<UserDTO> getEventRegisteredUser(int eventID) throws NamingException, SQLException {
+        ArrayList<UserDTO> userList = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT userName, userEmail, phoneNumber"
+                        + " FROM tblUsers "
+                        + " WHERE userEmail IN"
+                        + " (SELECT userEmail "
+                        + " FROM tblEventRegisters"
+                        + " WHERE eventID = ?)";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, eventID);
+                rs = preStm.executeQuery();
+
+                while (rs.next()) {
+                    UserDTO user = new UserDTO();
+                    user.setEmail(rs.getString("userEmail"));
+                    user.setName(rs.getNString("userName"));
+                    user.setPhoneNumber(rs.getString("phoneNumber"));
+                    userList.add(user);
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return userList;
+    }
+
+    public ArrayList<Integer> getUserStatusRatioList() throws NamingException, SQLException {
+        ArrayList<Integer> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT S.statusID, COUNT(U.userEmail) as number"
+                        + " FROM tblUserStatuses AS S"
+                        + " LEFT JOIN tblUsers AS U"
+                        + " ON S.statusID = U.statusID"
+                        + " GROUP BY S.statusID"
+                        + " ORDER BY S.statusID";
+                preStm = conn.prepareStatement(sql);
+                rs = preStm.executeQuery();
+
+                while (rs.next()) {
+                    int quantity = rs.getInt("number");
+                    list.add(quantity);
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return list;
+    }
 }

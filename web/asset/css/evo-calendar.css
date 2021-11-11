@@ -40,7 +40,7 @@ input:focus, textarea:focus, button:focus {
 .calendar-sidebar {
     position: absolute;
     margin-top: 0;
-    width: 200px;
+    width: 170px;
     height: 100%;
     float: left;
     background-color: #8773c1;
@@ -129,7 +129,7 @@ input:focus, textarea:focus, button:focus {
 .calendar-sidebar > .month-list > .calendar-months > li {
     padding: 7px 30px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 18px;
 }
 .calendar-sidebar > .month-list > .calendar-months > li:hover {
     background-color: #a692e0;
@@ -140,11 +140,11 @@ input:focus, textarea:focus, button:focus {
 
 .calendar-inner {
     position: relative;
-    padding: 40px 30px;
+    padding: 40px 20px;
     float: left;
     width: 100%;
-    max-width: calc(100% - 580px);
-    margin-left: 200px;
+    max-width: calc(100% - 460px);
+    margin-left: 160px;
     background-color: #fff;
     -webkit-box-shadow: 5px 0 18px -3px rgba(0, 0, 0, 0.15);
             box-shadow: 5px 0 18px -3px rgba(0, 0, 0, 0.15);
@@ -163,18 +163,18 @@ input:focus, textarea:focus, button:focus {
     background-color: rgba(83, 74, 109, 0.5);
 }
 .sidebar-hide .calendar-inner {
-    max-width: calc(100% - 400px);
+    max-width: calc(100% - 330px);
     margin-left: 0;
 }
 .event-hide .calendar-inner {
-    max-width: calc(100% - 200px);
+    max-width: calc(100% - 160px);
 }
 .event-hide.sidebar-hide .calendar-inner {
     max-width: 100%;
 }
 .calendar-inner .calendar-table {
     border-collapse: collapse;
-    font-size: 20px;
+    font-size: 14px;
     width: 100%;
     -webkit-user-select: none;
        -moz-user-select: none;
@@ -186,7 +186,7 @@ th[colspan="7"] {
     text-align: center;
     text-transform: uppercase;
     font-weight: 600;
-    font-size: 30px;
+    font-size: 28px;
     color: #8773c1;
 }
 th[colspan="7"]::after {
@@ -201,26 +201,21 @@ th[colspan="7"]::after {
             transform: translateX(-50%);
     background-color: rgba(135, 115, 193, 0.15);
 }
-tr.calendar-header {
 
-}
 tr.calendar-header .calendar-header-day {
     padding: 10px;
     text-align: center;
     color: #5a5a5a;
 }
 
-tr.calendar-body {
-
-}
 tr.calendar-body .calendar-day {
-    padding: 10px 0;
+    padding: 15px 0;
 }
 tr.calendar-body .calendar-day .day {
     position: relative;
     padding: 15px;
-    height: 60px;
-    width: 60px;
+    height: 50px;
+    width: 50px;
     margin: 0 auto;
     border-radius: 50%;
     text-align: center;
@@ -268,9 +263,9 @@ tr.calendar-body .calendar-day .day[disabled] {
     position: absolute;
     top: 0;
     right: 0;
-    width: 400px;
+    width: 320px;
     height: 100%;
-    padding: 70px 30px 60px 30px;
+    padding: 70px 10px 60px 30px;
     background-color: #fbfbfb;
     -webkit-transition: all .3s ease;
     -o-transition: all .3s ease;
@@ -409,7 +404,7 @@ tr.calendar-body .calendar-day .day[disabled] {
 }
 .event-container > .event-info > p.event-title > span {
     position: absolute;
-    top: 50%;
+    top: -10px;
     right: 0;
     font-size: 12px;
     font-weight: normal;

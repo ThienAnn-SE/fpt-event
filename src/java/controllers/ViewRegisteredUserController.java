@@ -46,17 +46,8 @@ public class ViewRegisteredUserController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 0, 500, null);
 
-        HttpSession session = request.getSession();
-        String email = (String) request.getAttribute("email");
-
-        if (email == null || eventID == null) {
+        if (eventID == null) {
             return false;
-        }
-
-        UserDAO userDAO = new UserDAO();
-        UserDTO user = userDAO.getUserByEmail(email);
-        if (user == null) {
-            request.setAttribute("errorMessage", "Please log in first");
         }
 
         EventDAO eventDAO = new EventDAO();
@@ -66,12 +57,14 @@ public class ViewRegisteredUserController extends HttpServlet {
             return false;
         }
 
-        EventRegisterDAO eventRegisterDAO = new EventRegisterDAO();
-        ArrayList<EventRegisterDTO> eventRegisterList = eventRegisterDAO.getRegisterList(eventID);
-        if (eventRegisterList == null) {
+        UserDAO userDAO = new UserDAO();
+        ArrayList<UserDTO> registeredUserList = userDAO.getEventRegisteredUser(eventID);
+        if (registeredUserList == null) {
             request.setAttribute("errorMessage", "There is no registration at the moment, please check again later!!!");
         }
-        request.setAttribute("eventRegisterList", eventRegisterList);
+
+        request.setAttribute("event", event);
+        request.setAttribute("registeredUserList", registeredUserList);
         return true;
     }
 
@@ -87,10 +80,11 @@ public class ViewRegisteredUserController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            if(processRequest(request, response)){
-                request.getRequestDispatcher("viewRegistrationPage").forward(request, response);
+            if (processRequest(request, response)) {
+                request.getRequestDispatcher(Routers.VIEW_EVENT_REGISTRATION_PAGE).forward(request, response);
+            } else {
+                request.getRequestDispatcher(Routers.EVENT_MANAGEMENT_CONTROLLER).forward(request, response);
             }
-            request.getRequestDispatcher(Routers.VIEW_MANAGEMENT_PAGE).forward(request, response);
         } catch (Exception ex) {
             log(ex.getMessage());
             request.setAttribute("errorMessage", ex.getMessage());

@@ -43,7 +43,7 @@ public class MyTask extends TimerTask {
                 }
                 if (Helper.is3DayAfterNow(new SimpleDateFormat("dd-MM-yyyy").parse(eventList.get(i).getCreateDate()))) {
                     eventDAO.changeEventStatus(eventList.get(i).getEventID(), 500);
-                }
+                }               
             }
         } catch (NamingException | SQLException | ParseException ex) {
             Logger.getLogger(MyTask.class.getName()).log(Level.SEVERE, null, ex);

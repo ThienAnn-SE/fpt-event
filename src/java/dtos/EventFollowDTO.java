@@ -13,6 +13,7 @@ public class EventFollowDTO {
 
     private int eventID;
     private String userEmail;
+    private String followDate;
 
     public EventFollowDTO() {
     }
@@ -36,6 +37,14 @@ public class EventFollowDTO {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    public String getFollowDate() {
+        return followDate;
+    }
+
+    public void setFollowDate(String followDate) {
+        this.followDate = followDate;
     }
 
 }

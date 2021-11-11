@@ -43,7 +43,7 @@ public class FollowEventController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, NamingException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
-        Integer eventID = GetParam.getIntParams(request, "eventID", "EventID", 0, 0, null);
+        Integer eventID = GetParam.getIntParams(request, "eventID", "EventID", 0, Integer.MAX_VALUE, null);
         String btAction = GetParam.getStringParam(request, "btAction", "Action", 0, 50, null);
 
         HttpSession session = request.getSession();
@@ -52,16 +52,22 @@ public class FollowEventController extends HttpServlet {
         if (eventID == null || btAction == null) {
             throw new NullPointerException("Missing parameter");
         }
+        boolean action = false;
 
         EventFollowDAO followDAO = new EventFollowDAO();
         if (btAction.equalsIgnoreCase("follow")) {
-            followDAO.addNewFollow(new EventFollowDTO(eventID, userEmail));
-            System.out.println("follow success");
+            action = followDAO.addNewFollow(new EventFollowDTO(eventID, userEmail));
+        } else if (btAction.equalsIgnoreCase("unfollow")) {
+            action = followDAO.removeExistFollow(new EventFollowDTO(eventID, userEmail));
         }
 
+        if (action) {
+            response.sendRedirect(Routers.VIEW_EVENT_CONTROLLER + "?focus=follow&eventID=" + eventID);
+        } else {
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+        }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -101,5 +107,4 @@ public class FollowEventController extends HttpServlet {
             request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
         }
     }
-// </editor-fold> 
 }
