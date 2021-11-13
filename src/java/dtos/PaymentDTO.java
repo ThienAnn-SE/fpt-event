@@ -12,15 +12,28 @@ import java.util.Date;
  * @author thien
  */
 public class PaymentDTO {
+
     private String paymentID;
     private int registerID;
+    private String paymentDescription;
     private String statusDescription;
-    private Date paymentDate;
-    private int paymentTotal;
+    private String paymentMethod;
+    private String paymentDate;
+    private double paymentTotal;
 
-    public PaymentDTO(int registerID, String statusDescription, Date paymentDate, int paymentTotal) {
+    public PaymentDTO(int registerID, String paymentDescription, String statusDescription, String paymentMethod, String paymentDate, double paymentTotal) {
         this.registerID = registerID;
+        this.paymentDescription = paymentDescription;
         this.statusDescription = statusDescription;
+        this.paymentMethod = paymentMethod;
+        this.paymentDate = paymentDate;
+        this.paymentTotal = paymentTotal;
+    }
+
+    public PaymentDTO(String paymentDescription, String statusDescription, String paymentMethod, String paymentDate, double paymentTotal) {
+        this.paymentDescription = paymentDescription;
+        this.statusDescription = statusDescription;
+        this.paymentMethod = paymentMethod;
         this.paymentDate = paymentDate;
         this.paymentTotal = paymentTotal;
     }
@@ -44,6 +57,14 @@ public class PaymentDTO {
         this.registerID = registerID;
     }
 
+    public String getPaymentDescription() {
+        return paymentDescription;
+    }
+
+    public void setPaymentDescription(String paymentDescription) {
+        this.paymentDescription = paymentDescription;
+    }
+
     public String getStatusDescription() {
         return statusDescription;
     }
@@ -52,21 +73,28 @@ public class PaymentDTO {
         this.statusDescription = statusDescription;
     }
 
-    public Date getPaymentDate() {
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getPaymentDate() {
         return paymentDate;
     }
 
-    public void setPaymentDate(Date paymentDate) {
+    public void setPaymentDate(String paymentDate) {
         this.paymentDate = paymentDate;
     }
 
-    public int getPaymentTotal() {
+    public double getPaymentTotal() {
         return paymentTotal;
     }
 
-    public void setPaymentTotal(int paymentTotal) {
+    public void setPaymentTotal(double paymentTotal) {
         this.paymentTotal = paymentTotal;
     }
-    
-    
+
 }

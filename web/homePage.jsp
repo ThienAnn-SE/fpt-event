@@ -1,14 +1,14 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core"
-          prefix="c"%>
 <html lang="en">
     <head>
+        <%@taglib uri="http://java.sun.com/jsp/jstl/core"
+                  prefix="c"%>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Home page</title>
         <link rel="stylesheet" href="./asset/css/style.css" />
-        <link rel="stylesheet" href="./asset/css/homePage.css" />
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -24,100 +24,160 @@
     </head>
     <body>
         <jsp:include page="./includes/header.jsp"></jsp:include>
-        <div class="banner">
-            <img src="./asset/img/event.jpg" />
-            <div class="content">
-                <c:forEach begin="0" end="0" var="event" items="${eventList}">
-                    <c:set var="startDate" value="${event.startDate}"/>
-                    <h1>${event.eventName}</h1>
-                    <p>Begin date: ${event.startDate}</p>
-                    <a href="ViewEventController?eventID=${event.eventID}"><button>Read More</button></a>
-                </c:forEach>
-            </div>
-            <div class="countdown">
-                <h2 id="hour">00</h2>
-                <h2 class="dot">:</h2>
-                <h2 id="minute">00</h2>
-                <h2 class="dot">:</h2>
-                <h2 id="second">00</h2>
+            <div class="banner-area" style="background-image: url('./asset/img/banner.jpg')">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div class="counting-wrapper">
+                                <div class="banner-title">
+                                    <span>next event</span>
+                                    <h1>upcoming latest event</h1>
+                                </div>
+                                <div class="counting-text">
+                                    <div class="countdown">
+                                        <div class="count-time" id="hour">00</div>
+                                        <div class="count-time" class="dot">:</div>
+                                        <div class="count-time" id="minute">00</div>
+                                        <div class="count-time" class="dot">:</div>
+                                        <div class="count-time" id="second">00</div>
+                                    </div>
+                                </div>
+                            <c:forEach begin="0" end="0" var="event" items="${eventList}">
+                                <a href="RegisterEventController?eventID=${event.eventID}" class="btn">
+                                    <span class="btn-text">book ticket</span>
+                                    <span class="btn-border"></span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="banner-event">
+                                <div class="event-outer">
+                                    <div class="event-item">
+                                        <div class="upcoming-event-wrapper">
+                                            <c:set var="startDate" value="${event.startDate}"/>
+                                            <div class="upcoming-event-img">
+                                                <a href="ViewEventController?eventID=${event.eventID}}">
+                                                    <img src="${event.imageURL}" />
+                                                </a>
+                                                <div class="price"><span>${event.ticketFee} VND</span></div>
+                                            </div>
+                                            <div class="upcoming-event-text">
+                                                <h3><a href="ViewEventController?eventID=${event.eventID}">${event.eventName}</a></h3>
+                                                <div class="event-meta">
+                                                    <span>
+                                                        <i class="far fa-calendar-alt"></i> 
+                                                        ${event.startDate} - ${event.endDate}
+                                                    </span>
+                                                    <span>
+                                                        <c:forEach var="category" items="${categoryList}">
+                                                            <c:if test="${event.categoryID eq category.categoryID}">
+                                                                ${category.categoryName}
+                                                            </c:if>
+                                                        </c:forEach>                                                      
+                                                    </span>
+                                                    <span> 
+                                                        <i class="fal fa-comments"></i> 
+                                                        <c:set var="num" value="0"/>
+                                                        <c:forEach var="comment" items="${commentNum}">
+                                                            <c:if test="${comment.eventID eq event.eventID}">
+                                                                <c:set var="num" value="${comment.commentNum}"/>
+                                                            </c:if>
+                                                        </c:forEach>
+                                                        ${num} Comments
+                                                    </span>
+                                                    <c:forEach var="register" items="${registerNumList}">
+                                                        <c:if test="${event.eventID eq register.eventID}">
+                                                            <c:set var="registerNum" value="${register.registerNum}"/>
+                                                        </c:if>
+                                                    </c:forEach>
+                                                    <span><i class="far fa-users"></i> ${registerNum}/${event.slot}</span>
+                                                </div>
+                                                <a href="ViewEventController?eventID=${event.eventID}" class="btn">
+                                                    <span class="btn-text">view details</span>
+                                                    <span class="btn-border"></span>
+                                                </a>
+                                            </div>
+                                        </c:forEach>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="container">
-            <div class="title">
-                <i class="far fa-calendar-star"></i>
-                <h2>events are upcoming</h2>
-            </div>
-            <div class="row"> 
-                <c:forEach var="event" begin="1" items="${eventList}">
-                    <div class="event col-md-4">
-                        <div class="event-img">
-                            <img src="./asset/img/trungthu.png" />
-                        </div>
-                        <div class="event-content">
-                            <h2 class="event-name">
-                                <i class="fal fa-heart"></i><a href="RegisterEventController?eventID=${event.eventID}">${event.eventName}</a>
-                            </h2>
-                            <ul class="event-detail">
-                                <li class="create-date">
-                                    <i class="fal fa-clock"></i> ${event.createDate}
-                                </li>
-                                <li class="slot">
-                                    <i class="far fa-user-alt"></i> 50/${event.slot} Slots
-                                </li>
-                                <li class="event-category">
-                                    <i class="fal fa-folder"></i>
-                                    <c:choose>
-                                        <c:when test="${event.catetoryID eq 10}">
-                                            <a href="SearchEventController?btAction=catetory&catetoryID=10">Seminar</a>
-                                        </c:when>
-                                        <c:when test="${event.catetoryID eq 15}">
-                                            <a href="SearchEventController?btAction=catetory&catetoryID=15">Entertainment</a>
-                                        </c:when>
-                                        <c:when test="${event.catetoryID eq 20}">
-                                            <a href="SearchEventController?btAction=catetory&catetoryID=20">Learning</a>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <a href="SearchEventController">Uncategorized</a>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </li>
-                                <li class="event-comment">
-                                    <i class="fal fa-comments"></i> 0 Comments
-                                </li>
-                            </ul>
-                            <p>
-                                ${event.content}
-                            </p>
-                            <a href="RegisterEventController?eventID=${event.eventID}">
-                                <button><i class="fas fa-ticket-alt"></i> Register</button>
-                            </a>
-                            <a class="read-more" href="ViewEventController?eventID=${event.eventID}"
-                               >continue reading <i class="fal fa-chevron-right"></i
-                                ></a>
+        <div class="relate-event-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="upcoming-event-title text-center">
+                            <span></span>
+                            <h1>upcoming events</h1>
+                            <p>We arrange many other events for enjoy</p>
                         </div>
                     </div>
-                </c:forEach>
-            </div>
-            <div class="read-more">
-                <a href="SearchEventController">Continue to reading ... </a>
+                </div>
+                <div class="row">
+                    <c:forEach begin="1" end="3" var="event" items="${eventList}">
+                        <div class="col-lg-4">
+                            <div class="upcoming-event-wrapper">
+                                <div class="upcoming-event-img">
+                                    <a href="ViewEventController?eventID=${event.eventID}">
+                                        <img src="${event.imageURL}" />
+                                    </a>
+                                    <div class="price"><span>${event.ticketFee} VND</span></div>
+                                </div>
+                                <div class="upcoming-event-text">
+                                    <h3><a href="ViewEventController?eventID=${event.eventID}">${event.eventName}</a></h3>
+                                    <div class="event-meta">
+                                        <span>
+                                            <i class="far fa-calendar-alt"></i> 
+                                            ${event.startDate} - ${event.endDate}
+                                        </span>
+                                        <span>
+                                            <c:forEach var="category" items="${categoryList}">
+                                                <c:if test="${event.categoryID eq category.categoryID}">
+                                                    ${category.categoryName}
+                                                </c:if>
+                                            </c:forEach>    
+                                        </span>
+                                        <span> <i class="fal fa-comments"></i> 0 Comments</span>
+                                        <c:forEach var="register" items="${registerNumList}">
+                                            <c:if test="${event.eventID eq register.eventID}">
+                                                <c:set var="registerNum" value="${register.registerNum}"/>
+                                            </c:if>
+                                        </c:forEach>
+                                        <span><i class="far fa-users"></i> ${registerNum}/${event.slot}</span>
+                                    </div>
+                                    <a href="RegisterEventController?eventID=${event.eventID}" class="btn">
+                                        <span class="btn-text">book ticket</span>
+                                        <span class="btn-border"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
             </div>
         </div>
+
         <jsp:include page="./includes/footer.jsp"></jsp:include>
+
 
             <script src="./asset/js/main.js"></script>
 
-        <script>
-            var countDate = new Date("${startDate}").getTime();
-            function countDown() {
-                var now = new Date().getTime();
-                var distance = countDate - now;
-                var day = Math.floor(distance / (1000 * 60 * 60 * 24));
-                var hour = Math.floor(
-                        (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-                        );
-                var minute = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                var second = Math.floor((distance % (1000 * 60)) / 1000);
+            <script>
+                var countDate = new Date("${startDate}").getTime();
+                function countDown() {
+                    var now = new Date().getTime();
+                    var distance = countDate - now;
+                    var day = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    var hour = Math.floor(
+                            (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+                            );
+                    var minute = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    var second = Math.floor((distance % (1000 * 60)) / 1000);
 
                     if (day > 0) {
                         hour = day * 24 + hour;

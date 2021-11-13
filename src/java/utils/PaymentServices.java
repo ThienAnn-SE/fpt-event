@@ -65,8 +65,7 @@ public class PaymentServices {
 
         PayerInfo payerInfo = new PayerInfo();
         payerInfo.setFirstName(userDTO.getName())
-                .setEmail(userDTO.getEmail())
-                .setPhone(userDTO.getPhoneNumber());
+                .setEmail(userDTO.getEmail());
         payer.setPayerInfo(payerInfo);
         return payer;
     }
@@ -87,18 +86,18 @@ public class PaymentServices {
         details.setSubtotal(String.valueOf(eventDTO.getTicketFee()));
 
         Amount amount = new Amount();
-        amount.setCurrency("VND");
+        amount.setCurrency("USD");
         amount.setTotal(String.valueOf(eventDTO.getTicketFee()));
 
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
-        transaction.setDescription(eventDTO.getEventName() + "Ticket");
+        transaction.setDescription(eventDTO.getEventName() + " Ticket");
 
         ItemList itemList = new ItemList();
         List<Item> items = new ArrayList<>();
 
         Item item = new Item();
-        item.setCurrency("VND");
+        item.setCurrency("USD");
         item.setName(eventDTO.getEventName() + "Ticket");
         item.setPrice(String.valueOf(eventDTO.getTicketFee()));
         item.setQuantity("1");

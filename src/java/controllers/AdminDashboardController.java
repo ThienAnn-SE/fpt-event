@@ -5,8 +5,18 @@
  */
 package controllers;
 
+import constant.Routers;
+import daos.BanRequestDAO;
+import daos.CommentReportDAO;
+import daos.UserDAO;
+import daos.VisitorCounterDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,25 +38,34 @@ public class AdminDashboardController extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @throws javax.naming.NamingException
+     * @throws java.sql.SQLException
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, NamingException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AdminDashboardController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet AdminDashboardController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        UserDAO userDAO = new UserDAO();
+        BanRequestDAO banDAO = new BanRequestDAO();
+        CommentReportDAO reportDAO = new CommentReportDAO();
+        VisitorCounterDAO counterDAO = new VisitorCounterDAO();
+
+        ArrayList<Integer> userStatusRatioList = userDAO.getUserStatusRatioList();
+        int numOfUnreslovedRequest = banDAO.getNumOfUnreslovedRequest();
+        int numOfUnprocessedReport = reportDAO.getNumOfUnprocessedReport();
+        long numOfTotalVisitors = counterDAO.getTotalVisitorNumber();
+        int numOf30DayVisitors = counterDAO.get30DaysVisitorNumber();
+
+        if (userStatusRatioList.isEmpty()) {
+            throw new SQLException("Some error happen, the record from database is empty");
         }
+
+        request.setAttribute("userStatusRatioList", userStatusRatioList);
+        request.setAttribute("numOfUnreslovedRequest", numOfUnreslovedRequest);
+        request.setAttribute("numOfUnprocessedReport", numOfUnprocessedReport);
+        request.setAttribute("numOfTotalVisitors", numOfTotalVisitors);
+        request.setAttribute("numOf30DayVisitors", numOf30DayVisitors);
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -58,7 +77,14 @@ public class AdminDashboardController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+            request.getRequestDispatcher(Routers.ADMIN_DASHBOARD_PAGE).forward(request, response);
+        } catch (NamingException | SQLException ex) {
+            log(ex.getMessage());
+            request.setAttribute("errorName", ex.getMessage());
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+        }
     }
 
     /**
@@ -72,17 +98,6 @@ public class AdminDashboardController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }

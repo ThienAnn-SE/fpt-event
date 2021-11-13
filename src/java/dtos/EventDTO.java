@@ -17,30 +17,88 @@ public class EventDTO {
     private String eventName;
     private int clubID;
     private int locationID;
-    private int catetoryID;
+    private int categoryID;
     private int statusID;
     private String createDate;
+    private String registerEndDate;
     private String startDate;
     private String endDate;
     private int slot;
-    private double avgVote;
+    private String imageURL;
     private String content;
     private int ticketFee;
 
-    public EventDTO(int eventID, String eventName, int clubID, int locationID, int catetoryID, int statusID, String createDate, String startDate, String endDate, int slot, double avgVote, String content, int ticketFee) {
+    public EventDTO(int eventID, String eventName, int clubID, int locationID, int catetoryID, int statusID, String createDate, String registerEndDate, String startDate, String endDate, int slot, String content, int ticketFee) {
         this.eventID = eventID;
         this.eventName = eventName;
         this.clubID = clubID;
         this.locationID = locationID;
-        this.catetoryID = catetoryID;
+        this.categoryID = catetoryID;
         this.statusID = statusID;
         this.createDate = createDate;
+        this.registerEndDate = registerEndDate;
         this.startDate = startDate;
         this.endDate = endDate;
         this.slot = slot;
-        this.avgVote = avgVote;
         this.content = content;
         this.ticketFee = ticketFee;
+    }
+
+    public EventDTO(int eventID, String eventName, int clubID, int locationID, int categoryID, int statusID, String createDate, String registerEndDate, String startDate, String endDate, int slot, String imageURL, String content, int ticketFee) {
+        this.eventID = eventID;
+        this.eventName = eventName;
+        this.clubID = clubID;
+        this.locationID = locationID;
+        this.categoryID = categoryID;
+        this.statusID = statusID;
+        this.createDate = createDate;
+        this.registerEndDate = registerEndDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.slot = slot;
+        this.imageURL = imageURL;
+        this.content = content;
+        this.ticketFee = ticketFee;
+    }
+
+    public EventDTO(int eventID, String eventName, int locationID, int catetoryID, String registerEndDate, String startDate, String endDate, int slot, String imageURL, String content, int ticketFee) {
+        this.eventID = eventID;
+        this.eventName = eventName;
+        this.locationID = locationID;
+        this.categoryID = catetoryID;
+        this.registerEndDate = registerEndDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.slot = slot;
+        this.imageURL = imageURL;
+        this.content = content;
+        this.ticketFee = ticketFee;
+    }
+
+    public EventDTO(int eventID, String eventName, int locationID, int catetoryID, int statusID, String createDate, String registerEndDate, String startDate, String endDate, int slot, int ticketFee) {
+        this.eventID = eventID;
+        this.eventName = eventName;
+        this.locationID = locationID;
+        this.categoryID = catetoryID;
+        this.statusID = statusID;
+        this.createDate = createDate;
+        this.registerEndDate = registerEndDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.slot = slot;
+        this.ticketFee = ticketFee;
+    }
+
+    public EventDTO(int eventID, String eventName, int clubID, int catetoryID, int statusID, String startDate, String content, String imageURL, int slot) {
+        this.eventID = eventID;
+        this.eventName = eventName;
+        this.clubID = clubID;
+        this.categoryID = catetoryID;
+        this.statusID = statusID;
+        this.startDate = startDate;
+        this.content = content;
+        this.imageURL = imageURL;
+        this.slot = slot;
     }
 
     public EventDTO(int eventID, String createDate, String startDate, String endDate) {
@@ -85,12 +143,12 @@ public class EventDTO {
         this.locationID = locationID;
     }
 
-    public int getCatetoryID() {
-        return catetoryID;
+    public int getCategoryID() {
+        return categoryID;
     }
 
-    public void setCatetoryID(int catetoryID) {
-        this.catetoryID = catetoryID;
+    public void setCategoryID(int categoryID) {
+        this.categoryID = categoryID;
     }
 
     public int getStatusID() {
@@ -107,6 +165,14 @@ public class EventDTO {
 
     public void setCreateDate(String createDate) {
         this.createDate = createDate;
+    }
+
+    public String getRegisterEndDate() {
+        return registerEndDate;
+    }
+
+    public void setRegisterEndDate(String registerEndDate) {
+        this.registerEndDate = registerEndDate;
     }
 
     public String getStartDate() {
@@ -133,12 +199,12 @@ public class EventDTO {
         this.slot = slot;
     }
 
-    public double getAvgVote() {
-        return avgVote;
+    public String getImageURL() {
+        return imageURL;
     }
 
-    public void setAvgVote(double avgVote) {
-        this.avgVote = avgVote;
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     public String getContent() {

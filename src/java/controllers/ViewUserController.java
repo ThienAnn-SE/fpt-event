@@ -6,13 +6,17 @@
 package controllers;
 
 import constant.Routers;
+import daos.CategoryDAO;
 import daos.ClubDAO;
 import daos.EventFollowDAO;
 import daos.EventRegisterDAO;
+import daos.LocationDAO;
 import daos.UserDAO;
+import dtos.CategoryDTO;
 import dtos.ClubDTO;
 import dtos.EventDTO;
 import dtos.EventRegisterDTO;
+import dtos.LocationDTO;
 import dtos.UserDTO;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -44,10 +48,14 @@ public class ViewUserController extends HttpServlet {
      */
     protected boolean getHanlder(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         UserDAO userDAO = new UserDAO();
         ClubDAO clubDAO = new ClubDAO();
         EventRegisterDAO registerDAO = new EventRegisterDAO();
         EventFollowDAO followDAO = new EventFollowDAO();
+        CategoryDAO categoryDAO = new CategoryDAO();
+        LocationDAO locationDAO = new LocationDAO();
 
         HttpSession session = request.getSession();
         String email = (String) session.getAttribute("email");
@@ -67,18 +75,18 @@ public class ViewUserController extends HttpServlet {
         }
 
         ArrayList<EventDTO> eventRegisterList = registerDAO.getEventRegisterListForUserPage(email);
-        ArrayList<EventDTO> eventFollowList = followDAO.getFollowEventListForUserPage(email);
-        ArrayList<EventRegisterDTO> registerNumList_register = getGegisterNumList(eventRegisterList);
-        ArrayList<EventRegisterDTO> registerNumList_follow = getGegisterNumList(eventFollowList);
+        ArrayList<EventDTO> attendedEventList = registerDAO.getAttendedEventList(email);
+        ArrayList<EventDTO> eventFollowedList = followDAO.getFollowEventListForUserPage(email);
+        ArrayList<CategoryDTO> categoryList = categoryDAO.getAllCategories();
+        ArrayList<LocationDTO> locationList = locationDAO.getAllLocations();
 
-        //get register list
-        //get follow list
         request.setAttribute("user", user);
         request.setAttribute("club", club);
-        request.setAttribute("registerNumList_register", registerNumList_register);
-        request.setAttribute("registerNumList_follow", registerNumList_follow);
+        request.setAttribute("categoryList", categoryList);
+        request.setAttribute("locationList", locationList);
+        request.setAttribute("eventFollowedList", eventFollowedList);
         request.setAttribute("eventRegisterList", eventRegisterList);
-        request.setAttribute("eventFollowedList", eventFollowList);
+        request.setAttribute("attendedEventList", attendedEventList);
         return true;
     }
 
@@ -104,16 +112,5 @@ public class ViewUserController extends HttpServlet {
             log(ex.getMessage());
             request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
         }
-    }
-
-    private ArrayList<EventRegisterDTO> getGegisterNumList(ArrayList<EventDTO> dto) throws NamingException, SQLException {
-        EventRegisterDAO registerDAO = new EventRegisterDAO();
-        ArrayList<EventRegisterDTO> registerNumList = new ArrayList<>();
-        for (int i = 0; i < dto.size(); i++) {
-            int eventID = dto.get(i).getEventID();
-            int registerNum = registerDAO.getRegisterNumByEventID(eventID);
-            registerNumList.add(new EventRegisterDTO(eventID, registerNum));
-        }
-        return registerNumList;
     }
 }

@@ -48,6 +48,8 @@ public class CommentController extends HttpServlet {
      */
     protected boolean postHandler(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, NamingException, SQLException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
         //initialize resources
         EventDAO eventDAO = new EventDAO();
@@ -55,18 +57,21 @@ public class CommentController extends HttpServlet {
         HttpSession session = request.getSession();
 
         //get parameter
-        String comment = GetParam.getStringParam(request, "comment", "Comment", 0, 100, null);
-        Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 0, 5000, null);
+        String comment = GetParam.getStringParam(request, "comment", "Comment", 0, 5000, null);
+        Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 0, Integer.MAX_VALUE, null);
 
         //check parameter
-        if (comment == null || eventID == null) {
-            return false;
+        if (comment == null) {
+            throw new IllegalArgumentException();
+        }
+
+        if (eventID == null) {
+            throw new ServletException("Can not find the parameter");
         }
 
         //check event is exist
         if (eventDAO.getEventByID(eventID) == null) {
-            request.setAttribute("errorMessage", "No event found!!");
-            return false;
+            throw new SQLException("The event doest not exist!!");
         }
 
         //get user email and avatar
@@ -128,14 +133,20 @@ public class CommentController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            if (!postHandler(request, response)) {
-                request.setAttribute("errorMessage", "Some error happened, please try again!!");
+            if (postHandler(request, response)) {
+                int eventID = (int) request.getAttribute("eventID");
+                response.sendRedirect(Routers.VIEW_EVENT_CONTROLLER + "?cmt=success&eventID=" + eventID);
+            } else {
+                request.setAttribute("errorMessage", "Some error happened, please reload the page!!");
+                request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
             }
-            request.getRequestDispatcher(Routers.VIEW_EVENT_CONTROLLER).forward(request, response);
         } catch (NamingException | SQLException ex) {
             log(ex.getMessage());
             request.setAttribute("errorMessage", ex.getMessage());
             request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+        } catch (IllegalArgumentException ex) {
+            int eventID = (int) request.getAttribute("eventID");
+            response.sendRedirect(Routers.VIEW_EVENT_CONTROLLER + "?cmt=error&eventID=" + eventID);
         }
     }
 

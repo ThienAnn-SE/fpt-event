@@ -42,6 +42,45 @@ public class LocationDAO {
         }
     }
 
+    public boolean insertNewLocation(String locationName, int locationCapacity) throws NamingException, SQLException {
+        boolean isSuccess = false;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "INSERT INTO tblLocations(locationName, locationCapacity) VALUES (?,?)";
+                preStm = conn.prepareStatement(sql);
+                preStm.setString(1, locationName);
+                preStm.setInt(2, locationCapacity);
+
+                isSuccess = preStm.executeUpdate() > 0;
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return isSuccess;
+    }
+
+    public String getLocationByName(String locationName) throws SQLException, NamingException {
+        String name = null;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = " SELECT locationName "
+                        + " FROM tblLocations "
+                        + " WHERE locationName = ? ";
+                preStm = conn.prepareStatement(sql);
+                preStm.setNString(1, locationName);
+                rs = preStm.executeQuery();
+                if (rs.next()) {
+                    name = rs.getNString("locationName");
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return name;
+    }
+
     public LocationDTO getLocationByID(int id) throws SQLException, NamingException {
         LocationDTO location = null;
         try {
@@ -54,7 +93,7 @@ public class LocationDAO {
                 preStm.setInt(1, id);
                 rs = preStm.executeQuery();
                 if (rs.next()) {
-                    location = new LocationDTO(rs.getInt("locationID"), 
+                    location = new LocationDTO(rs.getInt("locationID"),
                             rs.getString("locationName"), rs.getInt("locationCapacity"));
                 }
             }
@@ -70,7 +109,7 @@ public class LocationDAO {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
                 String sql = " Select * "
-                           + " From tblLocations ";
+                        + " From tblLocations ";
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();
                 while (rs.next()) {

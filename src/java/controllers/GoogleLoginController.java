@@ -79,23 +79,22 @@ public class GoogleLoginController extends HttpServlet {
         } else {
             UserDAO dao = new UserDAO();
             String email = (String) request.getAttribute("email");
+            HttpSession session = request.getSession();
             try {
                 UserDTO user = dao.getUserByEmail(email);
                 if (user != null) {
-                    HttpSession session = request.getSession();
                     session.setAttribute("email", email);
                     session.setAttribute("name", user.getName());
                     session.setAttribute("avatar", request.getAttribute("avatar"));
                     session.setAttribute("role", user.getRole());
-                    request.getRequestDispatcher(Routers.HOME_PAGE_CONTROLLER).forward(request, response);
+                    response.sendRedirect(Routers.HOME_PAGE_CONTROLLER);
                 } else {
                     if (firstLoginRegister(email)) {
                         user = dao.getUserByEmail(email);
-                        HttpSession session = request.getSession();
                         session.setAttribute("email", email);
                         session.setAttribute("avatar", request.getAttribute("avatar"));
                         session.setAttribute("role", user.getRole());
-                        request.getRequestDispatcher(Routers.HOME_PAGE_CONTROLLER).forward(request, response);
+                        response.sendRedirect(Routers.HOME_PAGE_CONTROLLER);
                     } else {
                         request.setAttribute("error", "Internal error");
                         request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);

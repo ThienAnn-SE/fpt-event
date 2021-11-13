@@ -5,15 +5,21 @@
  */
 package controllers;
 
+import com.paypal.base.rest.PayPalRESTException;
 import constant.Routers;
 import daos.EventDAO;
 import daos.EventRegisterDAO;
+import daos.PaymentDAO;
 import daos.UserDAO;
 import dtos.EventDTO;
 import dtos.EventRegisterDTO;
+import dtos.PaymentDTO;
 import dtos.UserDTO;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,37 +38,7 @@ import utils.PaymentServices;
 public class RegisterEventController extends HttpServlet {
 
     /**
-     * Processes requests for HTTP <code>POST</code> methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @return
-     * @throws Exception if a error occurs
-     */
-    protected boolean postHandler(HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
-        //get Parameter
-        Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 0, 5000, null);
-        String email = GetParam.getStringParam(request, "email", "Email", 0, 50, null);
-
-        //check parameter
-        if (eventID == null || email == null) {
-            return false;
-        }
-
-        //get current date
-        String registerDate = new SimpleDateFormat("yyyy-MM-dd").format(System.currentTimeMillis());
-
-        //initialize resouce
-        EventRegisterDAO registerDAO = new EventRegisterDAO();
-
-        //add registration
-        return registerDAO.addNewEventRegistration(new EventRegisterDTO(eventID, email, registerDate));
-    }
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Processes requests for HTTP <code>GET</code> methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -75,13 +51,17 @@ public class RegisterEventController extends HttpServlet {
         //Initialized resources
         UserDAO userDAO = new UserDAO();
         EventDAO eventDAO = new EventDAO();
+        HttpSession session = request.getSession();
 
         //Get parameter
         Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 10, Integer.MAX_VALUE, null);
+        String email = (String) session.getAttribute("email");
 
+        //validate id
         if (eventID == null) {
             return false;
         }
+
         //check existed event by ID
         EventDTO event = eventDAO.getEventByID(eventID);
         if (event == null) {
@@ -89,18 +69,31 @@ public class RegisterEventController extends HttpServlet {
             return false;
         }
 
-        //check avaialable remaining event slot to register
+        //check user registration
         EventRegisterDAO registerDAO = new EventRegisterDAO();
-        int registerNum = registerDAO.getRegisterNumByEventID(eventID);
+        if (registerDAO.getRegisterID(eventID, email) > 0) {
+            request.setAttribute("errorMessage", "You already register this event");
+            return false;
+        }
 
+        //loi o day
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
+        Date date = new Date(System.currentTimeMillis());
+        date = format.parse(format.format(date));
+        //check end of registration date
+        if (date.after(format.parse(event.getRegisterEndDate()))) {
+            request.setAttribute("errorMessage", "End of registration date, you can not register this event anymore");
+            return false;
+        }
+
+        //check avaialable remaining event slot to register
+        int registerNum = registerDAO.getRegisterNumByEventID(eventID);
         if (registerNum >= event.getSlot()) {
             request.setAttribute("errorMessage", "Event is full");
             return false;
         }
 
-        //get user email
-        HttpSession session = request.getSession();
-        String email = (String) session.getAttribute("email");
+        //get user by email
         UserDTO user = userDAO.getUserByEmail(email);
 
         //check isBanned/new/invalid?
@@ -109,6 +102,8 @@ public class RegisterEventController extends HttpServlet {
             return false;
         }
         //on success
+        //send Email
+
         request.setAttribute("user", user);
         request.setAttribute("event", event);
         return true;
@@ -129,7 +124,7 @@ public class RegisterEventController extends HttpServlet {
             if (getHandler(request, response)) {
                 request.getRequestDispatcher(Routers.REVIEW_PAYMENT_PAGE).forward(request, response);
             } else {
-                request.getRequestDispatcher(Routers.SEARCH_EVENT_PAGE + "?" + request.getQueryString()).forward(request, response);
+                request.getRequestDispatcher(Routers.SEARCH_EVENT_CONTROLLER).forward(request, response);
             }
         } catch (Exception ex) {
             log(ex.getMessage());
@@ -151,17 +146,23 @@ public class RegisterEventController extends HttpServlet {
             throws ServletException, IOException {
         try {
 
-            String btAction = GetParam.getStringParam(request, "btAction", "Action", 1, 50, null);
+            String btAction = GetParam.getStringParam(request, "payment", "Payment", 1, 50, null);
 
-            if (btAction.equalsIgnoreCase("pay")) {
-                //
-                request.getRequestDispatcher(Routers.EXECUTE_PAYMENT_CONTROLLER).forward(request, response);
-            } else {
+            if (btAction == null) {
                 if (postHandler(request, response)) {
-                    request.getRequestDispatcher(Routers.SEARCH_EVENT_CONTROLLER).forward(request, response);
+                    response.sendRedirect(Routers.SEARCH_EVENT_CONTROLLER + "?success=true");
                 } else {
                     request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
                 }
+            } else if (btAction.equalsIgnoreCase("paypal")) {
+                String result = executePaymentHanlder(request, response);
+                if (result == null) {
+                    request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+                } else {
+                    response.sendRedirect(result);
+                }
+            } else {
+
             }
 
         } catch (Exception ex) {
@@ -171,4 +172,99 @@ public class RegisterEventController extends HttpServlet {
         }
     }
 
+    /**
+     * Processes requests for HTTP <code>POST</code> methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @return
+     * @throws Exception if a error occurs
+     */
+    protected boolean postHandler(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        HttpSession session = request.getSession();
+        //get Parameter
+        Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 0, Integer.MAX_VALUE, null);
+        String email = (String) session.getAttribute("email");
+        //check parameter
+        if (eventID == null || email == null) {
+            return false;
+        }
+
+        //get current date
+        String registerDate = new SimpleDateFormat("yyyy-MM-dd").format(System.currentTimeMillis());
+
+        //initialize resouce
+        EventRegisterDAO registerDAO = new EventRegisterDAO();
+
+        //add registration
+        return registerDAO.addNewEventRegistration(new EventRegisterDTO(eventID, email, registerDate));
+    }
+
+    /**
+     *
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws PayPalRESTException
+     * @throws NamingException
+     * @throws SQLException
+     */
+    protected String executePaymentHanlder(HttpServletRequest request, HttpServletResponse response)
+            throws PayPalRESTException, NamingException, SQLException {
+        //get value from parameter
+        Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 0, Integer.MAX_VALUE, null);
+        //validate paramter value
+        if (eventID == null) {
+            return null;
+        }
+        //get current session
+        HttpSession session = request.getSession();
+        //set attribute
+        session.setAttribute("eventID", eventID);
+        //get user email
+        String email = (String) session.getAttribute("email");
+        //get current date
+        String registerDate = new SimpleDateFormat("yyyy-MM-dd").format(System.currentTimeMillis());
+        //initialize resource
+        PaymentServices paymentServies = new PaymentServices();
+        return paymentServies.authorizePayment(new EventRegisterDTO(eventID, email, registerDate));
+    }
+
+    protected boolean executeCashHandler(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException, NamingException, SQLException {
+        response.setContentType("text/html;charset=UTF-8");
+        Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 0, Integer.MAX_VALUE, null);
+
+        if (eventID == null) {
+            return false;
+        }
+
+        HttpSession session = request.getSession();
+
+        String email = (String) session.getAttribute("email");
+
+        String registerDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis());
+
+        EventRegisterDAO registerDAO = new EventRegisterDAO();
+
+        if (!registerDAO.addNewEventRegistration(new EventRegisterDTO(eventID, email, registerDate))) {
+            request.setAttribute("errorMessage", "Can not add your registration");
+            return false;
+        }
+
+        EventDAO eventDAO = new EventDAO();
+        EventDTO event = eventDAO.getEventByID(eventID);
+
+        PaymentDAO paymentDAO = new PaymentDAO();
+        int registerID = registerDAO.getRegisterID(eventID, email);
+
+        String description = String.format("[%s] - %s", event.getEventName(), email);
+        if (!paymentDAO.addNewPayment(new PaymentDTO(registerID, description, "pending", "cash", registerDate, event.getTicketFee()))) {
+            request.setAttribute("errorMessage", "internal error");
+            return false;
+        }
+        return true;
+    }
 }

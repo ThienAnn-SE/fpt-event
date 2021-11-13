@@ -17,6 +17,7 @@ public class CommentDTO {
     private String avatar;
     private String comment;
     private String postDate;
+    private int commentNum;
 
     public CommentDTO() {
     }
@@ -36,6 +37,11 @@ public class CommentDTO {
         this.avatar = avatar;
         this.comment = comment;
         this.postDate = postDate;
+    }
+
+    public CommentDTO(int eventID, int commentNum) {
+        this.eventID = eventID;
+        this.commentNum = commentNum;
     }
 
     public int getCommentID() {
@@ -84,6 +90,14 @@ public class CommentDTO {
 
     public void setPostDate(String postDate) {
         this.postDate = postDate;
+    }
+
+    public int getCommentNum() {
+        return commentNum;
+    }
+
+    public void setCommentNum(int commentNum) {
+        this.commentNum = commentNum;
     }
 
 }

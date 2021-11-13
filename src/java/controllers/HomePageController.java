@@ -6,13 +6,21 @@
 package controllers;
 
 import constant.Routers;
+import daos.CategoryDAO;
+import daos.CommentDAO;
 import daos.EventDAO;
+import daos.EventRegisterDAO;
+import dtos.CategoryDTO;
+import dtos.CommentDTO;
 import dtos.EventDTO;
+import dtos.EventRegisterDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -38,8 +46,20 @@ public class HomePageController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         response.setContentType("text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
+        CategoryDAO categoryDAO = new CategoryDAO();
         EventDAO eventDAO = new EventDAO();
+        CommentDAO commentDAO = new CommentDAO();
+
         ArrayList<EventDTO> eventList = eventDAO.getEventForHomepage();
+        ArrayList<CommentDTO> commentNum = commentDAO.getCommentNumList(eventList);
+        ArrayList<EventRegisterDTO> registerNum = getGegisterNumList(eventList);
+        ArrayList<CategoryDTO> categoryList = categoryDAO.getAllCategories();
+        
+        request.setAttribute("categoryList", categoryList);
+        request.setAttribute("registerNumList", registerNum);
+        request.setAttribute("commentNum", commentNum);
         request.setAttribute("eventList", eventList);
     }
 
@@ -62,6 +82,17 @@ public class HomePageController extends HttpServlet {
             request.setAttribute("errorMessage", ex.getMessage());
             request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
         }
+    }
+
+    private ArrayList<EventRegisterDTO> getGegisterNumList(ArrayList<EventDTO> dto) throws NamingException, SQLException {
+        EventRegisterDAO registerDAO = new EventRegisterDAO();
+        ArrayList<EventRegisterDTO> registerNumList = new ArrayList<>();
+        for (int i = 0; i < dto.size(); i++) {
+            int eventID = dto.get(i).getEventID();
+            int registerNum = registerDAO.getRegisterNumByEventID(eventID);
+            registerNumList.add(new EventRegisterDTO(eventID, registerNum));
+        }
+        return registerNumList;
     }
 
 }

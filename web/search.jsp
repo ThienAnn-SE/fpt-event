@@ -1,21 +1,13 @@
-<%-- 
-    Document   : pagination.jsp
-    Created on : Oct 3, 2021, 12:58:10 AM
-    Author     : Admin
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE html>
 <!DOCTYPE html>
 <html lang="en">
+    <%@taglib uri="http://java.sun.com/jsp/jstl/core"
+              prefix="c"%>
     <head>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Event</title>
         <link rel="stylesheet" href="./asset/css/style.css" />
-        <link rel="stylesheet" href="./asset/css/event.css" />
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -31,251 +23,202 @@
     </head>
     <body>
         <jsp:include page="./includes/header.jsp"></jsp:include>
-            <div class="main">
-                <div class="side-bar">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <div class="title">
-                                <i class="fad fa-list"></i>
-                                category
-                                <i class="far fa-chevron-down"></i>
+            <section class="event-area">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-9">
+                        <c:if test="${not empty requestScope.error}">
+                            <h4 class="text-center py-5">${error}</h4>
+                        </c:if>
+                        <c:if test="${empty requestScope.error}">
+                            <div class="container">
+                                <div class="row">
+                                    <%-- start content --%>
+                                    <c:forEach var="event" items="${eventList}">
+                                        <div class="col-lg-4 text-truncate">
+                                            <div class="upcoming-event-wrapper">
+                                                <div class="upcoming-event-img">
+                                                    <a href="ViewEventController?eventID=${event.eventID}">
+                                                        <img src="${event.imageURL}" />
+                                                    </a>
+                                                    <div class="price">
+                                                        <c:if test="${event.ticketFee eq 0}">
+                                                            <span>Free</span>
+                                                        </c:if>
+                                                        <c:if test="${event.ticketFee gt 0}">
+                                                            <span>${event.ticketFee} VND</span>
+                                                        </c:if>
+                                                    </div>
+                                                </div>
+                                                <div class="upcoming-event-text">
+                                                    <h3><a href="ViewEventController?eventID=${event.eventID}">${event.eventName}</a></h3>
+                                                    <div class="event-meta">
+                                                        <span>
+                                                            <i class="far fa-calendar-alt"></i>
+                                                            ${event.startDate}
+                                                        </span>
+                                                        <span><i class="fal fa-folder"></i> 
+                                                            <c:forEach var="category" items="${categoryList}">
+                                                                <c:if test="${event.categoryID eq category.categoryID}">
+                                                                    ${category.categoryName}
+                                                                </c:if>
+                                                            </c:forEach>
+                                                            <br/>
+                                                        </span>
+                                                        <span> 
+                                                            <c:set var="num" value="0"/>
+                                                            <i class="fal fa-comments"></i> 
+                                                            <c:forEach var="comment" items="${commentNum}">
+                                                                <c:if test="${comment.eventID eq event.eventID}">
+                                                                    <c:set var="num" value="${comment.commentNum}"/>
+                                                                </c:if>
+                                                            </c:forEach>
+                                                            ${num} Comments
+                                                        </span>
+                                                        <c:forEach var="register" items="${registerNumList}">
+                                                            <c:if test="${event.eventID eq register.eventID}">
+                                                                <c:set var="registerNum" value="${register.registerNum}"/>
+                                                            </c:if>
+                                                        </c:forEach>
+                                                        <span><i class="far fa-users"></i> ${registerNum}/${event.slot}</span>
+                                                    </div>
+                                                    <a href="RegisterEventController?eventID=${event.eventID}" class="btn">
+                                                        <span class="btn-text">book ticket</span>
+                                                        <span class="btn-border"></span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </c:forEach>
+                                </div>
                             </div>
-                            <ul class="sub-menu">
-                                <li><a href="SearchEventController?btAction=catetory&catetoryID=10">Seminar</a></li>
-                                <li><a href="SearchEventController?btAction=catetory&catetoryID=15">Entertainment Event</a></li>
-                                <li><a href="SearchEventController?btAction=catetory&catetoryID=20">Learning Event</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <div class="title">
-                                <i class="fal fa-money-bill-wave"></i>
-                                search by price
+                            <c:if test="${not empty page}">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item">
+                                        <a class="page-link" href="SearchEventController?page=${page == 1 ? 1 : page - 1}">Previous</a>
+                                    </li>
+                                    <c:forEach begin="1" end="${endPage}" var="i">
+                                        <li class="page-item ${page == i ? "active" : ""}">
+                                            <a class="page-link" href="SearchEventController?page=${i}${lastSearch}">${i}</a>
+                                        </li>
+                                    </c:forEach>
+                                    <li class="page-item">
+                                        <a class="page-link" href="SearchEventController?page=${page < endPage ? page +1 : endPage}">Next</a>
+                                    </li>
+                                </ul>
+                            </c:if>
+                        </c:if>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="widget_search">
+                            <div class="widget">
+                                <div class="widget-title">
+                                    <h3>Search Events</h3>
+                                </div>
                             </div>
-                            <div class="price">
-                                <form action="#">
-                                    <div class="value">
-                                        <span id="range1">0</span>
-                                        <span>-</span>
-                                        <span id="range2">500000</span>
+                            <div class="search-form">
+                                <div class="text-danger">${priceError}</div>
+                                <form action="SearchEventController" id="price">
+                                    <button class="btn" type="submit" name="btAction" value="price"><i class="far fa-search"></i></button>
+                                    <div class="text-field">
+                                        <input autocomplete="off" type="number" id="min" name="minPrice" placeholder="VND"/>
+                                        <label for="min">Min Price</label>
+                                        <div class="text-danger">${minPriceError}</div>
                                     </div>
-                                    <div class="range">
-                                        <div class="slider"></div>
-                                        <input
-                                            type="range"
-                                            min="0"
-                                            max="500000"
-                                            step="1000"
-                                            value="0"
-                                            id="slider1"
-                                            />
-                                        <input
-                                            type="range"
-                                            min="0"
-                                            max="500000"
-                                            step="1000"
-                                            value="500000"
-                                            id="slider2"
-                                            />
+                                    <div class="text-field">
+                                        <input autocomplete="off" type="number" id="max" name="maxPrice" placeholder="VND" />
+                                        <label for="max">Max Price</label>
+                                        <div class="text-danger">${minPriceError}</div>
                                     </div>
 
-                                    <div class="min">
-                                        <span class="prev"></span>
-                                        <input type="number" value="0" />
-                                        <span class="next"></span>
+                                </form>
+                            </div>
+                            <div class="search-form">
+                                <div class="text-danger">${dateError}</div>
+                                <form action="SearchEventController" id="date">
+                                    <button class="btn" type="submit" name="btAction" value="date"><i class="far fa-search"></i></button>
+                                    <div class="text-field">
+                                        <input autocomplete="off" type="date" id="start" name="startDate"/>
+                                        <label for="start">Start Date</label>
+                                        <div class="text-danger">${startDateError}</div>
                                     </div>
-
-                                    <div class="max">
-                                        <span class="prev"></span>
-                                        <input type="number" value="500000" />
-                                        <span class="next"></span>
+                                    <div class="text-field">
+                                        <input autocomplete="off" type="date" id="end" name="endDate"/>
+                                        <label for="end">End Date</label>
+                                        <div class="text-danger">${endDateError}</div>
                                     </div>
                                 </form>
                             </div>
-                        </li>
-                        <li class="nav-item">
-                            <div class="title">
-                                <i class="fal fa-calendar-week"></i>
-                                search by date
-                            </div>
-                            <div class="date">
-                                <input type="date" id="start-date" />
-                                <input type="date" id="end-date" />
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-                <div class="container">
-                    <div class="title">
-                        <i class="far fa-calendar-star"></i>
-                        <h2>events</h2>
-                    </div>
-                    <div class="row">
-                    <c:forEach items="${requestScope.eventList}" var="event">
-                        <div class="event col-md-4">
-                            <div class="event-img">
-                                <img src="./asset/img/trungthu.png" />
-                            </div>
-                            <div class="event-content">
-                                <h2 class="event-name">
-                                    <i class="fal fa-heart" onclick="doLike(${event.eventID}, 'follow')"></i> 
-                                    <a href="ViewEventController?eventID=${event.eventID}">${event.eventName}</a>
-                                </h2>
-                                <ul class="event-detail">
-                                    <li class="create-date">
-                                        <i class="fal fa-clock"></i> ${event.createDate}
-                                    </li>
-                                    <li class="slot">
-                                        <c:set  var="registerNum" value="${0}"/>
-                                        <c:forEach var="register" items="${registerNumList}">
-                                            <c:if test="${register.eventID  eq event.eventID}">
-                                                <c:set var="registerNum" value="${register.registerNum}"/>
-                                            </c:if>
-                                        </c:forEach>
-                                        <i class="far fa-user-alt"></i> ${registerNum}/${event.slot}Slots
-                                    </li>
-                                    <li class="event-category">
-                                        <i class="fal fa-folder"></i> <a href="SearchEventController?btAction=catetory&catetoryID=${event.catetoryID}">
-                                            <c:forEach var="catetory" items="${catetoryList}">
-                                                <c:if test="${event.catetoryID eq catetory.catetoryID}">
-                                                    ${catetory.catetoryName}
-                                                </c:if>
-                                            </c:forEach>
-                                        </a>
-                                    </li>
-                                    <li class="event-comment">
-                                        <i class="fal fa-comments"></i> <span class="fb-comments-count" data-href="http://localhost:8080/${event.eventID}"></span> Comments
-                                    </li>
-                                </ul>
-                                <p>
-                                    ${e.content}
-                                </p>
-                                <a href="RegisterEventController?eventID=${event.eventID}"><button><i class="fas fa-ticket-alt"></i> Register</button></a>
-                                <a class="read-more" href="ViewEventController?eventID=${event.eventID}"
-                                   >continue reading <i class="fal fa-chevron-right"></i
-                                    ></a>
-                            </div>
                         </div>
-                    </c:forEach>
-                </div>
-                <div class="pagination">
-                    <c:forEach begin="1" end="${endPage}" var="i">
-                        <a class="page-link num ${page == i ? "active" : ""}" href="SearchEventController?page=${i}${lastSearch}">${i}</a>
-                    </c:forEach>
-                </div>
-            </div>
-
-            <div class="modal fade" id="myModal">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <!-- Modal Header -->
-                        <div class="modal-header">
-                            <h4 class="modal-title">Notification</h4>
-                            <button type="button" class="close" data-dismiss="modal">×</button>
-                        </div>
-                        <!-- Modal body -->
-                        <div class="modal-body">
-                            Follow event successfully!!!
-                        </div>
-                        <!-- Modal footer -->
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <div class="widget_categories">
+                            <div class="widget">
+                                <div class="widget-title">
+                                    <h3>Categories</h3>
+                                </div>
+                            </div>
+                            <ul>
+                                <li class="category-item">
+                                    <a href="SearchEventController?btAction=category&categoryID=20">Learning</a>
+                                </li>
+                                <li class="category-item">
+                                    <a href="SearchEventController?btAction=category&categoryID=15">Entertainment</a>
+                                </li>
+                                <li class="category-item">
+                                    <a href="SearchEventController?btAction=category&categoryID=10">Seminar</a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
+            <c:if test="${param.success}">
+                <div class="modal fade" id="myModal">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
 
-        </div>
+                            <!-- Modal Header -->
+                            <div class="modal-header py-3">
+                                <h2 class="modal-title">Notification</h2>
+                            </div>
+
+                            <!-- Modal body -->
+                            <div class="modal-body py-3">
+                                <p class="font-weight-bold text-center"><strong class="text-success">You register this event successfully !!!</strong> </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
+            <c:if test="${not empty errorMessage}">
+                <div class="modal fade" id="myModal">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <!-- Modal Header -->
+                            <div class="modal-header py-3">
+                                <h2 class="modal-title">Notification</h2>
+                            </div>
+                            <!-- Modal body -->
+                            <div class="modal-body py-3">
+                                <p class="font-weight-bold text-center"><strong class="text-danger">${errorMessage}!!!</strong> </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
+        </section>
+        <jsp:include page="./includes/footer.jsp"></jsp:include>
 
         <script src="./asset/js/main.js"></script>
-
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script>
-                                        var prevs = document.querySelectorAll(".prev");
-                                        var nexts = document.querySelectorAll(".next");
-                                        var numbers = document.querySelectorAll('input[type="number"]');
-                                        var range1 = document.getElementById("range1");
-                                        var range2 = document.getElementById("range2");
-                                        var slider1 = document.getElementById("slider1");
-                                        var slider2 = document.getElementById("slider2");
-                                        for (pre of prevs) {
-                                        pre.addEventListener("click", function () {
-                                        var price = this.parentElement.classList;
-                                        if (price.value == "min") {
-                                        if (numbers[0].value > 0) {
-                                        numbers[0].value = parseInt(numbers[0].value) - 1000;
-                                        slider1.value = numbers[0].value;
-                                        range1.innerHTML = slider1.value;
-                                        }
-                                        } else if (price.value == "max") {
-                                        if (numbers[1].value > 0) {
-                                        numbers[1].value = parseInt(numbers[1].value) - 1000;
-                                        slider2.value = numbers[1].value;
-                                        range2.innerHTML = slider2.value;
-                                        }
-                                        }
-                                        });
-                                        }
-                                        for (next of nexts) {
-                                        next.addEventListener("click", function () {
-                                        var price = this.parentElement.classList;
-                                        if (price.value == "min") {
-                                        if (numbers[0].value < 500000) {
-                                        numbers[0].value = parseInt(numbers[0].value) + 1000;
-                                        slider1.value = numbers[0].value;
-                                        range1.innerHTML = slider1.value;
-                                        }
-                                        } else if (price.value == "max") {
-                                        if (numbers[1].value < 500000) {
-                                        numbers[1].value = parseInt(numbers[1].value) + 1000;
-                                        slider2.value = numbers[1].value;
-                                        range2.innerHTML = slider2.value;
-                                        }
-                                        }
-                                        });
-                                        }
-                                        numbers[0].addEventListener("input", function () {
-                                        slider1.value = numbers[0].value;
-                                        range1.innerHTML = slider1.value;
-                                        });
-                                        numbers[1].addEventListener("input", function () {
-                                        slider2.value = numbers[1].value;
-                                        range2.innerHTML = slider2.value;
-                                        });
-                                        slider1.addEventListener("input", function () {
-                                        numbers[0].value = slider1.value;
-                                        range1.innerHTML = slider1.value;
-                                        });
-                                        slider2.addEventListener("input", function () {
-                                        numbers[1].value = slider2.value;
-                                        range2.innerHTML = slider2.value;
-                                        });
-                                        document.querySelectorAll('.event-name i').forEach((item) => {
-                                        item.addEventListener("click", () => {
-                                        item.classList.toggle('followed');
-                                        if (item.classList.contains('followed')) {
-                                        item.className = 'fas fa-heart followed';
-                                        item.style.color = 'red';
-                                        } else {
-                                        item.className = 'fal fa-heart';
-                                        item.style.color = 'var(--black)';
-                                        }
-                                        });
-                                        });
+            $(document).ready(function () {
+                // Show the Modal on load
+                $("#myModal").modal("show");
+            });
         </script>
         <script>
-            function doLike(eventID, btAction){
-            const data{
-            eventID: eventID,
-                    btAction: btAction
-            }
-            $.ajax({
-            url: "FollowEventServlet",
-                    data: data,
-                    success: function (data, textStatus, jqXHR){
-                    $("#myModal").modal();
-                    },
-            })
-            }
         </script>
     </body>
 </html>

@@ -1,8 +1,8 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
-
+    <%@page contentType="text/html" pageEncoding="UTF-8"%>
     <head>
-
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -16,10 +16,10 @@
         <link
             href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
             rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
         <!-- Custom styles for this template-->
         <link href="./asset/css/sb-admin-2.min.css" rel="stylesheet">
-
     </head>
 
     <body id="page-top">
@@ -32,10 +32,9 @@
 
                 <!-- Sidebar - Brand -->
                 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="AdminDashboardController">
-                    <div class="sidebar-brand-icon rotate-n-15">
-                        <i class="fas fa-laugh-wink"></i>
+                    <div class="sidebar-brand-icon">
+                        <image src="./asset/img/FPTU_EVENT.png" style="width:  100px"/>
                     </div>
-                    <div class="sidebar-brand-text mx-3">FU EVENT MANAGEMET</div>
                 </a>
 
                 <!-- Divider -->
@@ -53,31 +52,55 @@
 
                 <!-- Heading -->
                 <div class="sidebar-heading">
-                    Selections
+                    Management
                 </div>
 
                 <!-- Nav Item - Tables -->
                 <li class="nav-item">
                     <a class="nav-link" href="UserManagementController">
-                        <i class="fas fa-fw fa-table"></i>
-                        <span>Tables</span></a>
+                        <i class="fa fa-user-circle"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="AdminClubManagementController">
+                        <i class="fa fa-users"></i>
+                        <span>Club</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="AdminCategoryController">
+                        <i class="fa fa-list"></i>
+                        <span>Category</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="AdminLocationController">
+                        <i class="fa fa-location-arrow"></i>
+                        <span>Location</span>
+                    </a>
                 </li>
 
                 <hr class="sidebar-divider">
-                
+
+                <div class="sidebar-heading">
+                    Process
+                </div>
+
                 <li class="nav-item">
                     <a class="nav-link" href="AdminFormController">
-                        <i class="fa fa-list-ul"></i>
-                        <span>Form</span></a>
+                        <i class="fa fa-exclamation-circle"></i>
+                        <span>Ban user request</span></a>
                 </li>
-                      
+
                 <li class="nav-item">
-                    <a class="nav-link" href="">
-                        <i class="fa fa-envelope"></i>
-                        <span>Request</span>
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-comment"></i>
+                        <span>Comment report</span>
                     </a>
                 </li>
-                
+
                 <!-- Divider -->
                 <hr class="sidebar-divider d-none d-md-block">
 
@@ -111,25 +134,13 @@
                             <li class="nav-item dropdown no-arrow">
                                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">${sessionScope.email}</span>
                                     <img class="img-profile rounded-circle"
-                                         src="img/undraw_profile.svg">
+                                         src="${sessionScope.avatar}">
                                 </a>
                                 <!-- Dropdown - User Information -->
                                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                      aria-labelledby="userDropdown">
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Profile
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Settings
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Activity Log
-                                    </a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                         <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -154,8 +165,8 @@
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                    Earnings (Monthly)</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                                    Visitors (Monthly)</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">${numOf30DayVisitors}</div>
                                             </div>
                                             <div class="col-auto">
                                                 <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -172,11 +183,11 @@
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                    Earnings (Annual)</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                                    Visitors (Total)</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">${numOfTotalVisitors}</div>
                                             </div>
                                             <div class="col-auto">
-                                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                                <i class="fa fa-trophy fa-2x text-gray-300"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -185,27 +196,16 @@
 
                             <!-- Earnings (Monthly) Card Example -->
                             <div class="col-xl-3 col-md-6 mb-4">
-                                <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card border-left-danger shadow h-100 py-2">
                                     <div class="card-body">
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
-                                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
-                                                </div>
-                                                <div class="row no-gutters align-items-center">
-                                                    <div class="col-auto">
-                                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="progress progress-sm mr-2">
-                                                            <div class="progress-bar bg-info" role="progressbar"
-                                                                 style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                                                 aria-valuemax="100"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                    Pending Requests</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">${numOfUnreslovedRequest}</div>
                                             </div>
                                             <div class="col-auto">
-                                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                                <i class="fa fa-exclamation-circle fa-2x text-gray-300"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -219,8 +219,8 @@
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">
                                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                    Pending Requests</div>
-                                                <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                                    Pending Reports</div>
+                                                <div class="h5 mb-0 font-weight-bold text-gray-800">${numOfUnprocessedReport}</div>
                                             </div>
                                             <div class="col-auto">
                                                 <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -241,26 +241,12 @@
                                     <!-- Card Header - Dropdown -->
                                     <div
                                         class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                        <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                                        <div class="dropdown no-arrow">
-                                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                                 aria-labelledby="dropdownMenuLink">
-                                                <div class="dropdown-header">Dropdown Header:</div>
-                                                <a class="dropdown-item" href="#">Action</a>
-                                                <a class="dropdown-item" href="#">Another action</a>
-                                                <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item" href="#">Something else here</a>
-                                            </div>
-                                        </div>
+                                        <h6 class="m-0 font-weight-bold text-primary">Visitors overview</h6>
                                     </div>
                                     <!-- Card Body -->
                                     <div class="card-body">
                                         <div class="chart-area">
-                                            <canvas id="myAreaChart"></canvas>
+                                            <canvas id="myChart" style="width:100%;"></canvas>
                                         </div>
                                     </div>
                                 </div>
@@ -272,21 +258,7 @@
                                     <!-- Card Header - Dropdown -->
                                     <div
                                         class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                        <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                                        <div class="dropdown no-arrow">
-                                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                                 aria-labelledby="dropdownMenuLink">
-                                                <div class="dropdown-header">Dropdown Header:</div>
-                                                <a class="dropdown-item" href="#">Action</a>
-                                                <a class="dropdown-item" href="#">Another action</a>
-                                                <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item" href="#">Something else here</a>
-                                            </div>
-                                        </div>
+                                        <h6 class="m-0 font-weight-bold text-primary">User status ratio</h6>
                                     </div>
                                     <!-- Card Body -->
                                     <div class="card-body">
@@ -295,13 +267,16 @@
                                         </div>
                                         <div class="mt-4 text-center small">
                                             <span class="mr-2">
-                                                <i class="fas fa-circle text-primary"></i> Direct
+                                                <i class="fas fa-circle text-primary"></i> New
                                             </span>
                                             <span class="mr-2">
-                                                <i class="fas fa-circle text-success"></i> Social
+                                                <i class="fas fa-circle text-success"></i> Active
                                             </span>
                                             <span class="mr-2">
-                                                <i class="fas fa-circle text-info"></i> Referral
+                                                <i class="fas fa-circle text-danger"></i> Inactive
+                                            </span>
+                                            <span class="mr-2">
+                                                <i class="fas fa-circle text-warning"></i> Ban temporary
                                             </span>
                                         </div>
                                     </div>
@@ -343,13 +318,13 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
                         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
+                            <span aria-hidden="true">X</span>
                         </button>
                     </div>
                     <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" href="login.html">Logout</a>
+                        <a class="btn btn-primary" href="LogoutController">Logout</a>
                     </div>
                 </div>
             </div>
@@ -399,13 +374,48 @@
                 return s.join(dec);
             }
 
-            var ctx = document.getElementById("myAreaChart");
+            var ctx = document.getElementById("myChart");
+
+            var value = [0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000];
+            var array = [],
+                    dayShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                    monthsShort = [
+                        "Jan",
+                        "Feb",
+                        "Mar",
+                        "Apr",
+                        "May",
+                        "Jun",
+                        "Jul",
+                        "Aug",
+                        "Sep",
+                        "Oct",
+                        "Nov",
+                        "Dec",
+                    ];
+
+            function getDates() {
+                var dateArray = [];
+                var currentDate = new Date();
+                for (var i = 0; i < 30; i++) {
+                    var temp = [
+                        dayShort[currentDate.getDay()],
+                        monthsShort[currentDate.getMonth()] + " " + currentDate.getDate(),
+                        currentDate.getFullYear(),
+                    ];
+                    dateArray.push(temp);
+                    currentDate.setDate(currentDate.getDate() - 1);
+                }
+                return dateArray;
+            }
+
+            array = getDates();
             var myLineChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                    labels: array.reverse(),
                     datasets: [{
-                            label: "Earnings",
+                            label: "Visitors",
                             lineTension: 0.3,
                             backgroundColor: "rgba(78, 115, 223, 0.05)",
                             borderColor: "rgba(78, 115, 223, 1)",
@@ -418,7 +428,7 @@
                             pointHitRadius: 10,
                             pointBorderWidth: 2,
                             //data here
-                            data: [0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000],
+                            data: value.reverse(),
                         }],
                 },
                 options: {
@@ -450,7 +460,7 @@
                                     padding: 10,
                                     // Include a dollar sign in the ticks
                                     callback: function (value, index, values) {
-                                        return '$' + number_format(value);
+                                        return number_format(value);
                                     }
                                 },
                                 gridLines: {
@@ -482,7 +492,7 @@
                         callbacks: {
                             label: function (tooltipItem, chart) {
                                 var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                                return datasetLabel + ': $' + number_format(tooltipItem.yLabel);
+                                return datasetLabel + ': ' + number_format(tooltipItem.yLabel) + ' visitors';
                             }
                         }
                     }
@@ -499,12 +509,16 @@
             var myPieChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ["Direct", "Referral", "Social"],
+                    labels: ["New", "Inactive", "Ban temporary", "Active"],
                     datasets: [{
                             //data here
-                            data: [55, 30, 15],
-                            backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-                            hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+                            data: [
+            <c:forEach var="ratio" items="${userStatusRatioList}">
+                ${ratio},
+            </c:forEach>
+                            ],
+                            backgroundColor: ['#4e73df', '#cd3333', '#eaa55d', '#1cc88a'],
+                            hoverBackgroundColor: ['#2e59d9', '#b82d2d', '#e89c4b', '#17a673'],
                             hoverBorderColor: "rgba(234, 236, 244, 1)",
                         }],
                 },

@@ -6,24 +6,27 @@
 package controllers;
 
 import constant.Routers;
-import daos.CatetoryDAO;
+import daos.CategoryDAO;
 import daos.ClubDAO;
 import daos.EventDAO;
+import daos.EventFollowDAO;
 import daos.EventRegisterDAO;
 import daos.LocationDAO;
+import daos.PaymentDAO;
 import daos.UserDAO;
-import dtos.CatetoryDTO;
+import dtos.CategoryDTO;
 import dtos.ClubDTO;
 import dtos.EventDTO;
 import dtos.EventRegisterDTO;
 import dtos.LocationDTO;
+import dtos.PaymentDTO;
 import dtos.UserDTO;
+import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Date;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -31,6 +34,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import utils.FileHelper;
 import utils.GetParam;
 
 /**
@@ -50,10 +54,9 @@ public class EventManagementController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected boolean processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected boolean getHandler(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         response.setContentType("text/html;charset=UTF-8");
-        Integer page = GetParam.getIntParams(request, "page", "Page", 1, 50, 1);
 
         HttpSession session = request.getSession();
         String email = (String) session.getAttribute("email");
@@ -69,10 +72,10 @@ public class EventManagementController extends HttpServlet {
             return false;
         }
 
-        CatetoryDAO catetoryDAO = new CatetoryDAO();
-        ArrayList<CatetoryDTO> catetoryList = catetoryDAO.getAllCatetories();
-        if (catetoryList == null) {
-            request.setAttribute("errorMessage", "There is an error happen. No catetory found");
+        CategoryDAO categoryDAO = new CategoryDAO();
+        ArrayList<CategoryDTO> categoryList = categoryDAO.getAllCategories();
+        if (categoryList == null) {
+            request.setAttribute("errorMessage", "There is an error happen. No category found");
             return false;
         }
 
@@ -83,21 +86,26 @@ public class EventManagementController extends HttpServlet {
         }
 
         EventDAO eventDAO = new EventDAO();
-        ArrayList<EventDTO> eventList = eventDAO.getEventByClub(page, club.getClubID());
+        ArrayList<EventDTO> eventList = eventDAO.getEventByClub(club.getClubID());
 
-        ArrayList<EventRegisterDTO> registerNumList = getGegisterNumList(eventList);
+        EventRegisterDAO registerDAO = new EventRegisterDAO();
+        ArrayList<Integer> dataRegisterList = registerDAO.getRegisterData(club.getClubID());
 
-        int endPage = eventDAO.getRecordNumForClub(club.getClubID());
-        if (endPage % 5 != 0) {
-            endPage++;
-        }
-        
-        request.setAttribute("page", page);
-        request.setAttribute("endPage", endPage);
+        EventFollowDAO followDAO = new EventFollowDAO();
+        ArrayList<Integer> dataFollowList = followDAO.getFollowData(club.getClubID());
+
+        PaymentDAO paymentDAO = new PaymentDAO();
+        ArrayList<PaymentDTO> paymentList = paymentDAO.getClubEventPayment(club.getClubID());
+
+        ArrayList<EventRegisterDTO> registerNumList = getRegisterNumList(eventList);
+
         request.setAttribute("registerNumList", registerNumList);
+        request.setAttribute("paymentList", paymentList);
         request.setAttribute("locationList", locationList);
-        request.setAttribute("catetoryList", catetoryList);
+        request.setAttribute("categoryList", categoryList);
         request.setAttribute("eventList", eventList);
+        request.setAttribute("dataRegisterList", dataRegisterList);
+        request.setAttribute("dataFollowList", dataFollowList);
         return true;
     }
 
@@ -113,7 +121,8 @@ public class EventManagementController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            if (processRequest(request, response)) {
+            if (getHandler(request, response)) {
+                request.setAttribute("statisticsActive", true);
                 request.getRequestDispatcher(Routers.VIEW_MANAGEMENT_PAGE).forward(request, response);
             } else {
                 request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
@@ -125,7 +134,7 @@ public class EventManagementController extends HttpServlet {
         }
     }
 
-    private ArrayList<EventRegisterDTO> getGegisterNumList(ArrayList<EventDTO> dto) throws NamingException, SQLException {
+    private ArrayList<EventRegisterDTO> getRegisterNumList(ArrayList<EventDTO> dto) throws NamingException, SQLException {
         EventRegisterDAO registerDAO = new EventRegisterDAO();
         ArrayList<EventRegisterDTO> registerNumList = new ArrayList<>();
         for (int i = 0; i < dto.size(); i++) {

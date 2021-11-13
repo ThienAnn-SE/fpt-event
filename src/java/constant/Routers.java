@@ -25,18 +25,26 @@ public class Routers {
     public final static String ERROR_PAGE = "error.jsp";
     public final static String REGISTER_PAGE = "register.jsp";
     public final static String USER_INFO_PAGE = "profile.jsp";
-    public final static String ADD_EVENT_PAGE = "addEvent.jsp";
+    public final static String ADD_EVENT_PAGE = "createEvent.jsp";
+    public final static String UPDATE_EVENT_PAGE = "update.jsp";
     public final static String VIEW_EVENT_PAGE = "eventDetail.jsp";
     public final static String REVIEW_PAYMENT_PAGE = "review.jsp";
     public final static String VIEW_PAYMENT_RECEIPT_PAGE = "receipt.jsp";
     public final static String SEARCH_EVENT_PAGE = "search.jsp";
     public final static String VIEW_CLUB_PAGE = "club.jsp";
-    public final static String VIEW_MANAGEMENT_PAGE = "leader.jsp";
+    public final static String VIEW_MANAGEMENT_PAGE = "clubLeader.jsp";
     public final static String VIEW_CLUB_DETAIL_PAGE = "clubDetail.jsp";
     public final static String USER_MANAGEMENT_PAGE = "admin-table.jsp";
     public final static String ADMIN_FORM_PAGE = "admin-form.jsp";
     public final static String ADMIN_REQUEST_PAGE = "admin-request.jsp";
+    public final static String VIEW_EVENT_REGISTRATION_PAGE = "registeredUser.jsp";
+    public final static String CANCEL_EVENT_PAGE = "cancel.jsp";
+    public final static String ADMIN_DASHBOARD_PAGE = "admin-dashboard.jsp";
+    public final static String ADMIN_CATEGORY_PAGE = "admin-category.jsp";
+    public final static String ADMIN_LOCATION_PAGE = "admin-location.jsp";
+    public final static String ADMIN_CLUB_MANAGEMENT_PAGE = "admin-club.jsp";
 
+    public final static String ADD_EVENT_CONTROLLER = "AddEventController";
     public final static String UPDATE_CONTROLLER = "UpdateController";
     public final static String REGISTER_CONTROLLER = "RegisterController";
     public final static String VIEW_USER_CONTROLLER = "ViewUserController";
@@ -47,4 +55,6 @@ public class Routers {
     public final static String FOLLOW_EVENT_CONTROLLER = "FollowEventController";
     public final static String SEARCH_EVENT_CONTROLLER = "SearchEventController";
     public final static String HOME_PAGE_CONTROLLER = "HomePageController";
+    public final static String COMMENT_CONTROLLER = "CommentController";
+    public final static String EVENT_MANAGEMENT_CONTROLLER = "EventManagementController";
 }

@@ -6,7 +6,11 @@
 package controllers;
 
 import constant.Routers;
+import daos.BanRequestDAO;
+import daos.ClubDAO;
 import daos.UserDAO;
+import dtos.BanRequestDTO;
+import dtos.ClubDTO;
 import dtos.UserDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,7 +39,6 @@ public class AdminFormController extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @return
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      * @throws javax.naming.NamingException
@@ -44,16 +47,20 @@ public class AdminFormController extends HttpServlet {
     protected void getHandler(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, NamingException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
-        HttpSession session = request.getSession();
-        String avatar = (String) session.getAttribute("avatar");
-        String email = (String) session.getAttribute("email");
 
         UserDAO userDAO = new UserDAO();
         ArrayList<UserDTO> userBanList = userDAO.getUserBanList();
 
+        ClubDAO clubDAO = new ClubDAO();
+        ArrayList<ClubDTO> clubList = clubDAO.getAllClubs();
+
+        //get Ban request list
+        BanRequestDAO banRequestDAO = new BanRequestDAO();
+        ArrayList<BanRequestDTO> banRequestList = banRequestDAO.getBanRequestList();
+
+        request.setAttribute("banRequestList", banRequestList);
         request.setAttribute("userBanList", userBanList);
-        request.setAttribute("email", email);
-        request.setAttribute("avatar", avatar);
+        request.setAttribute("clubList", clubList);
     }
 
     /**
@@ -88,7 +95,7 @@ public class AdminFormController extends HttpServlet {
 
         if (isSuccess) {
             request.setAttribute("successMessage", "Your action is success!!");
-        }else{
+        } else {
             request.setAttribute("errorMessage", "Your action is fail, please check again!!!");
         }
         return isSuccess;
@@ -107,12 +114,12 @@ public class AdminFormController extends HttpServlet {
             throws ServletException, IOException {
         try {
             getHandler(request, response);
+            request.getRequestDispatcher(Routers.ADMIN_FORM_PAGE).forward(request, response);
         } catch (NamingException | SQLException ex) {
             log(ex.getMessage());
             request.setAttribute("errorMessage", ex.getMessage());
             request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
         }
-        request.getRequestDispatcher(Routers.ADMIN_FORM_PAGE).forward(request, response);
     }
 
     /**

@@ -5,69 +5,139 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<header>
-    <nav class="navbar navbar-expand-lg">
-        <div class="navbar-header container-fluid fixed-top">
-            <a class="navbar-brand" href="HomePageController">
-                <img class="nav logo" src="./asset/img/fu.png" />
-            </a>
-            <button class="navbar-toggler">
-                <i id="toggle" class="fas fa-bars"></i>
-            </button>
-            <div class="collapse navbar-collapse">
-                <div class="navbar-nav">
-                    <a class="item nav-link active" href="HomePageController">home</a>
-                    <a class="item nav-link" href="SearchEventController">event</a>
-                    <a class="item nav-link" href="ViewClubController">club</a>
-                    <c:if test="${empty role}">
-                        <a class="nav-link" href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force">
-                            <button class="button">
-                                <i class="fab fa-google"></i>
-                                Login
-                            </button>
+<header class="fixed-top">
+    <div class="header-area">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3 col-6 d-flex align-items-center">
+                    <div class="logo">
+                        <a href="HomePageController">
+                            <img src="./asset/img/FPTU_EVENT.png" />
                         </a>
-                    </c:if>
-                    <c:if test="${role eq 1 or role eq 2 or role eq 3}">
-                        <a class="item nav-link" href="ViewUserController">view profile</a>
-                    </c:if>
-                    <c:if test="${role eq 4 or role eq 5}">
-                        <a class="item nav-link" href="EventManagementController">club management</a>
-                    </c:if>
-                    <c:if test="${not empty role}">
-                        <a class="item nav-link" href="#" data-toggle="modal" data-target="#logoutModal">log out</a>
-                    </c:if>
+                    </div>
                 </div>
-            </div>
-            <div class="theme-switch">
-                <i class="far fa-moon"></i>
-            </div>
-            <div class="search">
-                <div class="search-icon">
-                    <i class="far fa-search"></i>
-                </div>
-                <div class="search-input">
-                    <input id="search" type="text" placeholder="Search" />
-                </div>
-                <span class="clear"><i class="fal fa-times"></i></span>
-            </div>
-        </div>
-    </nav>
+                <div class="col-md-9 col-6">
+                    <div class="header-right">
+                        <div class="header-icon">
+                            <div class="search">
+                                <div class="search-icon">
+                                    <i class="far fa-search"></i>
+                                </div>
+                                <div class="pc-search-input">
+                                    <form action="SearchEventController">
+                                        <input
+                                            class="search-input"
+                                            type="text"
+                                            placeholder="Search"
+                                            name="eventName"
+                                            />
+                                    </form>
+                                </div>
+                                <span class="clear"><i class="fal fa-times"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header-text">
+                        <nav class="pc-header">
+                            <ul>
+                                <li class="header-item">
+                                    <a href="HomePageController">home</a>
+                                </li>
+                                <li class="header-item">
+                                    <a href="SearchEventController">event</a>
+                                </li>
+                                <c:if test="${empty sessionScope.email}">
+                                    <li class="header-item">
+                                        <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force">
+                                            login
+                                        </a>
+                                    </li>
+                                </c:if>
+                                <c:if test="${not empty sessionScope.email}"> 
+                                    <c:if test="${sessionScope.role eq 1 or sessionScope.role eq 2}">
+                                        <li class="header-item">
+                                            <a href="ViewUserController">
+                                                profile
+                                            </a>
+                                        </li>
+                                    </c:if>
+                                    <c:if test="${sessionScope.role eq 3 or sessionScope.role eq 4}">
+                                        <li class="header-item">
+                                            <a href="EventManagementController">
+                                                event management
+                                            </a>
+                                        </li>
+                                    </c:if>
+                                </c:if>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="mobile-btn"><i class="fas fa-bars"></i></div>
+                    <div class="header-overlay"></div>
+                    <nav class="mobile-header">
+                        <div class="mobile-header-title">
+                            <div class="logo">
+                                <a href="HomePageController">
+                                    <img src="./asset/img/FPTU_EVENT.png" />
+                                </a>
+                            </div>
+                            <div class="mobile-header-close">
+                                <i class="fal fa-times"></i>
+                            </div>
+                        </div>
 
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                        <ul>
+                            <li class="header-mobile-item">
+                                <a href="HomePageController">home</a>
+                            </li>
+                            <li class="header-mobile-item">
+                                <a href="SearchEventController">event</a>
+                            </li>
+                            <c:if test="${empty sessionScope.email}">
+                                <li class="header-item">
+                                    <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force">
+                                        login
+                                    </a>
+                                </li>
+                            </c:if>
+                            <c:if test="${sessionScope.email}">
+                                <c:if test="${sessionScope.role eq 1 or sessionScope.role eq 2}">
+                                    <li class="header-item">
+                                        <a href="ViewUserController">
+                                            profile
+                                        </a>
+                                    </li>
+                                </c:if>
+                                <c:if test="${sessionScope.role eq 3 or sessionScope.role eq 4}">
+                                    <li class="header-item">
+                                        <a href="EventManagementController">
+                                            event management
+                                        </a>
+                                    </li>
+                                </c:if>
+                            </c:if>
+                        </ul>
+                    </nav>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                <div class="modal-footer">
-                    <a class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</a>
-                    <a class="btn btn-primary" href="LogoutController">Logout</a>
+                <div class="col-12">
+                    <div class="mobile-search">
+                        <div class="search-icon">
+                            <i class="far fa-search"></i>
+                        </div>
+                        <div class="mobile-search-input">
+                            <form action="SearchEventController">
+                                <input
+                                    class="search-input"
+                                    type="text"
+                                    placeholder="Search"
+                                    name="eventName"
+                                    />
+                            </form>
+                        </div>
+                        <span class="clear"><i class="fal fa-times"></i></span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="./asset/vendor/jquery/jquery.min.js"></script>
-    <script src="./asset/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 </header>

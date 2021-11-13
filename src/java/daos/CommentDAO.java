@@ -6,6 +6,7 @@
 package daos;
 
 import dtos.CommentDTO;
+import dtos.EventDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -47,25 +48,28 @@ public class CommentDAO {
         boolean isSuccess = false;
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "INSERT INTO tblComments(eventID, userEmail, avatar, comment, postDate)"
-                    + " VALUES (?,?,?,?,?)";
-            preStm = conn.prepareStatement(sql);
-            preStm.setInt(1, comment.getEventID());
-            preStm.setString(2, comment.getEmail());
-            preStm.setString(3, comment.getAvatar());
-            preStm.setNString(1, comment.getComment());
-            preStm.setDate(5, java.sql.Date.valueOf(comment.getPostDate()));
+            if (conn != null) {
+                String sql = "INSERT INTO tblComments(eventID, userEmail, avatar, comment, postDate, visible)"
+                        + " VALUES (?,?,?,?,?,?)";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, comment.getEventID());
+                preStm.setString(2, comment.getEmail());
+                preStm.setString(3, comment.getAvatar());
+                preStm.setNString(4, comment.getComment());
+                preStm.setTimestamp(5, java.sql.Timestamp.valueOf(comment.getPostDate()));
+                preStm.setBoolean(6, true);
 
-            isSuccess = preStm.executeUpdate() > 0;
+                isSuccess = preStm.executeUpdate() > 0;
+            }
         } finally {
             this.closeConnection();
         }
         return isSuccess;
     }
-    
-    public CommentDTO getCommentByID(int commentID) throws NamingException, SQLException{
+
+    public CommentDTO getCommentByID(int commentID) throws NamingException, SQLException {
         CommentDTO dto = null;
-        try{
+        try {
             conn = DBHelpers.makeConnection();
             String sql = "SELECT *"
                     + " FROM tblComments"
@@ -73,7 +77,7 @@ public class CommentDAO {
             preStm = conn.prepareStatement(sql);
             preStm.setInt(1, commentID);
             rs = preStm.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 int eventID = rs.getInt("eventID");
                 String email = rs.getString("userEmail");
                 String avatar = rs.getString("avatar");
@@ -81,7 +85,7 @@ public class CommentDAO {
                 String postDate = new SimpleDateFormat("MMM dd,yyyy").format(rs.getDate("postDate"));
                 dto = new CommentDTO(commentID, eventID, email, avatar, comment, postDate);
             }
-        }finally{
+        } finally {
             this.closeConnection();
         }
         return dto;
@@ -93,7 +97,7 @@ public class CommentDAO {
             conn = DBHelpers.makeConnection();
             String sql = "SELECT *"
                     + " FROM tblComments"
-                    + " WHERE eventID = ? AND visible = true"
+                    + " WHERE eventID = ? AND visible = 1"
                     + " ORDER BY postDate DESC";
             preStm = conn.prepareStatement(sql);
             preStm.setInt(1, eventID);
@@ -117,17 +121,66 @@ public class CommentDAO {
         int num = 0;
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "SELECT COUNT(userEmail) as num"
-                    + " FROM tblComments"
-                    + " WHERE eventID = ?";
-            preStm = conn.prepareStatement(sql);
-            rs = preStm.executeQuery();
-            if (rs.next()) {
-                num = rs.getInt("num");
+            if (conn != null) {
+                String sql = "SELECT COUNT(userEmail) as num"
+                        + " FROM tblComments"
+                        + " WHERE eventID = ? AND visible = 1";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, eventID);
+                rs = preStm.executeQuery();
+                if (rs.next()) {
+                    num = rs.getInt("num");
+                }
             }
         } finally {
 
         }
         return num;
+    }
+
+    public ArrayList<CommentDTO> getCommentNumList(ArrayList<EventDTO> eventList) throws NamingException, SQLException {
+        ArrayList<CommentDTO> numList = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT eventID, COUNT(userEmail) as num"
+                        + " FROM tblComments"
+                        + " WHERE eventID = ? AND visible = 1"
+                        + " GROUP BY eventID";
+                preStm = conn.prepareStatement(sql);
+                if (!eventList.isEmpty()) {
+                    for (int i = 0; i < eventList.size(); i++) {
+                        preStm.setInt(1, eventList.get(i).getEventID());
+                        rs = preStm.executeQuery();
+                        if (rs.next()) {
+                            int eventID = rs.getInt("eventID");
+                            int commentNum = rs.getInt("num");
+                            numList.add(new CommentDTO(eventID, commentNum));
+                        }
+                    }
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return numList;
+    }
+
+    public boolean changeCommentVisible(int commentID, boolean visible)
+            throws NamingException, SQLException {
+        boolean isSuccess = false;
+        try {
+            conn = DBHelpers.makeConnection();
+            String sql = "UPDATE tblComments SET visible = ?"
+                    + " WHERE commentID = ?";
+            preStm = conn.prepareStatement(sql);
+            preStm.setBoolean(1, visible);
+            preStm.setInt(1, commentID);
+
+            isSuccess = preStm.executeUpdate() > 0;
+        } finally {
+            this.closeConnection();
+        }
+        return isSuccess;
     }
 }

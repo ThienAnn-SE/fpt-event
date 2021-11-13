@@ -334,7 +334,7 @@ public class GetParam {
 
             return FileHelper.uploadFile(request, filePart);
         } catch (IOException | ServletException e) {
-            e.printStackTrace();
+            request.setAttribute(field+"Error", e.getMessage());
             return null;
         }
 

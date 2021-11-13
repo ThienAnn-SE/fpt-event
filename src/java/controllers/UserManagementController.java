@@ -43,7 +43,9 @@ public class UserManagementController extends HttpServlet {
             throws ServletException, IOException, SQLException, NamingException {
         response.setContentType("text/html;charset=UTF-8");
         UserDAO userDAO = new UserDAO();
-        ArrayList<UserDTO> userList = userDAO.getAllUsers();      
+        
+        ArrayList<UserDTO> userList = userDAO.getAllUsers();    
+        
         request.setAttribute("userList", userList);
     }
 

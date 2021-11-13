@@ -10,7 +10,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>Admin dashboard</title>
+        <title>Ban request</title>
 
         <!-- Custom fonts for this template -->
         <link href="./asset/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -36,10 +36,9 @@
 
                 <!-- Sidebar - Brand -->
                 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="AdminDashboardController">
-                    <div class="sidebar-brand-icon rotate-n-15">
-                        <i class="fas fa-laugh-wink"></i>
+                    <div class="sidebar-brand-icon">
+                        <image src="./asset/img/FPTU_EVENT.png" style="width:  100px"/>
                     </div>
-                    <div class="sidebar-brand-text mx-3">FU EVENT MANAGEMET</div>
                 </a>
 
                 <!-- Divider -->
@@ -57,25 +56,52 @@
 
                 <!-- Heading -->
                 <div class="sidebar-heading">
-                    Selections
+                    Management
                 </div>
+
                 <!-- Nav Item - Tables -->
                 <li class="nav-item">
                     <a class="nav-link" href="UserManagementController">
-                        <i class="fas fa-fw fa-table"></i>
-                        <span>Tables</span></a>
+                        <i class="fa fa-user-circle"></i>
+                        <span>Users</span>
+                    </a>
                 </li>
-
-                <li class="nav-item active">
-                    <a class="nav-link" href="AdminFormController">
-                        <i class="fa fa-list-ul"></i>
-                        <span>Form</span></a>
+                <li class="nav-item">
+                    <a class="nav-link" href="AdminClubManagementController">
+                        <i class="fa fa-users"></i>
+                        <span>Club</span>
+                    </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="">
-                        <i class="fa fa-envelope"></i>
-                        <span>Request</span>
+                    <a class="nav-link" href="AdminCategoryController">
+                        <i class="fa fa-list"></i>
+                        <span>Category</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="AdminLocationController">
+                        <i class="fa fa-location-arrow"></i>
+                        <span>Location</span>
+                    </a>
+                </li>
+
+                <hr class="sidebar-divider">
+
+                <div class="sidebar-heading">
+                    Process
+                </div>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="AdminFormController">
+                        <i class="fa fa-exclamation-circle"></i>
+                        <span>Ban user request</span></a>
+                </li>
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">
+                        <i class="fa fa-comment"></i>
+                        <span>Comment report</span>
                     </a>
                 </li>
 
@@ -157,56 +183,99 @@
                                     </li>
                                 </ul>
                                 <div class="tab-content">
-                                    <div id="comment" class="container tab-pane fade"><br/>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                                <thead>
-                                                    <tr>
-                                                        <th>From</th>
-                                                        <th>Reported comment</th>
-                                                        <th>Send date</th>
-                                                        <th>Status</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tfoot>
-                                                    <tr>
-                                                        <th>From</th>
-                                                        <th>Reported comment</th>
-                                                        <th>Send date</th>
-                                                        <th>Status</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </tfoot>
-                                                <tbody>
-                                                    <c:forEach var="report" items="${reportList}">
-                                                        <tr>                                              
-                                                            <td>
-                                                                <p>${report.userEmail}</p>
-                                                            </td>
-                                                            <td>
-                                                                <p>${report.comment}</p>
-                                                            </td>
-                                                            <td>
-                                                                <p>${report.sendDate}</p>
-                                                            </td>
-                                                            <td>
-                                                                <c:if test="${not report.reportStatus}">
-                                                                    <p>Waiting</p>
-                                                                </c:if>
-                                                            </td>
-                                                            <td>
-                                                                <p>Action</p>
-                                                            </td>
+                                    <div id="comment" class="container tab-pane active"><br/>
+                                        <c:if test="${empty reportList}">
+                                            <h4 class="text-center">There are no request at the moment!!</h4>
+                                        </c:if>
+                                        <c:if test="${not empty reportList}">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>From</th>
+                                                            <th>Reported comment</th>
+                                                            <th>Send date</th>
+                                                            <th>Status</th>
+                                                            <th>Action</th>
                                                         </tr>
-                                                    </c:forEach>
-                                                </tbody>                                   
-                                            </table>
-                                        </div>
+                                                    </thead>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th>From</th>
+                                                            <th>Reported comment</th>
+                                                            <th>Send date</th>
+                                                            <th>Status</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                    <tbody>
+                                                        <c:forEach var="report" items="${reportList}">
+                                                            <tr>                                              
+                                                                <td>
+                                                                    <p>${report.userEmail}</p>
+                                                                </td>
+                                                                <td>
+                                                                    <p>${report.comment}</p>
+                                                                    <input type="hidden" name="reportID" value="${report.reportID}"/>
+                                                                </td>
+                                                                <td>
+                                                                    <p>${report.sendDate}</p>
+                                                                </td>
+                                                                <td>
+                                                                    <c:if test="${not report.reportStatus}">
+                                                                        <p>Pending</p>
+                                                                    </c:if>
+                                                                </td>
+                                                                <td>
+                                                                    <p>Action</p>
+                                                                </td>
+                                                            </tr>
+                                                        </c:forEach>
+                                                    </tbody>                                   
+                                                </table>
+                                            </div>
+                                        </c:if>
                                     </div>
 
-                                    <div id="user" class="container tab-pane active"><br/>
-
+                                    <div id="user" class="container tab-pane fade"><br/>
+                                        <c:if test="${empty violatedUserList}">
+                                            <h4>There are no violated user at the moment</h4>
+                                        </c:if>
+                                        <c:if test="${not empty violatedUserList}">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No.</th>
+                                                            <th>User email</th>
+                                                            <th>Times</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th>No.</th>
+                                                            <th>User email</th>
+                                                            <th>Times</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                    <tbody>
+                                                        <c:forEach var="user" items="${violatedUserList}" varStatus="counter">
+                                                            <tr>]
+                                                                <td>
+                                                                    ${counter.count}
+                                                                </td>
+                                                                <td>
+                                                                    ${user.userEmail}
+                                                                </td>
+                                                                <td>
+                                                                    ${user.violationTimes}
+                                                                </td>
+                                                            </tr>
+                                                        </c:forEach>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </c:if>
                                     </div>
                                 </div>
                             </div>

@@ -24,15 +24,15 @@ create table tblUsers(
 	statusID	 integer			foreign key references tblUserStatuses
 )
 
-create table tblLocations(
+create table tblLocations( 
 	locationID			integer			identity(10,5)	primary key,
 	locationName		nvarchar(30)	not null,
 	locationCapacity	integer			not null
 )
 
-create table tblCatetories(
-	catetoryID		integer				identity(10,5)	primary key,
-	catetoryName	nvarchar(30)		not null
+create table tblCategories(
+	categoryID		integer				identity(10,5)	primary key,
+	categoryName	nvarchar(30)		not null
 )
 
 create table tblClubDetails(
@@ -52,16 +52,16 @@ create table tblEventStatuses(
 	
 create table tblFUEvents(
 	eventID			integer			identity(10,1)	primary key,
-	eventName		nvarchar(50)	not null	unique,
+	eventName		nvarchar(255)	not null	unique,
 	clubID			integer			foreign key references tblClubDetails,
 	locationID		integer			foreign key references tblLocations,
-	catetoryID		integer			foreign key	references tblCatetories,
+	categoryID		integer			foreign key	references tblCategories,
 	statusID		integer			foreign key references tblEventStatuses,
 	createDate		date			not null,
+	registerEndDate datetime		not null,
 	startDate		datetime		not null,
 	endDate			datetime		not null,
 	slot			int				not null,
-	avgVote			float			not null,
 	imageURL		varchar(max),
 	content			ntext			not null,
 	ticketFee		int				not null
@@ -71,6 +71,7 @@ create table tblFollowed(
 	followID		integer			identity(10,1)	primary key,
 	eventID			integer			foreign key references tblFUEvents,
 	userEmail		varchar(30)		foreign key references tblUsers,
+	followDate		date			not null,
 	constraint	UC_tblFollowed	unique (eventID, userEmail)
 )
 
@@ -99,9 +100,11 @@ create table tblFeedbacks(
 create table tblPayments(
 	paymentID			integer			identity(10,1)	primary key,
 	registerID			integer			foreign key references tblEventRegisters,
+	paymentDescription  nvarchar(255)	not null,
 	statusDescription	varchar(30)		not null,
+	paymentMethod		varchar(30)		not null,
 	paymentDate			date			not null,
-	paymentTotal		int				not null
+	paymentTotal		float			not null
 	)
 
 create table tblBanRequests(
@@ -130,6 +133,12 @@ create table tblCommentReports(
 	sendDate		Date				not null,
 	approvalDate	Date,
 	reportStatus	integer				not null
+)
+
+create table tblVisitorCounters(
+	counterID				integer				identity(1,1)		primary key,
+	logDate					Date				not null,
+	visitorNumber			integer					not null
 )
 
 	INSERT INTO tblRoles(roleID, roleName) VALUES (1,'Student')
@@ -240,27 +249,25 @@ create table tblCommentReports(
 	INSERT INTO tblLocations(locationName,locationCapacity) VALUES ('Trong Dong Lobby',50)
 	INSERT INTO tblLocations(locationName,locationCapacity) VALUES ('School yard',400)
 
-	INSERT INTO tblCatetories(catetoryName) VALUES ('Seminar')
-	INSERT INTO tblCatetories(catetoryName) VALUES ('Entertainment Event')
-	INSERT INTO tblCatetories(catetoryName) VALUES ('Learning Event')
+	INSERT INTO tblCategories(categoryName) VALUES ('Seminar')
+	INSERT INTO tblCategories(categoryName) VALUES ('Entertainment Event')
+	INSERT INTO tblCategories(categoryName) VALUES ('Learning Event')
 	
-	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (300,'Vừa khởi tạo')
-	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (400,'Đã bị hủy')
-	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (500,'Sắp diễn ra')
-	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (530,'Đã hết chỗ')
-	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (550,'Đang diễn ra')
-	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (570,'Đã diễn ra')
+	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (300,'Not-start')
+	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (400,'Cancel')
+	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (500,'Starting')
+	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (550,'On-going')
+	INSERT INTO tblEventStatuses(statusID,statusDescription ) VALUES (570,'Close')
 
-
-	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee) VALUES ('title',10,10,20,300,'2021-10-14','2021/10/17 07:30:00','2021-10-21 12:10:30',100,5,'content',0)
 	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee) VALUES ('title',20,15,10,300,'2021-10-14','2021/10/17 07:30:00','2021-10-21 12:10:30',100,5,'content',0)
 	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee) VALUES ('title',25,15,15,300,'2021-10-14','2021/10/17 07:30:00','2021-10-21 12:10:30',100,5,'content',0)
 	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee) VALUES ('title',30,10,20,300,'2021-10-14','2021/10/17 07:30:00','2021-10-21 12:10:30',100,5,'content',0)
 	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee) VALUES ('title',35,20,10,300,'2021-10-14','2021/10/17 07:30:00','2021-10-21 12:10:30',100,5,'content',0)
 	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee) VALUES ('title',40,30,20,300,'2021-10-14','2021/10/17 07:30:00','2021-10-21 12:10:30',100,5,'content',0)
-	INSERT INTO tblFUEvents (eventName, clubID, locationID, catetoryID, statusID, createDate, startDate, endDate, slot, avgVote, content, ticketFee) VALUES ('title',45,25,15,300,'2021-10-14','2021/10/17 07:30:00','2021-10-21 12:10:30',100,5,'content',0)
 
+	INSERT INTO tblFUEvents (eventName, clubID, locationID, categoryID, statusID, createDate,registerEndDate, startDate, endDate, slot, content, ticketFee) VALUES ('FPTU Quiz Competition',125,55,15,570,'2021-10-14','2021-10-25','2021/10/27 07:30:00','2021-10-28 12:10:30',100,'content',0)
 
+	select * from tblLocations
 
 	INSERT INTO tblEventRegisters(eventID, userEmail, registerDate) VALUES (20, 'anltse151328@fpt.edu.vn', '2021-10-6')
 	INSERT INTO tblEventRegisters(eventID, userEmail, registerDate) VALUES (30, 'anltse151328@fpt.edu.vn', '2021-10-6')
@@ -269,28 +276,146 @@ create table tblCommentReports(
 	INSERT INTO tblEventRegisters(eventID, userEmail, registerDate) VALUES (25, 'anltse151328@fpt.edu.vn', '2021-10-6')
 	INSERT INTO tblEventRegisters(eventID, userEmail, registerDate) VALUES (55, 'anltse151328@fpt.edu.vn', '2021-10-6')
 
-	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (25, 'huongvqss1710948@fpt.edu.vn','2021-10-06')
-	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (25, 'chitthse161164@fpt.edu.vn','2021-10-06')
-	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (25, 'duylcnss136201@fpt.edu.vn','2021-10-06')
-	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (25, 'thaocbsa131164@fpt.edu.vn','2021-10-06')
-	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (25, 'nhinyse177341@fpt.edu.vn','2021-10-06')
-	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (25, 'trungtlhde161203@fpt.edu.vn','2021-10-06')
-	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (25, 'thanhldse171878@fpt.edu.vn','2021-10-06')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (10, 'huongvqss1710948@fpt.edu.vn','2021-10-29')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (10, 'chitthse161164@fpt.edu.vn','2021-10-30')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (10, 'duylcnss136201@fpt.edu.vn','2021-10-28')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (10, 'thaocbsa131164@fpt.edu.vn','2021-10-29')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (10, 'nhinyse177341@fpt.edu.vn','2021-10-28')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (10, 'trungtlhde161203@fpt.edu.vn','2021-10-29')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (10, 'thanhldse171878@fpt.edu.vn','2021-10-30')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (10,'quangntse161546@fpt.edu.vn','2021-10-29')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (10,'thangbvse161511@fpt.edu.vn','2021-10-30')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (10,'lamnpds144176@fpt.edu.vn','2021-10-28')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (10,'bichtdnss141165@fpt.edu.vn','2021-10-28')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (10,'khanhhnss154319@fpt.edu.vn','2021-10-29')
+	
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12, 'huongvqss1710948@fpt.edu.vn','2021-10-29')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12, 'chitthse161164@fpt.edu.vn','2021-10-30')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12, 'duylcnss136201@fpt.edu.vn','2021-10-28')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12, 'thaocbsa131164@fpt.edu.vn','2021-10-29')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12, 'nhinyse177341@fpt.edu.vn','2021-10-28')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12, 'trungtlhde161203@fpt.edu.vn','2021-10-29')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12, 'thanhldse171878@fpt.edu.vn','2021-10-30')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12,'bodtse166315@fpt.edu.vn','2021-11-14')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12,'dangptmse162404@fpt.edu.vn','2021-11-13')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12,'duynhkse167489@fpt.edu.vn','2021-11-12')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12,'phungnlse160214@fpt.edu.vn','2021-11-14')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12,'tunhse166531@fpt.edu.vn','2021-11-11')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12,'quangntse161546@fpt.edu.vn','2021-11-10')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12,'thangbvse161511@fpt.edu.vn','2021-11-14')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12,'lamnpds144176@fpt.edu.vn','2021-11-5')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12,'bichtdnss141165@fpt.edu.vn','2021-11-6')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (12,'khanhhnss154319@fpt.edu.vn','2021-11-7')
+
+	
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13, 'huongvqss1710948@fpt.edu.vn','2021-11-12')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13, 'chitthse161164@fpt.edu.vn','2021-10-30')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13, 'duylcnss136201@fpt.edu.vn','2021-11-13')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13, 'thaocbsa131164@fpt.edu.vn','2021-11-12')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13, 'nhinyse177341@fpt.edu.vn','2021-10-28')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13, 'trungtlhde161203@fpt.edu.vn','2021-11-11')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13, 'thanhldse171878@fpt.edu.vn','2021-11-10')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13,'dangptmse162404@fpt.edu.vn','2021-11-5')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13,'duynhkse167489@fpt.edu.vn','2021-11-4')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13,'phungnlse160214@fpt.edu.vn','2021-11-4')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13,'tunhse166531@fpt.edu.vn','2021-11-3')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13,'quangntse161546@fpt.edu.vn','2021-11-1')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13,'thangbvse161511@fpt.edu.vn','2021-11-2')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13,'lamnpds144176@fpt.edu.vn','2021-11-5')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13,'bichtdnss141165@fpt.edu.vn','2021-11-6')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (13,'khanhhnss154319@fpt.edu.vn','2021-11-7')
+
+	
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14, 'huongvqss1710948@fpt.edu.vn','2021-11-7')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14, 'chitthse161164@fpt.edu.vn','2021-11-8')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14, 'duylcnss136201@fpt.edu.vn','2021-11-9')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14, 'thaocbsa131164@fpt.edu.vn','2021-11-9')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14, 'nhinyse177341@fpt.edu.vn','2021-11-8')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14, 'trungtlhde161203@fpt.edu.vn','2021-11-11')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14, 'thanhldse171878@fpt.edu.vn','2021-11-13')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14,'bodtse166315@fpt.edu.vn','2021-11-14')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14,'dangptmse162404@fpt.edu.vn','2021-11-13')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14,'duynhkse167489@fpt.edu.vn','2021-11-12')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14,'phungnlse160214@fpt.edu.vn','2021-11-14')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14,'tunhse166531@fpt.edu.vn','2021-11-11')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14,'quangntse161546@fpt.edu.vn','2021-11-10')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14,'thangbvse161511@fpt.edu.vn','2021-11-14')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14,'lamnpds144176@fpt.edu.vn','2021-11-5')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14,'bichtdnss141165@fpt.edu.vn','2021-11-6')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (14,'khanhhnss154319@fpt.edu.vn','2021-11-7')
+
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19, 'huongvqss1710948@fpt.edu.vn','2021-10-18')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19, 'chitthse161164@fpt.edu.vn','2021-10-18')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19, 'duylcnss136201@fpt.edu.vn','2021-10-19')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19, 'thaocbsa131164@fpt.edu.vn','2021-10-19')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19, 'nhinyse177341@fpt.edu.vn','2021-10-18')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19, 'trungtlhde161203@fpt.edu.vn','2021-10-20')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19, 'thanhldse171878@fpt.edu.vn','2021-10-25')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19,'bodtse166315@fpt.edu.vn','2021-10-26')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19,'dangptmse162404@fpt.edu.vn','2021-10-25')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19,'duynhkse167489@fpt.edu.vn','2021-10-23')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19,'phungnlse160214@fpt.edu.vn','2021-10-24')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19,'tunhse166531@fpt.edu.vn','2021-10-26')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19,'quangntse161546@fpt.edu.vn','2021-10-25')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19,'thangbvse161511@fpt.edu.vn','2021-10-22')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19,'lamnpds144176@fpt.edu.vn','2021-10-25')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19,'bichtdnss141165@fpt.edu.vn','2021-10-26')
+	INSERT INTO tblEventRegisters(eventID,userEmail,registerDate) VALUES (19,'khanhhnss154319@fpt.edu.vn','2021-10-27')
+
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19, 'huongvqss1710948@fpt.edu.vn','2021-10-19')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19, 'chitthse161164@fpt.edu.vn','2021-10-21')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19, 'duylcnss136201@fpt.edu.vn','2021-10-17')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19, 'thaocbsa131164@fpt.edu.vn','2021-10-19')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19, 'nhinyse177341@fpt.edu.vn','2021-10-18')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19, 'trungtlhde161203@fpt.edu.vn','2021-10-20')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19, 'thanhldse171878@fpt.edu.vn','2021-10-20')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19,'bodtse166315@fpt.edu.vn','2021-10-26')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19,'dangptmse162404@fpt.edu.vn','2021-10-22')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19,'duynhkse167489@fpt.edu.vn','2021-10-23')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19,'phungnlse160214@fpt.edu.vn','2021-10-24')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19,'tunhse166531@fpt.edu.vn','2021-10-23')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19,'quangntse161546@fpt.edu.vn','2021-10-21')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19,'thangbvse161511@fpt.edu.vn','2021-10-22')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19,'lamnpds144176@fpt.edu.vn','2021-10-20')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19,'bichtdnss141165@fpt.edu.vn','2021-10-26')
+	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19,'khanhhnss154319@fpt.edu.vn','2021-10-27')
+
+	select * from tblFollowed
+	update tblFollowed set eventID =15 where followID = 36
+
+	select s.statusID, COUNT(u.userEmail)
+	from tblUserStatuses as s
+	left join tblUsers as u
+	on s.statusID = u.statusID
+	group by s.statusID
+	order by s.statusID
+
+	select eventID, COUNT(userEmail) from tblComments
+	WHERE eventID = 18 and visible = 1 
+	GROUP BY eventID
+	drop table tblLocations
 
 	update tblUsers set roleID = 4 where userEmail = 'anltse151328@fpt.edu.vn'
-	delete from tblUsers where userEmail = 'baonngse150655@fpt.edu.vn'
+	delete from tblLocations 
 
-	select * from tblUsers
+	update tblFUEvents set eventName = 'FPTU DEBATE TOURNAMENT' where eventID = 10
+	update tblFUEvents set eventName = 'FPTU COVER CONTEST' where eventID = 12
 
-
+	select * from tblUsers where  userEmail = 'baonngse150655@fpt.edu.vn'
 	SELECT * FROM tblEventRegisters 
+	delete from tblEventRegisters
 
-	SELECT TOP 4 * FROM tblFUEvents 
+	SELECT * FROM tblFUEvents 
 	WHERE statusID in (300 , 500, 550) and startDate >= getdate()
 	ORDER BY startDate ASC
 	SELECT * FROM tblFUEvents 
 
-	WHERE statusID in (300 , 450, 500)
+	WHERE statusID in (300 , 450, 500)`
+
+	SELECT * FROM tblFUEvents
+	WHERE statusID NOT IN (400,570)
+	AND locationID = 145
+	AND (startDate between '2021-11-1' AND '2021-11-26' OR endDate between '2021-11-1' AND '2021-11-26')
 
 
 	SELECT TOP 3 * FROM tblFUEvents
@@ -334,3 +459,16 @@ create table tblCommentReports(
 	FROM tblFUEvents
 	WHERE statusID not in (400,570)
 	ORDER BY startDate ASC
+
+	select * from tblFUEvents
+	WHERE eventName like '%a%'
+
+
+	declare @date date = getdate() - 8
+	SELECT count(userEmail) as registerNum
+	FROM tblEventRegisters
+	WHERE registerDate = @date
+	AND eventID in ( SELECT eventID
+					FROM tblFUEvents
+					WHERE clubID = 10)
+	group by registerDate	

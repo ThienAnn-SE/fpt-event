@@ -1,24 +1,26 @@
 var search = document.querySelector(".search");
-      var icon = document.querySelector(".search-icon");
-      var clear = document.querySelector(".clear");
-      var theme = document.querySelector(".theme-switch");
-      var body = document.querySelector("body");
+var clear = document.querySelectorAll(".clear");
+var mobileHeader = document.querySelector(".mobile-header");
+var overlay = document.querySelector(".header-overlay");
+
+    document.querySelector(".mobile-btn").addEventListener("click", function () {
+      mobileHeader.style.transform = "translateX(0)";
+      overlay.style.display = "block";
+    });
+    document.querySelector(".mobile-header-close").addEventListener("click", function () {
+      mobileHeader.style.transform = "translateX(100%)";
+      overlay.style.display = "none";
+    });
 
       //search by name
-      icon.addEventListener("click", function () {
+      document.querySelector(".search-icon").addEventListener("click", function () {
         search.classList.toggle("active");
         if (document.querySelector(".search.active"))
-          clear.style.display = "block";
-        else clear.style.display = "none";
+          clear[0].style.display = "block";
+        else clear[0].style.display = "none";
       });
-      clear.addEventListener("click", function () {
-        document.getElementById("search").value = "";
+      clear.forEach((item) => {
+        item.addEventListener("click", function () {
+          document.querySelectorAll(".search-input").forEach((item) => item.value = "")
+        });
       });
-      
-//theme
-theme.addEventListener("click", function () {
-    body.classList.toggle("dark");
-    if (document.querySelector(".dark"))
-      theme.innerHTML = '<i class="fas fa-sun"></i>';
-    else theme.innerHTML = '<i class="fal fa-moon"></i>';
-  });
