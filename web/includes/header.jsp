@@ -11,7 +11,7 @@
             <div class="row">
                 <div class="col-md-3 col-6 d-flex align-items-center">
                     <div class="logo">
-                        <a href="HomePageController">
+                        <a href="home">
                             <img src="./asset/img/FPTU_EVENT.png" />
                         </a>
                     </div>
@@ -41,14 +41,15 @@
                         <nav class="pc-header">
                             <ul>
                                 <li class="header-item">
-                                    <a href="HomePageController">home</a>
+                                    <a href="home"><i class="fa fa-home" aria-hidden="true"></i> home</a>
                                 </li>
                                 <li class="header-item">
-                                    <a href="SearchEventController">event</a>
+                                    <a href="SearchEventController"><i class="fa fa-calendar" aria-hidden="true"></i> event</a>
                                 </li>
                                 <c:if test="${empty sessionScope.email}">
                                     <li class="header-item">
-                                        <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force">
+                                        <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/login&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force">
+                                            <i class="fa fa-sign-in" aria-hidden="true"></i>
                                             login
                                         </a>
                                     </li>
@@ -56,7 +57,8 @@
                                 <c:if test="${not empty sessionScope.email}"> 
                                     <c:if test="${sessionScope.role eq 1 or sessionScope.role eq 2}">
                                         <li class="header-item">
-                                            <a href="ViewUserController">
+                                            <a href="profile">
+                                                <i class="fa fa-user" aria-hidden="true"></i>
                                                 profile
                                             </a>
                                         </li>
@@ -64,7 +66,8 @@
                                     <c:if test="${sessionScope.role eq 3 or sessionScope.role eq 4}">
                                         <li class="header-item">
                                             <a href="EventManagementController">
-                                                event management
+                                                <i class="fa fa-bars" aria-hidden="true"></i>
+                                                management
                                             </a>
                                         </li>
                                     </c:if>
@@ -77,7 +80,7 @@
                     <nav class="mobile-header">
                         <div class="mobile-header-title">
                             <div class="logo">
-                                <a href="HomePageController">
+                                <a href="home">
                                     <img src="./asset/img/FPTU_EVENT.png" />
                                 </a>
                             </div>
@@ -88,30 +91,33 @@
 
                         <ul>
                             <li class="header-mobile-item">
-                                <a href="HomePageController">home</a>
+                                <a href="home"><i class="fa fa-home" aria-hidden="true"></i> home</a>
                             </li>
                             <li class="header-mobile-item">
-                                <a href="SearchEventController">event</a>
+                                <a href="SearchEventController"><i class="fa fa-calendar" aria-hidden="true"></i> event</a>
                             </li>
                             <c:if test="${empty sessionScope.email}">
-                                <li class="header-item">
-                                    <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force">
+                                <li class="header-mobile-item">
+                                    <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/login&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force">
+                                        <i class="fa fa-sign-in" aria-hidden="true"></i>
                                         login
                                     </a>
                                 </li>
                             </c:if>
-                            <c:if test="${sessionScope.email}">
+                            <c:if test="${not empty sessionScope.email}">
                                 <c:if test="${sessionScope.role eq 1 or sessionScope.role eq 2}">
-                                    <li class="header-item">
-                                        <a href="ViewUserController">
+                                    <li class="header-mobile-item">
+                                        <a href="profile">
+                                            <i class="fa fa-user" aria-hidden="true"></i>
                                             profile
                                         </a>
                                     </li>
                                 </c:if>
                                 <c:if test="${sessionScope.role eq 3 or sessionScope.role eq 4}">
-                                    <li class="header-item">
+                                    <li class="header-mobile-item">
                                         <a href="EventManagementController">
-                                            event management
+                                            <i class="fa fa-bars" aria-hidden="true"></i>
+                                            management
                                         </a>
                                     </li>
                                 </c:if>

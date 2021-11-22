@@ -47,12 +47,12 @@ public class CommentReportDAO {
         boolean isSuccess = false;
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "INSERT INTO tblCommentReports(commentID, userEmail, sendDate, reprotStatus)"
+            String sql = "INSERT INTO tblCommentReports(commentID, userEmail, sendDate, reportStatus)"
                     + " VALUES(?,?,?,?)";
             preStm = conn.prepareStatement(sql);
             preStm.setInt(1, dto.getCommentID());
             preStm.setString(2, dto.getUserEmail());
-            preStm.setDate(3, java.sql.Date.valueOf(dto.getSendDate()));
+            preStm.setTimestamp(3, java.sql.Timestamp.valueOf(dto.getSendDate()));
             preStm.setInt(4, 300);
 
             isSuccess = preStm.executeUpdate() > 0;
@@ -60,6 +60,52 @@ public class CommentReportDAO {
             this.closeConnection();
         }
         return isSuccess;
+    }
+
+    public CommentReportDTO getReportByID(int reportID) throws NamingException, SQLException {
+        CommentReportDTO report = null;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT commentID, userEmail, sendDate"
+                        + " FROM tblCommentReports"
+                        + " WHERE reportID = ?";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, reportID);
+                rs = preStm.executeQuery();
+                if (rs.next()) {
+                    int commentID = rs.getInt("commentID");
+                    String userEmail = rs.getString("userEmail");
+                    String sendDate = rs.getString("sendDate");
+                    report = new CommentReportDTO(commentID, userEmail, sendDate);
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return report;
+    }
+
+    public boolean isReported(int commentID, String userEmail) throws NamingException, SQLException {
+        boolean result = false;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT reportID"
+                        + " FROM tblCommentReports"
+                        + " WHERE commentID = ? AND userEmail = ?";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, commentID);
+                preStm.setString(2, userEmail);
+                rs = preStm.executeQuery();
+                if (rs.next()) {
+                    result = true;
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return result;
     }
 
     public int getNumOfUnprocessedReport() throws NamingException, SQLException {
@@ -106,10 +152,10 @@ public class CommentReportDAO {
         try {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
-                String sql = "SELECT rp.reportID, rp.commentID, c.comment, rp.userEmail, rp.sendDate, rp.reportStatus"
-                        + " FROM tblCommentReports AS rp, tblComments AS c"
-                        + " WHERE rp.commentID = c.commentID AND rp.reportStatus = 300"
-                        + " ORDER BY rp.sendDate";
+                String sql = "SELECT rp.reportID, rp.commentID, rp.userEmail, rp.sendDate, rp.reportStatus, c.comment"
+                        + " FROM tblCommentReports AS rp"
+                        + " LEFT JOIN tblComments AS c ON rp.commentID = c.commentID"
+                        + " ORDER BY rp.reportStatus";
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();
                 while (rs.next()) {
@@ -136,6 +182,7 @@ public class CommentReportDAO {
                 String sql = "SELECT userEmail, COUNT(reportID) as number"
                         + " FROM tblCommentReports"
                         + " WHERE reportStatus = 500"
+                        + " GROUP BY userEmail"
                         + " ORDER BY userEmail";
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();

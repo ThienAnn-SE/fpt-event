@@ -9,13 +9,11 @@ import constant.Routers;
 import daos.CommentDAO;
 import daos.CommentReportDAO;
 import daos.UserDAO;
+import dtos.CommentDTO;
 import dtos.CommentReportDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,7 +26,7 @@ import utils.GetParam;
  *
  * @author thien
  */
-@WebServlet(name = "AdminRequestController", urlPatterns = {"/AdminRequestController"})
+@WebServlet(name = "AdminRequestController", urlPatterns = {"/admin-request"})
 public class AdminRequestController extends HttpServlet {
 
     /**
@@ -44,12 +42,13 @@ public class AdminRequestController extends HttpServlet {
      */
     protected boolean getHandler(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, NamingException, SQLException {
+        request.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
         //get request list
         CommentReportDAO reportDAO = new CommentReportDAO();
-        
+
         ArrayList<CommentReportDTO> reportList = reportDAO.getReportList();
-        
+
         ArrayList<CommentReportDTO> violatedUserList = reportDAO.getViolatedUserList();
 
         request.setAttribute("reportList", reportList);
@@ -72,37 +71,45 @@ public class AdminRequestController extends HttpServlet {
             throws ServletException, IOException, NamingException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
 
+        CommentDAO commentDAO = new CommentDAO();
+
         Integer reportID = GetParam.getIntParams(request, "reportID", "Report ID", 0, Integer.MAX_VALUE, null);
-        String userEmail = GetParam.getStringParam(request, "userEmail", "User Email", 0, 50, null);
-        String btAction = GetParam.getStringParam(request, "btAction", "Action", 0, 20, null);
-        if (reportID == null || btAction == null || userEmail == null) {
-            return false;
+        String btAction = GetParam.getStringParam(request, "action", "Action", 0, 20, null);
+        if (reportID == null || btAction == null) {
+            throw new IllegalArgumentException();
         }
 
+        boolean result;
         //change report status
         CommentReportDAO reportDAO = new CommentReportDAO();
         if (btAction.equalsIgnoreCase("cancel")) {
-            return reportDAO.changeReportStatus(reportID, 400);
-        } else if (!reportDAO.changeReportStatus(reportID, 500)) {
-            request.setAttribute("errorMessage", "Internal error");
-            return false;
+            result = reportDAO.changeReportStatus(reportID, 400);
+            if (result) {
+                return true;
+            }
+        } else {
+            result = reportDAO.changeReportStatus(reportID, 500);
         }
 
+        if (!result) {
+            throw new SQLException("Internal error!");
+        }
+
+        CommentReportDTO report = reportDAO.getReportByID(reportID);
+
+        CommentDTO comment = commentDAO.getCommentByID(report.getCommentID());
         //change comment visible
-        CommentDAO commentDAO = new CommentDAO();
-        if (!commentDAO.changeCommentVisible(0, false)) {
-            request.setAttribute("errorMessage", "internal error");
-            return false;
+        if (!commentDAO.changeCommentVisible(comment.getCommentID(), false)) {
+            throw new SQLException("Internal error!");
         }
 
         //check user violation times and ban
-        int violationTimes = reportDAO.getUserViolationTimes(userEmail);
+        int violationTimes = reportDAO.getUserViolationTimes(comment.getEmail());
         if (violationTimes > 0 && violationTimes % 2 == 0) {
             //banning user
             UserDAO userDAO = new UserDAO();
-            if (!userDAO.changeUserStatus(userEmail, 450)) {
-                request.setAttribute("errorMessage", "Can not ban user, some error happen when banning!!");
-                return false;
+            if (!userDAO.changeUserStatus(comment.getEmail(), 450)) {
+                throw new SQLException("Can not ban user, some error happen when banning!");
             }
             //send notification
         }
@@ -148,12 +155,17 @@ public class AdminRequestController extends HttpServlet {
             throws ServletException, IOException {
         try {
             if (postHandler(request, response)) {
-
+                response.sendRedirect(Routers.ADMIN_REQUEST_CONTROLLER + "?result=success");
             } else {
                 request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
             }
+        } catch (IllegalArgumentException ex) {
+            request.setAttribute("errorMessage", ex.getMessage());
+            doGet(request, response);
         } catch (NamingException | SQLException ex) {
-            Logger.getLogger(AdminRequestController.class.getName()).log(Level.SEVERE, null, ex);
+            log(ex.getMessage());
+            request.setAttribute("errorMessage", ex.getMessage());
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
         }
     }
 

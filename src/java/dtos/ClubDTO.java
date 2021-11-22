@@ -19,10 +19,20 @@ public class ClubDTO {
     private String clubDescription;
     private String clubEmail;
     private String clubPhoneNumber;
+    private String userEmail;
 
-    public ClubDTO(int clubID, String clubName) {
+    public ClubDTO(int clubID, String userEmail) {
         this.clubID = clubID;
+        this.userEmail = userEmail;
+    }
+
+    public ClubDTO(String clubName, Date createDate, String clubDescription, String clubEmail, String clubPhoneNumber, String userEmail) {
         this.clubName = clubName;
+        this.createDate = createDate;
+        this.clubDescription = clubDescription;
+        this.clubEmail = clubEmail;
+        this.clubPhoneNumber = clubPhoneNumber;
+        this.userEmail = userEmail;
     }
 
     public ClubDTO(int clubID, String clubName, Date createDate, String clubDescription, String clubEmail, String clubPhoneNumber) {
@@ -90,6 +100,14 @@ public class ClubDTO {
 
     public void setClubPhoneNumber(String clubPhoneNumber) {
         this.clubPhoneNumber = clubPhoneNumber;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
 }

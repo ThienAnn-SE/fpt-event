@@ -31,88 +31,9 @@
         <div id="wrapper">
 
             <!-- Sidebar -->
-            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-                <!-- Sidebar - Brand -->
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="AdminDashboardController">
-                    <div class="sidebar-brand-icon">
-                        <image src="./asset/img/FPTU_EVENT.png" style="width:  100px"/>
-                    </div>
-                </a>
-
-                <!-- Divider -->
-                <hr class="sidebar-divider my-0">
-
-                <!-- Nav Item - Dashboard -->
-                <li class="nav-item">
-                    <a class="nav-link" href="AdminDashboardController">
-                        <i class="fas fa-fw fa-tachometer-alt"></i>
-                        <span>Dashboard</span></a>
-                </li>
-
-                <!-- Divider -->
-                <hr class="sidebar-divider">
-
-                <!-- Heading -->
-                <div class="sidebar-heading">
-                    Management
-                </div>
-
-                <!-- Nav Item - Tables -->
-                <li class="nav-item">
-                    <a class="nav-link" href="UserManagementController">
-                        <i class="fa fa-user-circle"></i>
-                        <span>Users</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="AdminClubManagementController">
-                        <i class="fa fa-users"></i>
-                        <span>Club</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="AdminCategoryController">
-                        <i class="fa fa-list"></i>
-                        <span>Category</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="AdminLocationController">
-                        <i class="fa fa-location-arrow"></i>
-                        <span>Location</span>
-                    </a>
-                </li>
-
-                <hr class="sidebar-divider">
-
-                <div class="sidebar-heading">
-                    Process
-                </div>
-
-                <li class="nav-item active">
-                    <a class="nav-link" href="AdminFormController">
-                        <i class="fa fa-exclamation-circle"></i>
-                        <span>Ban user request</span></a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="fa fa-comment"></i>
-                        <span>Comment report</span>
-                    </a>
-                </li>
-
-                <!-- Divider -->
-                <hr class="sidebar-divider d-none d-md-block">
-
-                <!-- Sidebar Toggler (Sidebar) -->
-                <div class="text-center d-none d-md-inline">
-                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
-                </div>
-
-            </ul>
+            <jsp:include page="includes/admin-sidebar.jsp">
+                <jsp:param name="active" value="ban"/>
+            </jsp:include>
             <!-- End of Sidebar -->
 
             <!-- Content Wrapper -->
@@ -122,34 +43,10 @@
                 <div id="content">
 
                     <!-- Topbar -->
-                    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                        <!-- Topbar Navbar -->
-                        <ul class="navbar-nav ml-auto">
-
-                            <div class="topbar-divider d-none d-sm-block"></div>
-
-                            <!-- Nav Item - User Information -->
-                            <li class="nav-item dropdown no-arrow">
-                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">${email}</span>
-                                    <img class="img-profile rounded-circle"
-                                         src="${avatar}">
-                                </a>
-                                <!-- Dropdown - User Information -->
-                                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                     aria-labelledby="userDropdown">
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Logout
-                                    </a>
-                                </div>
-                            </li>
-
-                        </ul>
-
-                    </nav>
+                    <jsp:include page="includes/admin-topbar.jsp">
+                        <jsp:param name="title" value="Ban user request"/>
+                        <jsp:param name="avatar" value="${sessionScope.avatar}"/>
+                    </jsp:include>
                     <!-- End of Topbar -->
 
                     <!-- Begin Page Content -->
@@ -174,7 +71,7 @@
                             </div>
                             <div class="card-body">
                                 <!-- start of form -->
-                                <form action="AdminFormController" method="POST" class="needs-validation" novalidate>
+                                <form action="AdminFormController" method="POST" id="banning_form" class="needs-validation" novalidate>
                                     <div class="form-group">
                                         <label for="email">User email:</label>
                                         <input type="text" class="form-control" id="email" placeholder="Enter user email" name="email" value="${param.userEmail}" required>
@@ -201,17 +98,7 @@
                                 </form>
                             </div>
                         </div>
-                        <c:if test="${not empty errorMessage or not empty successMessage}">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Notification</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <p class="text-center text-success">${successMessage}</p>
-                                    <p class="text-center text-danger">${errorMessage}</p>
-                                </div>
-                            </div>
-                        </c:if>
+
                         <div class="card shadow mb-4">
                             <div class="card-header py-3">
                                 <h5 class="m-0 font-weight-bold text-primary">Club banning request</h5>
@@ -312,36 +199,36 @@
                                             </tfoot>
                                             <tbody>
                                                 <c:forEach var="user" items="${userBanList}">
+                                                <form action="CancelBanController" method="POST">
                                                     <tr>
-                                                <form action="CancelBanController">
-                                                    <td>
-                                                        <p>${user.email}</p>
-                                                        <input type="hidden" name="email" value="${user.email}"/>
-                                                    </td>
-                                                    <td>
-                                                        <c:if test="${empty user.name}">
-                                                            <p class="text-danger">missing</p>   
-                                                        </c:if>
-                                                        <p> ${user.name}</p>
-                                                        <input type="hidden" name="name" value="${user.name}"/>
-                                                    </td>                                                   
-                                                    <td>
-                                                        <p>
-                                                            <c:choose>
-                                                                <c:when test="${user.status eq 400}">
-                                                                    <span class="badge badge-pill badge-danger">Invalid</span>
-                                                                </c:when>
-                                                                <c:when test="${user.status eq 450}">
-                                                                    <span class="badge badge-pill badge-warning">Ban</span>
-                                                                </c:when>
-                                                            </c:choose> 
-                                                        </p>
-                                                    </td>
-                                                    <td>
-                                                        <button type="submit" class="btn badge-danger">Cancel</button>
-                                                    </td>
+                                                        <td>
+                                                            <p>${user.email}</p>
+                                                            <input type="hidden" name="email" value="${user.email}"/>
+                                                        </td>
+                                                        <td>
+                                                            <c:if test="${empty user.name}">
+                                                                <p class="text-danger">missing</p>   
+                                                            </c:if>
+                                                            <p> ${user.name}</p>
+                                                            <input type="hidden" name="name" value="${user.name}"/>
+                                                        </td>                                                   
+                                                        <td>
+                                                            <p>
+                                                                <c:choose>
+                                                                    <c:when test="${user.status eq 400}">
+                                                                        <span class="badge badge-pill badge-danger">Invalid</span>
+                                                                    </c:when>
+                                                                    <c:when test="${user.status eq 450}">
+                                                                        <span class="badge badge-pill badge-warning">Ban</span>
+                                                                    </c:when>
+                                                                </c:choose> 
+                                                            </p>
+                                                        </td>
+                                                        <td>
+                                                            <button type="submit" class="btn badge-danger">Cancel</button>
+                                                        </td>
+                                                    </tr>
                                                 </form>
-                                                </tr>
                                             </c:forEach>
                                             </tbody>                                   
                                         </table>
@@ -374,35 +261,6 @@
         <a class="scroll-to-top rounded" href="#page-top">
             <i class="fas fa-angle-up"></i>
         </a>
-
-        <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"><strong>X</strong></span>
-                        </button>
-                    </div>
-                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" href="login.html">Logout</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <script>
-            // Disable form submissions if there are invalid fields
-
-            $(document).ready(function () {
-                // Show the Modal on load
-                $("#myModal").modal("show");
-            });
-
-        </script>
         <script>
             (function () {
                 'use strict';
@@ -435,8 +293,6 @@
         <!-- Page level plugins -->
         <script src="./asset/vendor/datatables/jquery.dataTables.min.js"></script>
         <script src="./asset/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-        <script src="./asset/js/demo/datatables-demo.js"></script>
-
     </body>
 
 </html>

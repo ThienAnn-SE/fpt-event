@@ -102,6 +102,26 @@ public class UserDAO {
         return isSuccess;
     }
 
+    public boolean changeUserRole(String email, int role) throws SQLException, NamingException {
+        boolean isSuccess = false;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "Update tblUsers"
+                        + " SET roleID = ?"
+                        + " WHERE userEmail = ?";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, role);
+                preStm.setString(2, email);
+
+                isSuccess = preStm.executeLargeUpdate() > 0;
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return isSuccess;
+    }
+
     public ArrayList<UserDTO> getUserBanList() throws NamingException, SQLException {
         ArrayList<UserDTO> list = new ArrayList<>();
         try {
@@ -189,7 +209,7 @@ public class UserDAO {
             preStm.setString(1, email);
             rs = preStm.executeQuery();
             if (rs.next()) {
-                String name = rs.getString("userName");
+                String name = rs.getNString("userName");
                 Date dateOfBirth = rs.getDate("dateOfBirth");
                 boolean gender = rs.getBoolean("gender");
                 String phoneNumber = rs.getString("phoneNumber");

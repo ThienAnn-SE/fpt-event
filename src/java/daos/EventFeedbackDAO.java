@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import javax.naming.NamingException;
 import utils.DBHelpers;
 
@@ -58,5 +59,30 @@ public class EventFeedbackDAO {
             this.closeConnection();
         }
         return isSuccess;
+    }
+
+    public ArrayList<EventFeedbackDTO> getEventFeedbackList(int eventID) throws NamingException, SQLException {
+        ArrayList<EventFeedbackDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT registerID, feedback, vote FROM tblFeedbacks"
+                        + " WHERE registerID IN (SELECT registerID"
+                        + " FROM tblEventRegisters"
+                        + " WHERE eventID = ?)";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, eventID);
+                rs = preStm.executeQuery();
+                while (rs.next()) {
+                    int registerID = rs.getInt("registerID");
+                    String feedback = rs.getNString("feedback");
+                    int vote = rs.getInt("vote");
+                    list.add(new EventFeedbackDTO(registerID, vote, feedback));
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return list;
     }
 }

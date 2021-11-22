@@ -24,7 +24,7 @@ public class AutoMailerHelper {
 
     //sending email and password
     private final String FROM_MAIL = "automailer.fptevent@gmail.com";
-    private final String PASSWORD = "@N09052001";
+    private final String PASSWORD = "Lethienan952001";
     //templates path
     private final String ACCOUNT_REGISTRATION_TEMPLATE = "D:\\NetBeans 8.2\\Project\\fpt-event\\web\\templates\\newAccountRegistation.html";
     private final String EVENT_REGISTRATION_TEMPLATE = "./web/templates/NewAccountRegistration.hmtl";

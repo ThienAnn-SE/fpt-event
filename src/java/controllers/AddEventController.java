@@ -12,14 +12,11 @@ import daos.EventDAO;
 import daos.LocationDAO;
 import dtos.CategoryDTO;
 import dtos.ClubDTO;
-import dtos.EventDTO;
 import dtos.LocationDTO;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -34,7 +31,7 @@ import utils.Helper;
  *
  * @author thien
  */
-@WebServlet(name = "AddEventController", urlPatterns = {"/AddEventController"})
+@WebServlet(name = "AddEventController", urlPatterns = {"/event-add"})
 public class AddEventController extends HttpServlet {
 
     /**
@@ -180,6 +177,7 @@ public class AddEventController extends HttpServlet {
             if (postHandler(request, response)) {
                 response.sendRedirect(Routers.EVENT_MANAGEMENT_CONTROLLER + "?success=true");
             } else {
+                request.setAttribute("result", "fail");
                 doGet(request, response);
             }
         } catch (Exception ex) {

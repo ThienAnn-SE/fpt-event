@@ -99,7 +99,7 @@ public class CommentReportDTO {
         this.approvalDate = approvalDate;
     }
 
-    public int isReportStatus() {
+    public int getReportStatus() {
         return reportStatus;
     }
 

@@ -39,7 +39,7 @@ import utils.GetParam;
 public class ViewEventController extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * Processes requests for both HTTP <code>GET</code>
      * methods.
      *
      * @param request servlet request
@@ -82,6 +82,17 @@ public class ViewEventController extends HttpServlet {
             return false;
         }
 
+        //check authorization 
+        if (event.getStatusID() == 400) {
+            //get user role
+            Integer role = (Integer) session.getAttribute("role");
+            //check user is student or lecture 
+            if (role == 1 || role == 2) {
+                request.setAttribute("errorMessage", "You are not allow to access this page");
+                return false;
+            }
+        }
+
         String email = (String) session.getAttribute("email");
 
         //get isFollowed 
@@ -100,6 +111,8 @@ public class ViewEventController extends HttpServlet {
         ArrayList<CommentDTO> commentList = commentDAO.getCommentListByEventID(eventID);
         //get number of comment 
         int commentNum = commentDAO.getCommentNumByEventID(eventID);
+        //get recent event
+        ArrayList<EventDTO> recentEventList = eventDAO.getEventByCategory(1, event.getCategoryID());
 
         //set data
         request.setAttribute("isFollowed", isFollowed);
@@ -111,6 +124,7 @@ public class ViewEventController extends HttpServlet {
         request.setAttribute("locationName", location.getLocationName());
         request.setAttribute("statusDescription", status.getStatusDescription());
         request.setAttribute("clubName", club.getClubName());
+        request.setAttribute("recentEventList", recentEventList);
         return true;
     }
 

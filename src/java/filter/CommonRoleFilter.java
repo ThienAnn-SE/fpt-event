@@ -51,15 +51,16 @@ public class CommonRoleFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse res = (HttpServletResponse) response;
 
         try {
+            HttpServletRequest req = (HttpServletRequest) request;
+            HttpServletResponse res = (HttpServletResponse) response;
+            
             Context env = (Context) new InitialContext().lookup("java:comp/env");
             Integer minRole = (Integer) env.lookup("studentRole");
             Integer maxRole = (Integer) env.lookup("departmentRole");
             if (!Helper.isLogin(req)) {
-                res.sendRedirect("https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController"
+                res.sendRedirect("https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/login"
                         + "&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force"
                 );
                 return;

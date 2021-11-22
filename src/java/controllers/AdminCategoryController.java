@@ -26,7 +26,7 @@ import utils.GetParam;
  *
  * @author thien
  */
-@WebServlet(name = "AdminCategoryController", urlPatterns = {"/AdminCategoryController"})
+@WebServlet(name = "AdminCategoryController", urlPatterns = {"/admin-category"})
 public class AdminCategoryController extends HttpServlet {
 
     /**
@@ -62,23 +62,25 @@ public class AdminCategoryController extends HttpServlet {
      * @throws javax.naming.NamingException
      * @throws java.sql.SQLException
      */
-    protected boolean postHandler(HttpServletRequest request, HttpServletResponse response)
+    protected void postHandler(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, NamingException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         boolean isSuccess = false;
         String categoryName = GetParam.getStringParam(request, "categoryName", "Category name", 0, 30, null);
         if (categoryName == null) {
-            return false;
+            throw new ServletException("Parameter does not exist!");
         }
 
         CategoryDAO categoryDAO = new CategoryDAO();
         if (categoryDAO.getCategoryByName(categoryName) != null) {
-            request.setAttribute("errorMessage", "This category name is already exist");
+            throw new IllegalArgumentException("This category name is already exist!");
         } else {
             isSuccess = categoryDAO.insertNewCategory(categoryName);
         }
 
-        return isSuccess;
+        if (!isSuccess) {
+            throw new SQLException("Internal error!");
+        }
     }
 
     /**
@@ -114,11 +116,11 @@ public class AdminCategoryController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            if (postHandler(request, response)) {
-                response.sendRedirect(Routers.ADMIN_CATEGORY_PAGE + "?rs=success");
-            } else {
-                doGet(request, response);
-            }
+            postHandler(request, response);
+            response.sendRedirect(Routers.ADMIN_CATEGORY_CONTROLLER + "?result=success");
+        } catch (IllegalArgumentException ex) {
+            request.setAttribute("error", ex.getMessage());
+            doGet(request, response);
         } catch (NamingException | SQLException ex) {
             log(ex.getMessage());
             request.setAttribute("errorMessage", ex.getMessage());

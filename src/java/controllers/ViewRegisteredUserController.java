@@ -7,28 +7,23 @@ package controllers;
 
 import constant.Routers;
 import daos.EventDAO;
-import daos.EventRegisterDAO;
 import daos.UserDAO;
 import dtos.EventDTO;
-import dtos.EventRegisterDTO;
 import dtos.UserDTO;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import utils.GetParam;
 
 /**
  *
  * @author thien
  */
-@WebServlet(name = "ViewRegisteredUserController", urlPatterns = {"/ViewRegisteredUserController"})
+@WebServlet(name = "ViewRegisteredUserController", urlPatterns = {"/leader-registrationList"})
 public class ViewRegisteredUserController extends HttpServlet {
 
     /**

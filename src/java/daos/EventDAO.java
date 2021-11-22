@@ -175,8 +175,8 @@ public class EventDAO {
             if (conn != null) {
                 String sql = "SELECT *"
                         + " FROM tblFUEvents"
-                        + " WHERE statusID NOT IN (400, 570)"
-                        + " ORDER BY startDate"
+                        + " WHERE statusID NOT IN (400)"
+                        + " ORDER BY statusID"
                         + " OFFSET (?-1)*9 ROWS FETCH NEXT 9 ROWS ONLY";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, count);
@@ -209,7 +209,7 @@ public class EventDAO {
             if (conn != null) {
                 String sql = "SELECT COUNT(eventID) as number"
                         + " FROM tblFUEvents"
-                        + " WHERE statusID NOT IN (400,570)";
+                        + " WHERE statusID NOT IN (400)";
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();
                 while (rs.next()) {
@@ -229,8 +229,8 @@ public class EventDAO {
             if (conn != null) {
                 String sql = "SELECT *"
                         + " FROM tblFUEvents"
-                        + " WHERE categoryID = ? AND statusID NOT IN (400, 570)"
-                        + " ORDER BY startDate"
+                        + " WHERE categoryID = ? AND statusID NOT IN (400)"
+                        + " ORDER BY statusID"
                         + " OFFSET (?-1)*9 ROWS FETCH NEXT 9 ROWS ONLY";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, categoryID);
@@ -263,7 +263,7 @@ public class EventDAO {
             if (conn != null) {
                 String sql = "SELECT COUNT(eventID) as number"
                         + " FROM tblFUEvents"
-                        + " WHERE categoryID = ? AND statusID NOT IN (400,570)";
+                        + " WHERE categoryID = ? AND statusID NOT IN (400)";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, categoryID);
                 rs = preStm.executeQuery();
@@ -284,8 +284,8 @@ public class EventDAO {
             if (conn != null) {
                 String sql = "SELECT *"
                         + " FROM tblFUEvents"
-                        + " WHERE (ticketFee >= ? AND ticketFee <= ?) AND statusID NOT IN (400, 570)"
-                        + " ORDER BY startDate"
+                        + " WHERE (ticketFee >= ? AND ticketFee <= ?) AND statusID NOT IN (400)"
+                        + " ORDER BY statusID"
                         + " OFFSET (?-1)*9 ROWS FETCH NEXT 9 ROWS ONLY";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, minPrice);
@@ -320,7 +320,7 @@ public class EventDAO {
             if (conn != null) {
                 String sql = "SELECT COUNT(eventID) as number"
                         + " FROM tblFUEvents"
-                        + " WHERE (ticketFee >= ? AND ticketFee <= ?) AND statusID NOT IN (400,570)";
+                        + " WHERE (ticketFee >= ? AND ticketFee <= ?) AND statusID NOT IN (400)";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, min);
                 preStm.setInt(2, max);
@@ -342,8 +342,8 @@ public class EventDAO {
             if (conn != null) {
                 String sql = "SELECT *"
                         + " FROM tblFUEvents"
-                        + " WHERE (eventName LIKE ?) AND statusID NOT IN (400,570)"
-                        + " ORDER BY startDate"
+                        + " WHERE (eventName LIKE ?) AND statusID NOT IN (400)"
+                        + " ORDER BY statusID"
                         + " OFFSET (?-1)*9 ROWS FETCH NEXT 9 ROWS ONLY";
                 preStm = conn.prepareStatement(sql);
                 preStm.setString(1, "%" + searchName + "%");
@@ -377,7 +377,7 @@ public class EventDAO {
             if (conn != null) {
                 String sql = "SELECT COUNT(eventID) as number"
                         + " FROM tblFUEvents"
-                        + " WHERE eventName like ? AND statusID NOT IN (400,570)";
+                        + " WHERE eventName like ? AND statusID NOT IN (400)";
                 preStm = conn.prepareStatement(sql);
                 preStm.setString(1, "%" + searchName + "%");
                 rs = preStm.executeQuery();
@@ -400,8 +400,8 @@ public class EventDAO {
                 String sql = "SELECT *"
                         + " FROM tblFUEvents"
                         + " WHERE (startDate >= ? AND endDate <= ?)"
-                        + " AND eventID NOT IN (400,570)"
-                        + " ORDER BY startDate"
+                        + " AND eventID NOT IN (400)"
+                        + " ORDER BY statusID"
                         + " OFFSET(?-1)*9 ROWS FETCH NEXT 9 ROWS ONLY";
                 preStm = conn.prepareStatement(sql);
                 preStm.setDate(1, java.sql.Date.valueOf(startDate));
@@ -438,7 +438,7 @@ public class EventDAO {
                 String sql = "SELECT COUNT(eventID) as number"
                         + " FROM tblFUEvents"
                         + " WHERE (startDate >= ? AND endDate <= ?)"
-                        + " AND eventID NOT IN (400,570)";
+                        + " AND eventID NOT IN (400)";
                 preStm = conn.prepareStatement(sql);
                 preStm.setDate(1, java.sql.Date.valueOf(startDate));
                 preStm.setDate(2, java.sql.Date.valueOf(endDate));
@@ -535,6 +535,35 @@ public class EventDAO {
 
         }
         return num;
+    }
+
+    public ArrayList<EventDTO> getCLubClosedEvent(int clubID) throws NamingException, SQLException {
+        ArrayList<EventDTO> list = new ArrayList<>();
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT *"
+                        + " FROM tblEvents"
+                        + " WHERE (clubID = ? AND statusID = 570)"
+                        + " ORDER BY endDate";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, clubID);
+                rs = preStm.executeQuery();
+                while (rs.next()) {
+                    int eventID = rs.getInt("eventID");
+                    String eventName = rs.getNString("eventName");
+                    int categoryID = rs.getInt("categoryID");
+                    int statusID = rs.getInt("statusID");
+                    String startDate = new SimpleDateFormat("MMM dd,yyyy").format(rs.getTimestamp("startDate"));
+                    String endDate = new SimpleDateFormat("MMM dd,yyyy").format(rs.getTimestamp("endDate"));
+                    int slot = rs.getInt("slot");
+                    list.add(new EventDTO(eventID, eventName, clubID, categoryID, statusID, startDate, endDate, null, slot));
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return list;
     }
 
     public ArrayList<EventDTO> getAllEvents() throws NamingException, SQLException {
