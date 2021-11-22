@@ -9,7 +9,6 @@ import constant.Routers;
 import daos.UserDAO;
 import dtos.UserDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -25,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author thien
  */
-@WebServlet(name = "UserManagementController", urlPatterns = {"/UserManagementController"})
+@WebServlet(name = "UserManagementController", urlPatterns = {"/admin-user"})
 public class UserManagementController extends HttpServlet {
 
     /**

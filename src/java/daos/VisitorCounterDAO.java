@@ -65,7 +65,7 @@ public class VisitorCounterDAO {
         try {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
-                String sql = "SELECT SUM(visitorNumber) as number"
+                String sql = "SELECT COUNT(visitorNumber) as number"
                         + " FROM tblVisitorCounters";
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();
@@ -85,9 +85,10 @@ public class VisitorCounterDAO {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
                 String sql = "DECLARE @date date = GETDATE() - ?"
-                        + " SELECT SUM(visitorNumber) AS number "
+                        + " SELECT COUNT(visitorNumber) AS number "
                         + " FROM tblVisitorCounters "
-                        + " WHERE logDate = @date";
+                        + " WHERE logDate = @date"
+                        + " GROUP BY logDate";
                 preStm = conn.prepareStatement(sql);
                 for (int i = 0; i < 30; i++) {
                     preStm.setInt(1, i);
@@ -103,16 +104,30 @@ public class VisitorCounterDAO {
         return number;
     }
 
-    public ArrayList<Long> getYearlyVisitorOverview() throws NamingException, SQLException {
-        ArrayList<Long> yearlyVisitorList = new ArrayList<>();
+    public ArrayList<Integer> getMonthlyVisitorOverview() throws NamingException, SQLException {
+        ArrayList<Integer> list = new ArrayList<>();
         try {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
-                String sql = "";
+                String sql = "DECLARE @date date = GETDATE() - ?"
+                        + " SELECT COUNT(visitorNumber) AS number "
+                        + " FROM tblVisitorCounters "
+                        + " WHERE logDate = @date"
+                        + " GROUP BY logDate ";
+                preStm = conn.prepareStatement(sql);
+                for (int i = 0; i < 30; i++) {
+                    preStm.setInt(1, i);
+                    rs = preStm.executeQuery();
+                    if (rs.next()) {
+                        list.add(rs.getInt("number"));
+                    } else {
+                        list.add(0);
+                    }
+                }
             }
         } finally {
             this.closeConnection();
         }
-        return yearlyVisitorList;
+        return list ;
     }
 }

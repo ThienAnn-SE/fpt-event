@@ -9,11 +9,8 @@ import constant.Routers;
 import daos.LocationDAO;
 import dtos.LocationDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,7 +23,7 @@ import utils.GetParam;
  *
  * @author thien
  */
-@WebServlet(name = "AdminLocationController", urlPatterns = {"/AdminLocationController"})
+@WebServlet(name = "AdminLocationController", urlPatterns = {"/admin-location"})
 public class AdminLocationController extends HttpServlet {
 
     /**
@@ -66,7 +63,7 @@ public class AdminLocationController extends HttpServlet {
      * @throws java.sql.SQLException
      * @throws javax.naming.NamingException
      */
-    protected boolean postHandler(HttpServletRequest request, HttpServletResponse response)
+    protected void postHandler(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, NamingException {
         response.setContentType("text/html;charset=UTF-8");
 
@@ -76,17 +73,19 @@ public class AdminLocationController extends HttpServlet {
         Integer locationCapacity = GetParam.getIntParams(request, "locationCapacity", "Location capacity", 10, 1000, null);
 
         if (locationName == null || locationCapacity == null) {
-            return false;
+            throw new IllegalArgumentException();
         }
         LocationDAO locationDAO = new LocationDAO();
 
         if (locationDAO.getLocationByName(locationName) != null) {
-            request.setAttribute("errorMessage", "This location is already exist");
+            throw new IllegalArgumentException("This location is already exist!");
         } else {
             isSuccess = locationDAO.insertNewLocation(locationName, locationCapacity);
         }
 
-        return isSuccess;
+        if (!isSuccess) {
+            throw new SQLException("Internal exception!");
+        }
     }
 
     /**
@@ -122,11 +121,11 @@ public class AdminLocationController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            if (postHandler(request, response)) {
-                response.sendRedirect(Routers.ADMIN_LOCATION_PAGE + "?rs=success");
-            } else {
-                doGet(request, response);
-            }
+            postHandler(request, response);
+            response.sendRedirect(Routers.ADMIN_LOCATION_CONTROLLER + "?result=success");
+        } catch (IllegalArgumentException ex) {
+            request.setAttribute("error", ex.getMessage());
+            doGet(request, response);
         } catch (SQLException | NamingException ex) {
             log(ex.getMessage());
             request.setAttribute("errorMessage", ex.getMessage());

@@ -380,6 +380,12 @@ create table tblVisitorCounters(
 	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19,'bichtdnss141165@fpt.edu.vn','2021-10-26')
 	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19,'khanhhnss154319@fpt.edu.vn','2021-10-27')
 
+
+	select * from tblFeedbacks
+	where registerID in (select registerID
+						from tblEventRegisters
+						where eventID = 15)
+
 	select * from tblFollowed
 	update tblFollowed set eventID =15 where followID = 36
 
@@ -410,7 +416,7 @@ create table tblVisitorCounters(
 	ORDER BY startDate ASC
 	SELECT * FROM tblFUEvents 
 
-	WHERE statusID in (300 , 450, 500)`
+	WHERE statusID in (300 , 450, 500)
 
 	SELECT * FROM tblFUEvents
 	WHERE statusID NOT IN (400,570)
@@ -464,11 +470,12 @@ create table tblVisitorCounters(
 	WHERE eventName like '%a%'
 
 
-	declare @date date = getdate() - 8
-	SELECT count(userEmail) as registerNum
-	FROM tblEventRegisters
-	WHERE registerDate = @date
-	AND eventID in ( SELECT eventID
-					FROM tblFUEvents
-					WHERE clubID = 10)
-	group by registerDate	
+	declare @date date = getdate() - 2
+	SELECT count(visitorNumber) as registerNum
+	FROM tblVisitorCounters
+	WHERE logDate = @date
+	GROUP BY logDate
+
+	select logDate, count(visitorNumber)
+	from tblVisitorCounters
+	Group by logDate

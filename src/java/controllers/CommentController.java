@@ -12,12 +12,9 @@ import daos.EventDAO;
 import dtos.CommentDTO;
 import dtos.CommentReportDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,13 +23,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import utils.GetParam;
-import utils.Helper;
 
 /**
  *
  * @author thien
  */
-@WebServlet(name = "CommentController", urlPatterns = {"/CommentController"})
+@WebServlet(name = "CommentController", urlPatterns = {"/comment"})
 public class CommentController extends HttpServlet {
 
     /**
@@ -93,23 +89,22 @@ public class CommentController extends HttpServlet {
      *
      * @param request servlet request
      * @param respone servlet response
-     * @return
      * @throws ServletException
      * @throws IOException
      * @throws javax.naming.NamingException
      * @throws java.sql.SQLException
      */
-    public boolean getHandler(HttpServletRequest request, HttpServletResponse respone)
+    public void getHandler(HttpServletRequest request, HttpServletResponse respone)
             throws ServletException, IOException, NamingException, SQLException {
         respone.setContentType("text/html;charset=UTF-8");
         Integer commentID = GetParam.getIntParams(request, "commentID", "Comment", 0, Integer.MAX_VALUE, null);
         if (commentID == null) {
-            return false;
+            throw new ServletException("Parameter does not exist!!");
         }
         CommentDAO commentDAO = new CommentDAO();
         if (commentDAO.getCommentByID(commentID) == null) {
             request.setAttribute("errorMessage", "Comment does not exist!!");
-            return false;
+            throw new SQLException("Comment does not exist!");
         }
         HttpSession session = request.getSession();
         String email = (String) session.getAttribute("email");
@@ -118,7 +113,15 @@ public class CommentController extends HttpServlet {
 
         //generate report
         CommentReportDAO reportDAO = new CommentReportDAO();
-        return reportDAO.addNewReport(new CommentReportDTO(commentID, email, now));
+
+        if (!reportDAO.isReported(commentID, email)) {
+            if (!reportDAO.addNewReport(new CommentReportDTO(commentID, email, now))) {
+                throw new SQLException("Internal error!");
+            }
+        } else {
+            throw new IllegalArgumentException("You report this comment already!");
+        }
+
     }
 
     /**
@@ -161,13 +164,19 @@ public class CommentController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        int eventID = GetParam.getIntParams(request, "eventID", "Event ID", 0, Integer.MAX_VALUE, 0);
+
         try {
-            if (getHandler(request, response)) {
-                request.getRequestDispatcher(Routers.ADMIN_REQUEST_PAGE).forward(request, response);
+            getHandler(request, response);
+            if (eventID > 0) {
+                response.sendRedirect(Routers.VIEW_EVENT_CONTROLLER + "?report=success&eventID=" + eventID);
             } else {
                 request.setAttribute("errorMessage", "Internal error");
                 request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
             }
+        } catch (IllegalArgumentException ex) {
+            request.setAttribute("error", ex.getMessage()); 
+            request.getRequestDispatcher(Routers.VIEW_EVENT_CONTROLLER + "?eventID=" + eventID).forward(request, response);
         } catch (NamingException | SQLException ex) {
             log(ex.getMessage());
             request.setAttribute("errorMessage", ex.getMessage());

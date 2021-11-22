@@ -175,7 +175,7 @@ public class CommentDAO {
                     + " WHERE commentID = ?";
             preStm = conn.prepareStatement(sql);
             preStm.setBoolean(1, visible);
-            preStm.setInt(1, commentID);
+            preStm.setInt(2, commentID);
 
             isSuccess = preStm.executeUpdate() > 0;
         } finally {

@@ -7,7 +7,6 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Event</title>
-        <link rel="stylesheet" href="./asset/css/style.css" />
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -20,6 +19,8 @@
             integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
             crossorigin="anonymous"
             />
+        <link rel="stylesheet" href="./asset/css/style.css" />
+
     </head>
     <body>
         <jsp:include page="./includes/header.jsp"></jsp:include>
@@ -41,14 +42,16 @@
                                                     <a href="ViewEventController?eventID=${event.eventID}">
                                                         <img src="${event.imageURL}" />
                                                     </a>
-                                                    <div class="price">
-                                                        <c:if test="${event.ticketFee eq 0}">
-                                                            <span>Free</span>
-                                                        </c:if>
-                                                        <c:if test="${event.ticketFee gt 0}">
-                                                            <span>${event.ticketFee} VND</span>
-                                                        </c:if>
-                                                    </div>
+                                                    <c:if test="${event.statusID ne 570}">
+                                                        <div class="price">
+                                                            <c:if test="${event.ticketFee eq 0}">
+                                                                <span>Free</span>
+                                                            </c:if>
+                                                            <c:if test="${event.ticketFee gt 0}">
+                                                                <span>${event.ticketFee} VND</span>
+                                                            </c:if>
+                                                        </div>
+                                                    </c:if>
                                                 </div>
                                                 <div class="upcoming-event-text">
                                                     <h3><a href="ViewEventController?eventID=${event.eventID}">${event.eventName}</a></h3>
@@ -82,10 +85,17 @@
                                                         </c:forEach>
                                                         <span><i class="far fa-users"></i> ${registerNum}/${event.slot}</span>
                                                     </div>
-                                                    <a href="RegisterEventController?eventID=${event.eventID}" class="btn">
-                                                        <span class="btn-text">book ticket</span>
-                                                        <span class="btn-border"></span>
-                                                    </a>
+                                                    <c:if test="${event.statusID ne 570}">
+                                                        <a href="RegisterEventController?eventID=${event.eventID}" class="btn">
+                                                            <span class="btn-text">book ticket</span>
+                                                            <span class="btn-border"></span>
+                                                        </a>
+                                                    </c:if>
+                                                    <c:if test="${event.statusID eq 570}">
+                                                        <a class="btn btn-closed">
+                                                            <span class="btn-text">Closed</span>
+                                                        </a>
+                                                    </c:if>
                                                 </div>
                                             </div>
                                         </div>
@@ -95,15 +105,15 @@
                             <c:if test="${not empty page}">
                                 <ul class="pagination justify-content-center">
                                     <li class="page-item">
-                                        <a class="page-link" href="SearchEventController?page=${page == 1 ? 1 : page - 1}">Previous</a>
+                                        <a class="page-link" href="SearchEventController?page=${page == 1 ? 1 : page - 1}&${lastSearch}">Previous</a>
                                     </li>
                                     <c:forEach begin="1" end="${endPage}" var="i">
                                         <li class="page-item ${page == i ? "active" : ""}">
-                                            <a class="page-link" href="SearchEventController?page=${i}${lastSearch}">${i}</a>
+                                            <a class="page-link" href="SearchEventController?page=${i}&${lastSearch}">${i}</a>
                                         </li>
                                     </c:forEach>
                                     <li class="page-item">
-                                        <a class="page-link" href="SearchEventController?page=${page < endPage ? page +1 : endPage}">Next</a>
+                                        <a class="page-link" href="SearchEventController?page=${page < endPage ? page +1 : endPage}&${lastSearch}">Next</a>
                                     </li>
                                 </ul>
                             </c:if>

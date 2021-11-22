@@ -24,6 +24,9 @@
             type="text/css"
             href="https://cdn.datatables.net/v/bs5/dt-1.11.3/datatables.min.css"
             />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     </head>
     <body>
         <header class="fixed-top">
@@ -32,7 +35,7 @@
                     <div class="row">
                         <div class="col-md-3 col-6 d-flex align-items-center">
                             <div class="logo">
-                                <a href="HomePageController">
+                                <a href="home">
                                     <img src="./asset/img/FPTU_EVENT.png" />
                                 </a>
                             </div>
@@ -62,21 +65,23 @@
                                 <nav class="pc-header">
                                     <ul>
                                         <li class="header-item">
-                                            <a href="HomePageController">home</a>
+                                            <a href="home"><i class="fa fa-home" aria-hidden="true"></i> home</a>
                                         </li>
                                         <li class="header-item">
-                                            <a href="SearchEventController">event</a>
+                                            <a href="SearchEventController"><i class="fa fa-calendar" aria-hidden="true"></i> event</a>
                                         </li>
                                         <c:if test="${empty sessionScope.email}">
                                             <li class="header-item">
                                                 <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force">
+                                                    <i class="fa fa-sign-in" aria-hidden="true"></i>
                                                     login
                                                 </a>
                                             </li>
                                         </c:if>
                                         <c:if test="${not empty sessionScope.email}">
                                             <li class="header-item">
-                                                <a href="LogoutController">
+                                                <a href="logout">
+                                                    <i class="fa fa-sign-out" aria-hidden="true"></i>
                                                     logout
                                                 </a>
                                             </li>
@@ -89,7 +94,7 @@
                             <nav class="mobile-header">
                                 <div class="mobile-header-title">
                                     <div class="logo">
-                                        <a href="HomePageController">
+                                        <a href="home">
                                             <img src="./asset/img/FPTU_EVENT.png" />
                                         </a>
                                     </div>
@@ -100,21 +105,23 @@
 
                                 <ul>
                                     <li class="header-mobile-item">
-                                        <a href="HomePageController">home</a>
+                                        <a href="home"><i class="fa fa-home" aria-hidden="true"></i> home</a>
                                     </li>
                                     <li class="header-mobile-item">
-                                        <a href="SearchEventController">event</a>
+                                        <a href="SearchEventController"><i class="fa fa-calendar" aria-hidden="true"></i> event</a>
                                     </li>
                                     <c:if test="${empty sessionScope.email}">
                                         <li class="header-item">
                                             <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force">
+                                                <i class="fa fa-sign-in" aria-hidden="true"></i>
                                                 login
                                             </a>
                                         </li>
                                     </c:if>
                                     <c:if test="${not empty sessionScope.email}">
                                         <li class="header-item">
-                                            <a href="LogoutController">
+                                            <a href="logout">
+                                                <i class="fa fa-sign-out" aria-hidden="true"></i>
                                                 logout
                                             </a>
                                         </li>
@@ -179,19 +186,6 @@
                                                       ><i class="fas fa-chart-line"></i
                                                     ></span>
                                                 <span class="nav-text">Statistics</span>
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a
-                                                class="nav-link"
-                                                data-bs-toggle="tab"
-                                                role="tab"
-                                                href="#feedbacks"
-                                                >
-                                                <span class="nav-icon"
-                                                      ><i class="fa fa-comments"></i
-                                                    ></span>
-                                                <span class="nav-text">Feedback</span>
                                             </a>
                                         </li>
                                         <li class="nav-item">
@@ -275,7 +269,7 @@
                                         aria-labelledby="event"
                                         >
                                         <div class="table-header">
-                                            <a href="AddEventController" class="btn">
+                                            <a href="event-add" class="btn">
                                                 <span class="btn-text">create an event</span>
                                                 <span class="btn-border"></span>
                                             </a>
@@ -311,10 +305,10 @@
                                                     <tbody>
                                                         <c:forEach var="event" items="${eventList}">
                                                             <tr>
-                                                                <td>${event.eventName}</td>
+                                                                <td><h6>${event.eventName}</h6></td>
                                                                 <td>${event.createDate}</td>
                                                                 <td>${event.registerEndDate}</td>
-                                                                <td>${event.startDate} - ${event.endDate}</td>
+                                                                <td>${event.startDate} ~ ${event.endDate}</td>
                                                                 <td>
                                                                     <c:forEach var="location" items="${locationList}">
                                                                         <c:if test="${event.locationID eq location.locationID}">
@@ -375,21 +369,24 @@
                                                                         <a href="ViewEventController?eventID=${event.eventID}" class="btn-icon active" data-tooltip="tooltip" title="View event detail">
                                                                             <i class="fas fa-eye"></i>
                                                                         </a>
-                                                                        <a href="ViewRegisteredUserController?eventID=${event.eventID}" class="btn-icon" data-tooltip="tooltip"  title="View registration">
+                                                                        <a href="leader-registrationList?eventID=${event.eventID}" class="btn-icon" data-tooltip="tooltip"  title="View registration">
                                                                             <i class="fa fa-users"></i>
                                                                         </a>
-                                                                        <a href="UpdateEventController?eventID=${event.eventID}" class="btn-icon" data-tooltip="tooltip" title="Edit event">
-                                                                            <i class="fas fa-edit"></i>
-                                                                        </a>
-                                                                        <a  href="#" onclick="$(this).closest('form').submit()" class="btn-icon
-                                                                            <c:if test="${event.statusID eq 400}">
-                                                                                disabled
-                                                                            </c:if>" 
-                                                                            data-tooltip="tooltip" title="Cancel event" >
-                                                                            <i class="fas fa-trash-alt"></i>
-                                                                        </a>
-                                                                        <input type="hidden" name="btAction" value="cancel"/>
-                                                                        <input type="hidden" name="eventID" value="${event.eventID}"/>
+                                                                        <c:if test="${event.statusID eq 500 or event.statusID eq 530 or event.statusID eq 550}">
+                                                                            <a href="UpdateEventController?eventID=${event.eventID}" class="btn-icon" data-tooltip="tooltip" title="Edit event">
+                                                                                <i class="fas fa-edit"></i>
+                                                                            </a>
+                                                                        </c:if>
+                                                                        <c:if test="${ event.statusID  ne 400 and event.statusID ne 550 and event.statusID ne 570}">
+                                                                            <a  href="#confirm-cancel" class="btn-icon" id="cancel-link" data-tooltip="tooltip" title="Cancel event" data-toggle="modal" data-id="${event.eventID}">
+                                                                                <i class="fas fa-trash-alt"></i>
+                                                                            </a>
+                                                                        </c:if>
+                                                                        <c:if test="${event.statusID eq 570}">
+                                                                            <a href="feedback?action=view&eventID=${event.eventID}" class="btn-icon" data-tooltip="tooltip" title="View feedback">
+                                                                                <i class="fa fa-comments" aria-hidden="true"></i>
+                                                                            </a>
+                                                                        </c:if>
                                                                     </form>
                                                                 </td>
                                                             </tr>
@@ -398,45 +395,8 @@
                                                 </table>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div>                                  
 
-                                    <div class="tab-pane fade"
-                                         id="feedbacks"
-                                         role="tabpanel"
-                                         aria-labelledby="feedbacks"
-                                         >
-                                        <div class="table-header">
-
-                                        </div>
-                                        <div class="table-body">
-                                            <div class="table table-responsive">
-                                                <table 
-                                                    id="feedback-table"
-                                                    class="
-                                                    table table-bordered table-hover
-                                                    dtr-inline
-                                                    ">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Event name</th>
-                                                            <th>Vote</th>
-                                                            <th>Number of vote</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
                                     <div
                                         class="tab-pane fade"
                                         id="statistics"
@@ -463,6 +423,30 @@
             </div>
         </div>
 
+        <div class="modal fade" id="confirm-cancel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="UpdateEventController" method="POST" id="update-form">
+                        <div class="modal-header">
+                            <h3 class="m-1 font-weight-bold">Cancel event confirmation</h3>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to <strong>cancel</strong> this event?
+                                Cancelled event will not be viewed or interacted by any one except you!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" name="btAction" value="cancel"/>
+                            <input type="hidden" name="eventID" id="eventID" value=""/>
+                            <div class="form-btn">
+                                <button type="button" id="cancel" data-dismiss="modal">Cancel</button>
+                                <button type="submit" id="confirm">Confirm</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade" id="confirm-edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -482,11 +466,6 @@
 
         <jsp:include page="./includes/footer.jsp"></jsp:include>
 
-            <script>
-                $(".alert-dismissible").fadeTo(4000, 1000).slideUp(1000, function () {
-                    $(".alert-dismissible").alert('close');
-                });
-            </script>
             <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             <script src="./asset/js/main.js"></script>
             <script
@@ -494,11 +473,15 @@
                 integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ"
                 crossorigin="anonymous"
             ></script>
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
             <script
                 type="text/javascript"
                 src="https://cdn.datatables.net/v/bs5/dt-1.11.3/datatables.min.js"
             ></script>
+            <script>
+                $('#cancel-link').click(function (){
+                    $('#eventID').val($('a[href="#confirm-cancel"]').data('id'));
+                });
+            </script>
             <script>
                 $(".alert-dismissible").fadeTo(4000, 1000).slideUp(1000, function () {
                     $(".alert-dismissible").alert('close');
@@ -518,7 +501,6 @@
                 $(document).ready(function () {
                     $("#event-table").DataTable();
                     $("#user-table").DataTable();
-                    $("#feedback-table").DataTable();
                 });
 
                 var days = document.getElementById("days");

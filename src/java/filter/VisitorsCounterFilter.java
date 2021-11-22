@@ -5,6 +5,7 @@
  */
 package filter;
 
+import constant.Routers;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -56,35 +57,41 @@ public class VisitorsCounterFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpSession session = req.getSession();
-        if (session.isNew()) {
-            ServletContext servletContext = request.getServletContext();
+        try {
+            HttpServletRequest req = (HttpServletRequest) request;
+            HttpSession session = req.getSession();
+            if (session.isNew()) {
+                ServletContext servletContext = request.getServletContext();
 
-            String realWebAppPath = servletContext.getRealPath("");
-            String hitFilePath = realWebAppPath.concat("hit.txt");
-            File hitFile = new File(hitFilePath);
+                String realWebAppPath = servletContext.getRealPath("");
+                String hitFilePath = realWebAppPath.concat("hit.txt");
+                File hitFile = new File(hitFilePath);
 
-            int currentHit = readHitCounterFromFile(hitFile);
+                int currentHit = readHitCounterFromFile(hitFile);
 
-            updateHitCounterFile(++currentHit, hitFile);
-            System.out.println(currentHit);
+                updateHitCounterFile(++currentHit, hitFile);
+                System.out.println(currentHit);
+            }
+            chain.doFilter(request, response);
+        } catch (Exception ex) {
+            log(ex.getMessage());
+            request.setAttribute("Error", ex.getMessage());
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
         }
-        chain.doFilter(request, response);
     }
 
     private int readHitCounterFromFile(File file) throws FileNotFoundException, IOException {
         if (!file.exists()) {
             return 0;
         }
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        try ( BufferedReader reader = new BufferedReader(new FileReader(file))) {
             int hit = Integer.parseInt(reader.readLine());
             return hit;
         }
     }
 
     private void updateHitCounterFile(long hit, File hitFile) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(hitFile));) {
+        try ( BufferedWriter writer = new BufferedWriter(new FileWriter(hitFile));) {
             writer.write(String.valueOf(hit));
         }
     }
@@ -94,7 +101,7 @@ public class VisitorsCounterFilter implements Filter {
      */
     @Override
     public void destroy() {
-        
+
     }
 
     /**

@@ -10,10 +10,12 @@ import daos.EventDAO;
 import daos.EventFeedbackDAO;
 import daos.EventRegisterDAO;
 import daos.UserDAO;
+import dtos.EventDTO;
 import dtos.EventFeedbackDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.NamingException;
@@ -29,7 +31,7 @@ import utils.GetParam;
  *
  * @author thien
  */
-@WebServlet(name = "FeedbackController", urlPatterns = {"/FeedbackController"})
+@WebServlet(name = "FeedbackController", urlPatterns = {"/feedback"})
 public class FeedbackController extends HttpServlet {
 
     /**
@@ -78,16 +80,85 @@ public class FeedbackController extends HttpServlet {
     }
 
     /**
-     * Processes requests for HTTP <code>GET</code> methods.
+     * Processes requests for HTTP <code>GET</code> methods when user want to
+     * view an event feedback.
      *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     * @throws java.sql.SQLException
+     * @throws javax.naming.NamingException
      */
-    protected void getHanlder(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void viewFeedback(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException, NamingException {
+        //get paramter
+        Integer eventID = GetParam.getIntParams(request, "eventID", "EventID", 0, Integer.MAX_VALUE, null);
+        //validate
+        if (eventID == null) {
+            throw new ServletException("parameter does not exist!");
+        }
+        //initialize resource
+        EventFeedbackDAO feedbackDAO = new EventFeedbackDAO();
+        //get feedback list
+        ArrayList<EventFeedbackDTO> feedbackList = feedbackDAO.getEventFeedbackList(eventID);
+        //on success
+        request.setAttribute("feedbackList", feedbackList);
+        request.getRequestDispatcher(Routers.VIEW_FEEDBACK_PAGE).forward(request, response);
+    }
+
+    /**
+     * Processes requests for HTTP <code>GET</code> methods when user want to
+     * rating for an event.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     * @throws java.sql.SQLException
+     * @throws javax.naming.NamingException
+     */
+    protected void ratingEvent(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, SQLException, NamingException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
+
+        //initialized resource
+        EventRegisterDAO registerDAO = new EventRegisterDAO();
+        EventDAO eventDAO = new EventDAO();
+        HttpSession session = request.getSession();
+
+        //get parameter
+        Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 0, Integer.MAX_VALUE, null);
+
+        //validate
+        if (eventID == null) {
+            throw new ServletException("Parameter does not exist!");
+        }
+
+        //get event by event ID
+        EventDTO event = eventDAO.getEventByID(eventID);
+        //validate
+        if (event == null) {
+            throw new SQLException("Event does not exist");
+        }
+
+        //get user email
+        String userEmail = (String) session.getAttribute("email");
+
+        //get user registration ID
+        int registerID = registerDAO.getRegisterID(eventID, userEmail);
+
+        //validate
+        if (registerID == 0) {
+            throw new SQLException("User does not attend this event!");
+        }
+
+        //set request attribute
+        request.setAttribute("eventName", event.getEventName());
+        request.setAttribute("registerID", registerID);
+        request.getRequestDispatcher(Routers.USER_FEEDBACK_PAGE).forward(request, response);
     }
 
     /**
@@ -101,7 +172,25 @@ public class FeedbackController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        getHanlder(request, response);
+        try {
+            //get action
+            String action = GetParam.getStringParam(request, "action", "Action", 0, 10, null);
+            //validate
+            if (action == null) {
+                throw new ServletException("Parameter does not exist!");
+            }
+            //do action
+            if (action.equalsIgnoreCase("rate")) {
+                ratingEvent(request, response);
+            } else if (action.equalsIgnoreCase("view")) {
+                viewFeedback(request, response);
+            }
+
+        } catch (SQLException | NamingException ex) {
+            log(ex.getMessage());
+            request.setAttribute("errorMessage", ex.getMessage());
+            request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+        }
     }
 
     /**
@@ -117,7 +206,7 @@ public class FeedbackController extends HttpServlet {
             throws ServletException, IOException {
         try {
             if (postHandler(request, response)) {
-                
+
             } else {
 
             }

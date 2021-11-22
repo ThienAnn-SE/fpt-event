@@ -29,7 +29,7 @@ import utils.GoogleHelpers;
  *
  * @author thien
  */
-@WebServlet(name = "GoogleLoginController", urlPatterns = {"/GoogleLoginController"})
+@WebServlet(name = "GoogleLoginController", urlPatterns = {"/login"})
 public class GoogleLoginController extends HttpServlet {
 
     /**
@@ -46,7 +46,7 @@ public class GoogleLoginController extends HttpServlet {
             throws ServletException, IOException {
         String code = GetParam.getStringParam(request, "code", "Code", 0, Integer.MAX_VALUE, "null");
         if (code == null) {
-            request.setAttribute("error", "Please login first!");
+            request.setAttribute("loginError", "Please login first!");
             return false;
         }
         String accessToken = GoogleHelpers.getToken(code);
@@ -54,7 +54,7 @@ public class GoogleLoginController extends HttpServlet {
         String email = googleDao.getEmail();
 
         if (!email.contains("@fpt.edu.vn")) {
-            request.setAttribute("error", "Please using FPT email");
+            request.setAttribute("loginError", "Please using FPT email for login!");
             return false;
         }
         request.setAttribute("email", email);
@@ -75,7 +75,7 @@ public class GoogleLoginController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         if (!processRequest(request, response)) {
-            request.getRequestDispatcher(Routers.LOGIN_PAGE).forward(request, response);
+            request.getRequestDispatcher(Routers.HOME_PAGE_CONTROLLER).forward(request, response);
         } else {
             UserDAO dao = new UserDAO();
             String email = (String) request.getAttribute("email");
@@ -83,23 +83,22 @@ public class GoogleLoginController extends HttpServlet {
             try {
                 UserDTO user = dao.getUserByEmail(email);
                 if (user != null) {
-                    session.setAttribute("email", email);
                     session.setAttribute("name", user.getName());
-                    session.setAttribute("avatar", request.getAttribute("avatar"));
                     session.setAttribute("role", user.getRole());
-                    response.sendRedirect(Routers.HOME_PAGE_CONTROLLER);
                 } else {
                     if (firstLoginRegister(email)) {
                         user = dao.getUserByEmail(email);
-                        session.setAttribute("email", email);
-                        session.setAttribute("avatar", request.getAttribute("avatar"));
                         session.setAttribute("role", user.getRole());
-                        response.sendRedirect(Routers.HOME_PAGE_CONTROLLER);
                     } else {
                         request.setAttribute("error", "Internal error");
                         request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
                     }
                 }
+                
+                //on success
+                session.setAttribute("email", email);
+                session.setAttribute("avatar", request.getAttribute("avatar"));
+                response.sendRedirect(Routers.HOME_PAGE_CONTROLLER + "?action=Login successfully");
             } catch (SQLException | NamingException | MessagingException ex) {
                 log(ex.getMessage());
                 request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);

@@ -49,19 +49,19 @@
                                     <h3 class="text-center">Event registration</h3>
                                     <div class="table table-responsive">
                                         <table
-                                            id="dataTable"
+                                            id="attended-table"
                                             class="table table-bordered table-hover dtr-inline"
                                             >
                                             <thead>
                                                 <tr>
                                                     <th>
-                                                        Name
+                                                        No.
                                                     </th>
                                                     <th>
-                                                        Email
+                                                        Feedback
                                                     </th>
                                                     <th>
-                                                        Phone number
+                                                        Rating
                                                     </th>
                                                     <th>
                                                         Action
@@ -69,12 +69,20 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <c:forEach var="user" items="${registeredUserList}">
+                                                <c:forEach var="item" items="${feedbackList}" varStatus="counter">
                                                     <tr>
-                                                        <td>${user.name}</td>
-                                                        <td>${user.email}</td>
-                                                        <td>${user.phoneNumber}</td>
-                                                        <td><a href="#" class="text text-danger">Report</a></td>
+                                                        <td>
+                                                            ${counter.count}
+                                                        </td>
+                                                        <td>
+                                                            ${item.feedback}
+                                                        </td>
+                                                        <td>
+                                                            ${item.vote}
+                                                        </td>
+                                                        <td>
+                                                            <a href="#" class="text text-danger">Report</a>
+                                                        </td>
                                                     </tr>
                                                 </c:forEach>
                                             </tbody>
@@ -88,7 +96,6 @@
             </div>
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="./asset/js/main.js"></script>
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"
@@ -100,7 +107,11 @@
             type="text/javascript"
             src="https://cdn.datatables.net/v/bs5/dt-1.11.3/datatables.min.js"
         ></script>
-        <script src="./asset/js/demo/datatables-demo.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#attended-table').DataTable();
+            });
+        </script>
 
 
 

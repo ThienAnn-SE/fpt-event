@@ -56,17 +56,24 @@
                                         <div class="upcoming-event-wrapper">
                                             <c:set var="startDate" value="${event.startDate}"/>
                                             <div class="upcoming-event-img">
-                                                <a href="ViewEventController?eventID=${event.eventID}}">
+                                                <a href="ViewEventController?eventID=${event.eventID}">
                                                     <img src="${event.imageURL}" />
                                                 </a>
-                                                <div class="price"><span>${event.ticketFee} VND</span></div>
+                                                <div class="price">
+                                                    <c:if test="${event.ticketFee eq 0}">
+                                                        <span>Free</span>
+                                                    </c:if>
+                                                    <c:if test="${event.ticketFee gt 0}">
+                                                        <span>${event.ticketFee} VND</span>
+                                                    </c:if>
+                                                </div>
                                             </div>
                                             <div class="upcoming-event-text">
                                                 <h3><a href="ViewEventController?eventID=${event.eventID}">${event.eventName}</a></h3>
                                                 <div class="event-meta">
                                                     <span>
                                                         <i class="far fa-calendar-alt"></i> 
-                                                        ${event.startDate} - ${event.endDate}
+                                                        ${event.startDate}
                                                     </span>
                                                     <span>
                                                         <c:forEach var="category" items="${categoryList}">
@@ -126,14 +133,21 @@
                                     <a href="ViewEventController?eventID=${event.eventID}">
                                         <img src="${event.imageURL}" />
                                     </a>
-                                    <div class="price"><span>${event.ticketFee} VND</span></div>
+                                    <div class="price">
+                                        <c:if test="${event.ticketFee eq 0}">
+                                            <span>Free</span>
+                                        </c:if>
+                                        <c:if test="${event.ticketFee gt 0}">
+                                            <span>${event.ticketFee} VND</span>
+                                        </c:if>
+                                    </div>
                                 </div>
                                 <div class="upcoming-event-text">
                                     <h3><a href="ViewEventController?eventID=${event.eventID}">${event.eventName}</a></h3>
                                     <div class="event-meta">
                                         <span>
                                             <i class="far fa-calendar-alt"></i> 
-                                            ${event.startDate} - ${event.endDate}
+                                            ${event.startDate}
                                         </span>
                                         <span>
                                             <c:forEach var="category" items="${categoryList}">
@@ -164,10 +178,37 @@
 
         <jsp:include page="./includes/footer.jsp"></jsp:include>
 
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+            <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            <script src="./asset/js/main.js"></script>
-
+        <c:if test="${not empty param.action}">
             <script>
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                })
+
+                Toast.fire({
+                    icon: 'success',
+                    title: '${param.action}'
+                })
+            </script>
+        </c:if>
+        <c:if test="${not empty requestScope.loginError}">
+            <script>
+                Swal.fire(
+                        'Fail!',
+                        '${loginError}',
+                        'error'
+                        )
+            </script>
+        </c:if>
+        <script src="./asset/js/main.js"></script>
+
+        <script>
                 var countDate = new Date("${startDate}").getTime();
                 function countDown() {
                     var now = new Date().getTime();

@@ -26,7 +26,7 @@
 
             <div class="create-area">
                 <div class="container">
-                    <form action="AddEventController" method="POST" enctype='multipart/form-data' accept-charset="utf-8" id="form">
+                    <form action="event-add" method="POST" enctype='multipart/form-data' accept-charset="utf-8" id="form">
                         <div class="pb-3">
                             <h1 class="text-center font-weight-bold">CREATE EVENT</h1>
                         </div>
@@ -61,7 +61,7 @@
                                         <h1 class="card-title p-3">Event content</h1>
                                     </div>
                                     <c:if test="${not empty contentError}">
-                                        <p class="text text-danger">*${contentError}</p>
+                                        <p class="text text-danger px-3">*${contentError}</p>
                                     </c:if>
                                     <div class="card-body">
                                         <textarea id="tinymce" name="content"></textarea>
@@ -94,7 +94,7 @@
                                     </li>
                                     <li>
                                         <div class="text-field">
-                                            <input autocomplete="off" type="date" id="end" name="endDate"/>
+                                            <input autocomplete="off" type="datetime-local" id="end" name="endDate"/>
                                             <label for="end">End Date</label>
                                             <c:if test="${not empty endDateError}">
                                                 <p class="text text-danger">*${endDateError}</p>
@@ -103,7 +103,7 @@
                                     </li>
                                     <li>
                                         <div class="text-field">
-                                            <input autocomplete="off" type="date" id="registration" name="registerEndDate">
+                                            <input autocomplete="off" type="datetime-local" id="registration" name="registerEndDate">
                                             <label for="registration">Registration End Date</label>
                                             <c:if test="${not empty registerEndDateError}">
                                                 <p class="text text-danger">*${registerEndDateError}</p>
@@ -172,19 +172,24 @@
         <div id="data"></div>
         <jsp:include page="./includes/footer.jsp"></jsp:include>
 
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ"
-            crossorigin="anonymous"
-        ></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://cdn.tiny.cloud/1/hquj2y89l4x5vq47fqu28inr9lvl3vk9mytjhor0j85uu14t/tinymce/5/tinymce.min.js"></script>
-        <script src="./asset/js/main.js"></script>
-        <script>
-            $(".alert-dismissible").fadeTo(4000, 1000).slideUp(1000, function () {
-                $(".alert-dismissible").alert('close');
-            });
-        </script>
+            <script
+                src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ"
+                crossorigin="anonymous"
+            ></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+            <script src="https://cdn.tiny.cloud/1/hquj2y89l4x5vq47fqu28inr9lvl3vk9mytjhor0j85uu14t/tinymce/5/tinymce.min.js"></script>
+            <script src="./asset/js/main.js"></script>
+        <c:if test="${requestScope.result eq 'fail'}">
+            <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                Swal.fire(
+                        'Failed!',
+                        'Add new event failed!',
+                        'error'
+                        );
+            </script>
+        </c:if>
         <script>
             var upload = document.getElementById("upload");
             var fileName = document.querySelector(".img-upload .file-name");

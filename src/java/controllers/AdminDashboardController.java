@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author thien
  */
-@WebServlet(name = "AdminDashboardController", urlPatterns = {"/AdminDashboardController"})
+@WebServlet(name = "AdminDashboardController", urlPatterns = {"/admin-dashboard"})
 public class AdminDashboardController extends HttpServlet {
 
     /**
@@ -54,6 +54,7 @@ public class AdminDashboardController extends HttpServlet {
         int numOfUnprocessedReport = reportDAO.getNumOfUnprocessedReport();
         long numOfTotalVisitors = counterDAO.getTotalVisitorNumber();
         int numOf30DayVisitors = counterDAO.get30DaysVisitorNumber();
+        ArrayList<Integer> visitorList = counterDAO.getMonthlyVisitorOverview();
 
         if (userStatusRatioList.isEmpty()) {
             throw new SQLException("Some error happen, the record from database is empty");
@@ -64,6 +65,7 @@ public class AdminDashboardController extends HttpServlet {
         request.setAttribute("numOfUnprocessedReport", numOfUnprocessedReport);
         request.setAttribute("numOfTotalVisitors", numOfTotalVisitors);
         request.setAttribute("numOf30DayVisitors", numOf30DayVisitors);
+        request.setAttribute("visitorList", visitorList);
     }
 
     /**

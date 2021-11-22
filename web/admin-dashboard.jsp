@@ -28,88 +28,9 @@
         <div id="wrapper">
 
             <!-- Sidebar -->
-            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-                <!-- Sidebar - Brand -->
-                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="AdminDashboardController">
-                    <div class="sidebar-brand-icon">
-                        <image src="./asset/img/FPTU_EVENT.png" style="width:  100px"/>
-                    </div>
-                </a>
-
-                <!-- Divider -->
-                <hr class="sidebar-divider my-0">
-
-                <!-- Nav Item - Dashboard -->
-                <li class="nav-item active">
-                    <a class="nav-link" href="AdminDashboardController">
-                        <i class="fas fa-fw fa-tachometer-alt"></i>
-                        <span>Dashboard</span></a>
-                </li>
-
-                <!-- Divider -->
-                <hr class="sidebar-divider">
-
-                <!-- Heading -->
-                <div class="sidebar-heading">
-                    Management
-                </div>
-
-                <!-- Nav Item - Tables -->
-                <li class="nav-item">
-                    <a class="nav-link" href="UserManagementController">
-                        <i class="fa fa-user-circle"></i>
-                        <span>Users</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="AdminClubManagementController">
-                        <i class="fa fa-users"></i>
-                        <span>Club</span>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="AdminCategoryController">
-                        <i class="fa fa-list"></i>
-                        <span>Category</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="AdminLocationController">
-                        <i class="fa fa-location-arrow"></i>
-                        <span>Location</span>
-                    </a>
-                </li>
-
-                <hr class="sidebar-divider">
-
-                <div class="sidebar-heading">
-                    Process
-                </div>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="AdminFormController">
-                        <i class="fa fa-exclamation-circle"></i>
-                        <span>Ban user request</span></a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="fa fa-comment"></i>
-                        <span>Comment report</span>
-                    </a>
-                </li>
-
-                <!-- Divider -->
-                <hr class="sidebar-divider d-none d-md-block">
-
-                <!-- Sidebar Toggler (Sidebar) -->
-                <div class="text-center d-none d-md-inline">
-                    <button class="rounded-circle border-0" id="sidebarToggle"></button>
-                </div>
-
-            </ul>
+            <jsp:include page="includes/admin-sidebar.jsp">
+                <jsp:param name="active" value="dashboard"/>
+            </jsp:include>
             <!-- End of Sidebar -->
 
             <!-- Content Wrapper -->
@@ -119,39 +40,10 @@
                 <div id="content">
 
                     <!-- Topbar -->
-                    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
-
-                        <!-- Sidebar Toggle (Topbar) -->
-                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                            <i class="fa fa-bars"></i>
-                        </button>
-
-                        <!-- Topbar Navbar -->
-                        <ul class="navbar-nav ml-auto">
-                            <div class="topbar-divider d-none d-sm-block"></div>
-
-                            <!-- Nav Item - User Information -->
-                            <li class="nav-item dropdown no-arrow">
-                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">${sessionScope.email}</span>
-                                    <img class="img-profile rounded-circle"
-                                         src="${sessionScope.avatar}">
-                                </a>
-                                <!-- Dropdown - User Information -->
-                                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                     aria-labelledby="userDropdown">
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                        Logout
-                                    </a>
-                                </div>
-                            </li>
-
-                        </ul>
-
-                    </nav>
+                    <jsp:include page="includes/admin-topbar.jsp">
+                        <jsp:param name="title" value="Dashbroad"/>
+                        <jsp:param name="avatar" value="${sessionScope.avatar}"/>
+                    </jsp:include>
                     <!-- End of Topbar -->
 
                     <!-- Begin Page Content -->
@@ -290,13 +182,7 @@
                 <!-- End of Main Content -->
 
                 <!-- Footer -->
-                <footer class="sticky-footer bg-white">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2021</span>
-                        </div>
-                    </div>
-                </footer>
+                <jsp:include page="includes/admin-footer.jsp"/>
                 <!-- End of Footer -->
 
             </div>
@@ -309,26 +195,6 @@
         <a class="scroll-to-top rounded" href="#page-top">
             <i class="fas fa-angle-up"></i>
         </a>
-
-        <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">X</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" href="LogoutController">Logout</a>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Bootstrap core JavaScript-->
         <script src="./asset/vendor/jquery/jquery.min.js"></script>
@@ -348,197 +214,196 @@
             // table chart
             Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
             Chart.defaults.global.defaultFontColor = '#858796';
-
             function number_format(number, decimals, dec_point, thousands_sep) {
-                // *     example: number_format(1234.56, 2, ',', ' ');
-                // *     return: '1 234,56'
-                number = (number + '').replace(',', '').replace(' ', '');
-                var n = !isFinite(+number) ? 0 : +number,
-                        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-                        sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-                        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-                        s = '',
-                        toFixedFix = function (n, prec) {
-                            var k = Math.pow(10, prec);
-                            return '' + Math.round(n * k) / k;
-                        };
-                // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-                s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-                if (s[0].length > 3) {
-                    s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-                }
-                if ((s[1] || '').length < prec) {
-                    s[1] = s[1] || '';
-                    s[1] += new Array(prec - s[1].length + 1).join('0');
-                }
-                return s.join(dec);
+            // *     example: number_format(1234.56, 2, ',', ' ');
+            // *     return: '1 234,56'
+            number = (number + '').replace(',', '').replace(' ', '');
+            var n = !isFinite( + number) ? 0 : + number,
+                    prec = !isFinite( + decimals) ? 0 : Math.abs(decimals),
+                    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                    s = '',
+                    toFixedFix = function (n, prec) {
+                    var k = Math.pow(10, prec);
+                    return '' + Math.round(n * k) / k;
+                    };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+            if (s[0].length > 3) {
+            s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+            s[1] = s[1] || '';
+            s[1] += new Array(prec - s[1].length + 1).join('0');
+            }
+            return s.join(dec);
             }
 
             var ctx = document.getElementById("myChart");
-
-            var value = [0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000];
+            var value = [
+            <c:forEach var="item" items="${visitorList}">
+                ${item},
+            </c:forEach>
+            ];
             var array = [],
                     dayShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
                     monthsShort = [
-                        "Jan",
-                        "Feb",
-                        "Mar",
-                        "Apr",
-                        "May",
-                        "Jun",
-                        "Jul",
-                        "Aug",
-                        "Sep",
-                        "Oct",
-                        "Nov",
-                        "Dec",
+                            "Jan",
+                            "Feb",
+                            "Mar",
+                            "Apr",
+                            "May",
+                            "Jun",
+                            "Jul",
+                            "Aug",
+                            "Sep",
+                            "Oct",
+                            "Nov",
+                            "Dec",
                     ];
-
             function getDates() {
-                var dateArray = [];
-                var currentDate = new Date();
-                for (var i = 0; i < 30; i++) {
-                    var temp = [
-                        dayShort[currentDate.getDay()],
-                        monthsShort[currentDate.getMonth()] + " " + currentDate.getDate(),
-                        currentDate.getFullYear(),
-                    ];
-                    dateArray.push(temp);
-                    currentDate.setDate(currentDate.getDate() - 1);
-                }
-                return dateArray;
+            var dateArray = [];
+            var currentDate = new Date();
+            for (var i = 0; i < 30; i++) {
+            var temp = [
+                    dayShort[currentDate.getDay()],
+                    monthsShort[currentDate.getMonth()] + " " + currentDate.getDate(),
+                    currentDate.getFullYear(),
+            ];
+            dateArray.push(temp);
+            currentDate.setDate(currentDate.getDate() - 1);
+            }
+            return dateArray;
             }
 
             array = getDates();
             var myLineChart = new Chart(ctx, {
-                type: 'line',
-                data: {
+            type: 'line',
+                    data: {
                     labels: array.reverse(),
-                    datasets: [{
+                            datasets: [{
                             label: "Visitors",
-                            lineTension: 0.3,
-                            backgroundColor: "rgba(78, 115, 223, 0.05)",
-                            borderColor: "rgba(78, 115, 223, 1)",
-                            pointRadius: 3,
-                            pointBackgroundColor: "rgba(78, 115, 223, 1)",
-                            pointBorderColor: "rgba(78, 115, 223, 1)",
-                            pointHoverRadius: 3,
-                            pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                            pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                            pointHitRadius: 10,
-                            pointBorderWidth: 2,
-                            //data here
-                            data: value.reverse(),
-                        }],
-                },
-                options: {
+                                    lineTension: 0.3,
+                                    backgroundColor: "rgba(78, 115, 223, 0.05)",
+                                    borderColor: "rgba(78, 115, 223, 1)",
+                                    pointRadius: 3,
+                                    pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                                    pointBorderColor: "rgba(78, 115, 223, 1)",
+                                    pointHoverRadius: 3,
+                                    pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                                    pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                                    pointHitRadius: 10,
+                                    pointBorderWidth: 2,
+                                    //data here
+                                    data: value.reverse(),
+                            }],
+                    },
+                    options: {
                     maintainAspectRatio: false,
-                    layout: {
-                        padding: {
+                            layout: {
+                            padding: {
                             left: 10,
-                            right: 25,
-                            top: 25,
-                            bottom: 0
-                        }
-                    },
-                    scales: {
-                        xAxes: [{
-                                time: {
-                                    unit: 'date'
-                                },
-                                gridLines: {
-                                    display: false,
-                                    drawBorder: false
-                                },
-                                ticks: {
-                                    maxTicksLimit: 7
-                                }
-                            }],
-                        yAxes: [{
-                                ticks: {
-                                    maxTicksLimit: 5,
-                                    padding: 10,
-                                    // Include a dollar sign in the ticks
-                                    callback: function (value, index, values) {
-                                        return number_format(value);
-                                    }
-                                },
-                                gridLines: {
-                                    color: "rgb(234, 236, 244)",
-                                    zeroLineColor: "rgb(234, 236, 244)",
-                                    drawBorder: false,
-                                    borderDash: [2],
-                                    zeroLineBorderDash: [2]
-                                }
-                            }],
-                    },
-                    legend: {
-                        display: false
-                    },
-                    tooltips: {
-                        backgroundColor: "rgb(255,255,255)",
-                        bodyFontColor: "#858796",
-                        titleMarginBottom: 10,
-                        titleFontColor: '#6e707e',
-                        titleFontSize: 14,
-                        borderColor: '#dddfeb',
-                        borderWidth: 1,
-                        xPadding: 15,
-                        yPadding: 15,
-                        displayColors: false,
-                        intersect: false,
-                        mode: 'index',
-                        caretPadding: 10,
-                        callbacks: {
-                            label: function (tooltipItem, chart) {
-                                var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                                return datasetLabel + ': ' + number_format(tooltipItem.yLabel) + ' visitors';
+                                    right: 25,
+                                    top: 25,
+                                    bottom: 0
                             }
-                        }
+                            },
+                            scales: {
+                            xAxes: [{
+                            time: {
+                            unit: 'date'
+                            },
+                                    gridLines: {
+                                    display: false,
+                                            drawBorder: false
+                                    },
+                                    ticks: {
+                                    maxTicksLimit: 7
+                                    }
+                            }],
+                                    yAxes: [{
+                                    ticks: {
+                                    maxTicksLimit: 5,
+                                            padding: 10,
+                                            // Include a dollar sign in the ticks
+                                            callback: function (value, index, values) {
+                                            return number_format(value);
+                                            }
+                                    },
+                                            gridLines: {
+                                            color: "rgb(234, 236, 244)",
+                                                    zeroLineColor: "rgb(234, 236, 244)",
+                                                    drawBorder: false,
+                                                    borderDash: [2],
+                                                    zeroLineBorderDash: [2]
+                                            }
+                                    }],
+                            },
+                            legend: {
+                            display: false
+                            },
+                            tooltips: {
+                            backgroundColor: "rgb(255,255,255)",
+                                    bodyFontColor: "#858796",
+                                    titleMarginBottom: 10,
+                                    titleFontColor: '#6e707e',
+                                    titleFontSize: 14,
+                                    borderColor: '#dddfeb',
+                                    borderWidth: 1,
+                                    xPadding: 15,
+                                    yPadding: 15,
+                                    displayColors: false,
+                                    intersect: false,
+                                    mode: 'index',
+                                    caretPadding: 10,
+                                    callbacks: {
+                                    label: function (tooltipItem, chart) {
+                                    var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                                    return datasetLabel + ': ' + number_format(tooltipItem.yLabel) + ' visitors';
+                                    }
+                                    }
+                            }
                     }
-                }
             });
-
         </script>
         <script>
             //pie chart
             Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
             Chart.defaults.global.defaultFontColor = '#858796';
-
             var ctx = document.getElementById("myPieChart");
             var myPieChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
+            type: 'doughnut',
+                    data: {
                     labels: ["New", "Inactive", "Ban temporary", "Active"],
-                    datasets: [{
+                            datasets: [{
                             //data here
                             data: [
             <c:forEach var="ratio" items="${userStatusRatioList}">
                 ${ratio},
             </c:forEach>
                             ],
-                            backgroundColor: ['#4e73df', '#cd3333', '#eaa55d', '#1cc88a'],
-                            hoverBackgroundColor: ['#2e59d9', '#b82d2d', '#e89c4b', '#17a673'],
-                            hoverBorderColor: "rgba(234, 236, 244, 1)",
-                        }],
-                },
-                options: {
+                                    backgroundColor: ['#4e73df', '#cd3333', '#eaa55d', '#1cc88a'],
+                                    hoverBackgroundColor: ['#2e59d9', '#b82d2d', '#e89c4b', '#17a673'],
+                                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                            }],
+                    },
+                    options: {
                     maintainAspectRatio: false,
-                    tooltips: {
-                        backgroundColor: "rgb(255,255,255)",
-                        bodyFontColor: "#858796",
-                        borderColor: '#dddfeb',
-                        borderWidth: 1,
-                        xPadding: 15,
-                        yPadding: 15,
-                        displayColors: false,
-                        caretPadding: 10,
+                            tooltips: {
+                            backgroundColor: "rgb(255,255,255)",
+                                    bodyFontColor: "#858796",
+                                    borderColor: '#dddfeb',
+                                    borderWidth: 1,
+                                    xPadding: 15,
+                                    yPadding: 15,
+                                    displayColors: false,
+                                    caretPadding: 10,
+                            },
+                            legend: {
+                            display: false
+                            },
+                            cutoutPercentage: 80,
                     },
-                    legend: {
-                        display: false
-                    },
-                    cutoutPercentage: 80,
-                },
             });
         </script>
 

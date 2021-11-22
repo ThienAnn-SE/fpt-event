@@ -3,17 +3,11 @@
     <head>
         <%@taglib uri="http://java.sun.com/jsp/jstl/core"
                   prefix="c"%>
+        <%@page contentType="text/html" pageEncoding="UTF-8"%>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Profile</title>
-        <link rel="stylesheet" href="./asset/css/style.css" />
-        <link rel="stylesheet" type="text/css" href="./asset/css/evo-calendar.css" />
-        <link
-            rel="stylesheet"
-            type="text/css"
-            href="./asset/css/evo-calendar.orange-coral.css"
-            />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -29,6 +23,13 @@
             integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
             crossorigin="anonymous"
             />
+        <link rel="stylesheet" href="./asset/css/style.css" />
+        <link rel="stylesheet" type="text/css" href="./asset/css/evo-calendar.css" />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="./asset/css/evo-calendar.orange-coral.css"
+            />
     </head>
     <body>
         <header class="fixed-top">
@@ -37,7 +38,7 @@
                     <div class="row">
                         <div class="col-md-3 col-6 d-flex align-items-center">
                             <div class="logo">
-                                <a href="HomePageController">
+                                <a href="home">
                                     <img src="./asset/img/FPTU_EVENT.png" />
                                 </a>
                             </div>
@@ -67,21 +68,23 @@
                                 <nav class="pc-header">
                                     <ul>
                                         <li class="header-item">
-                                            <a href="HomePageController">home</a>
+                                            <a href="home"><i class="fa fa-home" aria-hidden="true"></i> home</a>
                                         </li>
                                         <li class="header-item">
-                                            <a href="SearchEventController">event</a>
+                                            <a href="SearchEventController"><i class="fa fa-calendar" aria-hidden="true"></i> event</a>
                                         </li>
                                         <c:if test="${empty sessionScope.email}">
                                             <li class="header-item">
                                                 <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force">
+                                                    <i class="fa fa-sign-in" aria-hidden="true"></i>
                                                     login
                                                 </a>
                                             </li>
                                         </c:if>
                                         <c:if test="${not empty sessionScope.email}">
                                             <li class="header-item">
-                                                <a href="LogoutController">
+                                                <a href="logout">
+                                                    <i class="fa fa-sign-out" aria-hidden="true"></i>
                                                     logout
                                                 </a>
                                             </li>
@@ -94,7 +97,7 @@
                             <nav class="mobile-header">
                                 <div class="mobile-header-title">
                                     <div class="logo">
-                                        <a href="HomePageController">
+                                        <a href="home">
                                             <img src="./asset/img/FPTU_EVENT.png" />
                                         </a>
                                     </div>
@@ -105,21 +108,23 @@
 
                                 <ul>
                                     <li class="header-mobile-item">
-                                        <a href="HomePageController">home</a>
+                                        <a href="home"><i class="fa fa-home" aria-hidden="true"></i> home</a>
                                     </li>
                                     <li class="header-mobile-item">
-                                        <a href="SearchEventController">event</a>
+                                        <a href="SearchEventController"><i class="fa fa-calendar" aria-hidden="true"></i> event</a>
                                     </li>
                                     <c:if test="${empty sessionScope.email}">
                                         <li class="header-item">
                                             <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/GoogleLoginController&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force">
+                                                <i class="fa fa-sign-in" aria-hidden="true"></i> 
                                                 login
                                             </a>
                                         </li>
                                     </c:if>
                                     <c:if test="${sessionScope.email}">
                                         <li class="header-item">
-                                            <a href="LogoutController">
+                                            <a href="logout">
+                                                <i class="fa fa-sign-out" aria-hidden="true"></i>
                                                 logout
                                             </a>
                                         </li>
@@ -152,7 +157,7 @@
         <div class="profile-area">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                         <div class="widget">
                             <div class="widget-title">
                                 <h3>Profile</h3>
@@ -161,11 +166,6 @@
                         <div class="profile-avatar">
                             <img src="${sessionScope.avatar}" />
                         </div>
-                        <c:if test="${param.updateSuccess}">
-                            <div class="alert alert-success alert-dismissible fade show my-3">
-                                <strong>Success!</strong> update profile successfully
-                            </div>
-                        </c:if>
                         <div class="view-info">
                             <ul class="info">
                                 <div class="edit">
@@ -214,7 +214,7 @@
                             </ul>
                         </div>
 
-                        <form action="UpdateController" class="edit-info" method="POST">
+                        <form action="profile" class="edit-info" method="POST">
                             <ul class="info">
                                 <span class="save">
                                     <i class="fas fa-save"></i>
@@ -227,6 +227,9 @@
                                         <div class="text-field">
                                             <input autocomplete="off" type="text" placeholder="Enter your full name" id="fullname" name="txtUsername" value="${user.name}"/>
                                             <label for="fullname">Full name</label>
+                                            <c:if test="${not empty txtUsernameError}">
+                                                <h5 class="text-danger">*${txtUsernameError}</h5>
+                                            </c:if>
                                         </div>
                                     </div>
                                 </li>
@@ -236,7 +239,7 @@
                                         <h4>Email</h4>
                                         <div class="text-field">
                                             <input autocomplete="off" type="email" placeholder="Enter your email" 
-                                                   id="email" value="${sessionScope.email}" disabled/>
+                                                   id="email" name="txtEmail" value="${sessionScope.email}" disabled/>
                                             <label for="email">Email</label>
                                         </div>
                                     </div>
@@ -248,7 +251,11 @@
                                         <div class="text-field">
                                             <input autocomplete="off" type="date" placeholder="Enter your day of birth" id="dob" name="txtDate"/>
                                             <label for="dob">D.O.B</label>
+
                                         </div>
+                                        <c:if test="${not empty txtDateError}">
+                                            <h5 class="text-danger">*${txtDateError}</h5>
+                                        </c:if>
                                     </div>
                                 </li>
                                 <li>
@@ -278,13 +285,16 @@
                                             <input autocomplete="off" type="text" placeholder="Enter your phone number" id="phone" name="txtPhoneNumber" value="${user.phoneNumber}"/>
                                             <label for="phone">Phone Number</label>
                                         </div>
+                                        <c:if test="${not empty txtPhoneNumberError}">
+                                            <h5 class="text-danger">*${txtPhoneNumberError}</h5>
+                                        </c:if>
                                     </div>
                                 </li>
                             </ul>
                         </form>
                     </div>
 
-                    <div class="col-lg-8">
+                    <div class="col-lg-9">
                         <div class="card card-custom">
                             <div class="card-header">
                                 <div class="card-toolbar">
@@ -312,7 +322,7 @@
                                                 <span class="nav-icon"
                                                       ><i class="fas fa-chart-line"></i
                                                     ></span>
-                                                <span class="nav-text">Attended Events</span>
+                                                <span class="nav-text">Feedback</span>
                                             </a>
                                         </li>
                                     </ul>
@@ -334,57 +344,68 @@
                                         role="tabpanel"
                                         aria-labelledby="attended"
                                         >
-                                        <c:if test="${empty attentedEventList}">
+                                        <c:if test="${not empty error}">
                                             <div class="text-center mt-5">
-                                                <h5>You did not attend at any event!!</h5>
+                                                <h5>${error}</h5>
                                             </div>
                                         </c:if>
-                                        <c:if test="${not empty attendedEventList}">
-                                            <div class="table-responsive">
-                                                <table
-                                                    id="attended-table"
-                                                    class="table table-bordered table-hover dtr-inline"
-                                                    >
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Name</th>
-                                                            <th>Organize Date</th>
-                                                            <th>Location</th>
-                                                            <th>Category</th>
-                                                            <th>Fee</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <c:forEach var="event" items="${attendedEventList}">
+                                        <c:if test="${empty error}">
+                                            <div class="table-header">
+                                                <h3 class="p-3 mx-auto">ATTENDED EVENT LIST</h3>
+                                            </div>
+                                            <div class="table-body">
+                                                <div class="table-responsive">
+                                                    <table
+                                                        id="attended-table"
+                                                        class="table table-bordered table-hover dtr-inline"
+                                                        >
+                                                        <thead>
                                                             <tr>
-                                                                <td>${event.eventName}</td>
-                                                                <td>${event.startDate} - ${event.endDate}</td>
-                                                                <td>
-                                                                    <c:forEach var="location" items="${locationList}">
-                                                                        <c:if test="${event.locationID eq location.locationID}">
-                                                                            ${location.locationName}
-                                                                        </c:if>
-                                                                    </c:forEach>
-                                                                </td>
-                                                                <td>
-                                                                    <c:forEach var="category" items="${categoryList}">
-                                                                        <c:if test="${event.categoryID eq category.categoryID}">
-                                                                            ${category.categoryName}
-                                                                        </c:if>
-                                                                    </c:forEach>
-                                                                </td>
-                                                                <td>
-                                                                    <c:if test="${event.ticketFee eq 0}">
-                                                                        Free
-                                                                    </c:if>
-                                                                    <c:if test="${event.ticketFee gt 0}">
-                                                                        ${event.ticketFee} VND
-                                                                    </c:if>
-                                                                </td>
+                                                                <th>Name</th>
+                                                                <th>Organize Date</th>
+                                                                <th>Location</th>
+                                                                <th>Category</th>
+                                                                <th>Fee</th>
+                                                                <th>Action</th>
                                                             </tr>
-                                                        </c:forEach>
-                                                    </tbody>
-                                                </table>
+                                                        </thead>
+                                                        <tbody>
+                                                            <c:forEach var="event" items="${attendedEventList}">
+                                                                <tr>
+                                                                    <td>${event.eventName}</td>
+                                                                    <td>${event.startDate} - ${event.endDate}</td>
+                                                                    <td>
+                                                                        <c:forEach var="location" items="${locationList}">
+                                                                            <c:if test="${event.locationID eq location.locationID}">
+                                                                                ${location.locationName}
+                                                                            </c:if>
+                                                                        </c:forEach>
+                                                                    </td>
+                                                                    <td>
+                                                                        <c:forEach var="category" items="${categoryList}">
+                                                                            <c:if test="${event.categoryID eq category.categoryID}">
+                                                                                ${category.categoryName}
+                                                                            </c:if>
+                                                                        </c:forEach>
+                                                                    </td>
+                                                                    <td>
+                                                                        <c:if test="${event.ticketFee eq 0}">
+                                                                            Free
+                                                                        </c:if>
+                                                                        <c:if test="${event.ticketFee gt 0}">
+                                                                            ${event.ticketFee} VND
+                                                                        </c:if>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a href="feedback?action=rate&eventID=${event.eventID}" class="btn-icon" data-tooltip="tooltip" title="Give feedback">
+                                                                            <i class="fa fa-comments" aria-hidden="true"></i>
+                                                                        </a>
+                                                                    </td>
+                                                                </tr>
+                                                            </c:forEach>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </c:if>
                                     </div>
@@ -407,63 +428,88 @@
                 type="text/javascript"
                 src="https://cdn.datatables.net/v/bs5/dt-1.11.3/datatables.min.js"
             ></script>
+            <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
             <script src="./asset/js/main.js"></script>
+
             <script>
-                $(".alert-dismissible").fadeTo(4000, 1000).slideUp(1000, function () {
-                    $(".alert-dismissible").alert('close');
+                $(document).ready(function () {
+                    $("#attended-table").DataTable();
+                });
+
+                $(document).ready(function () {
+                    $('[data-tooltip="tooltip"]').tooltip();
                 });
             </script>
+        <c:if test="${param.message eq 'Update successfully'}">
             <script>
-                var form = document.querySelector(".edit-info");
-                var view = document.querySelector(".view-info");
-                var edit = document.querySelector(".edit");
-                var save = document.querySelector('.save input[type="submit"]');
-                edit.addEventListener("click", function () {
-                    form.style.display = "block";
-                    view.style.display = "none";
-                    console.log(active.value);
-                });
-                save.addEventListener("click", function () {
-                    form.style.display = "none";
-                    view.style.display = "block";
-                });
-                $(document).ready(function () {
-                $("#calendar").evoCalendar({
-                theme: "Orange Coral",
-                        calendarEvents: [
-                        {
-                        id: "bHay68s", // Event's ID (required)
-                                name: "New Year", // Event name (required)
-                                date: "September/9/2021", // Event date (required)
-                                type: "holiday", // Event type (required)
-                                everyYear: true, // Same event every year (optional)
-                        },
+                Swal.fire(
+                        'Success!',
+                        'You updated your profile successfully!',
+                        'success'
+                        )
+            </script>
+        </c:if>
+        <c:if test="${requestScope.message eq 'Update failed'}">
+            <script>
+                Swal.fire(
+                        'Fail!',
+                        'There are some error happen when you update!',
+                        'error'
+                        )
+            </script>
+        </c:if>
+        <script>
+            var form = document.querySelector(".edit-info");
+            var view = document.querySelector(".view-info");
+            var edit = document.querySelector(".edit");
+            var save = document.querySelector('.save input[type="submit"]');
+            edit.addEventListener("click", function () {
+                form.style.display = "block";
+                view.style.display = "none";
+                console.log(active.value);
+            });
+            save.addEventListener("click", function () {
+                form.style.display = "none";
+                view.style.display = "block";
+            });
+            $(document).ready(function () {
+            $("#calendar").evoCalendar({
+            theme: "Orange Coral",
+                    calendarEvents: [
+                    {
+                    id: "bHay68s", // Event's ID (required)
+                            name: "New Year", // Event name (required)
+                            date: "September/9/2021", // Event date (required)
+                            type: "holiday", // Event type (required)
+                            everyYear: true, // Same event every year (optional)
+                    },
             <c:forEach var="register" items="${eventRegisterList}">
-                        {
-                        id: "${register.eventID}",
-                                name: "${register.eventName}",
-                                badge: "${register.startDate} - ${register.endDate}", // Event badge (optional)
-                                                    date: ["${register.startDate}", "${register.endDate}"], // Date range
-                                                    description: "You register this event!!", // Event description (optional)
-                                                    type: "registration",
-                                                    color: "#63d867", // Event custom color (optional)
-                                            },
+                    {
+                    id: "${register.eventID}",
+                            name: "${register.eventName}",
+                            badge: "${register.startDate} - ${register.endDate}", // Event badge (optional)
+                                                date: ["${register.startDate}", "${register.endDate}"], // Date range
+                                                description: "You register this event!!", // Event description (optional)
+                                                type: "registration",
+                                                color: "#63d867", // Event custom color (optional)
+                                        },
             </c:forEach>
             <c:forEach var="follow" items="${eventFollowedList}">
-                                            {
-                                            id: "${follow.eventID}",
-                                                    name: "${follow.eventName}",
-                                                    badge: "${follow.startDate} - ${follow.endDate}", // Event badge (optional)
-                                                                        date: ["${follow.startDate}", "${follow.endDate}"], // Date range
-                                                                        description: "You follow this event!!", // Event description (optional)
-                                                                        type: "follow",
-                                                                        color: "#5DADE2", // Event custom color (optional)
-                                                                },
+                                        {
+                                        id: "${follow.eventID}",
+                                                name: "${follow.eventName}",
+                                                badge: "${follow.startDate} - ${follow.endDate}", // Event badge (optional)
+                                                                    date: ["${follow.startDate}", "${follow.endDate}"], // Date range
+                                                                    description: "You follow this event!!", // Event description (optional)
+                                                                    type: "follow",
+                                                                    color: "#5DADE2", // Event custom color (optional)
+                                                            },
             </c:forEach>
-                                                                ],
-                                                        });
-                                                        }
-                                                        );
+                                                            ],
+                                                    });
+                                                    }
+                                                    );
         </script>
     </body>
 </html>
