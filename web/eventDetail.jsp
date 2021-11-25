@@ -56,14 +56,14 @@
                                     <span><i class="fal fa-folder"></i> ${categoryName} </span>
                                     <span> <i class="fal fa-comments"></i> ${commentNum} Comments</span>
                                     <span><i class="far fa-users"></i> ${registerNum}/${event.slot}</span>
-                                    <c:if test="${event.statusID eq 570}">
+                                    <c:if test="${event.statusID eq 570 and avgVote ne 0}">
                                         <span>
                                             <c:forEach begin="1" end="5" step="1"  varStatus="counter">
                                                 <c:choose>
-                                                    <c:when test="${counter.count le avgVote}">
+                                                    <c:when test="${counter.count <= avgVote}">
                                                         <i class="fas fa-star"></i>
                                                     </c:when>
-                                                    <c:when test="${(counter.count - 1) lt avgVote and counter.count gt avgVote}">
+                                                    <c:when test="${(counter.count - 1) < avgVote and counter.count > avgVote}">
                                                         <i class="fas fa-star-half-alt"></i>
                                                     </c:when>
                                                     <c:otherwise>
@@ -72,13 +72,7 @@
                                                 </c:choose>
                                             </c:forEach>
                                             ${avgVote}
-                                            ${numOfVote}
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
-                                            4.7(21)
+                                            (${numOfVote})
                                         </span>
                                     </c:if>          
                                 </div>
