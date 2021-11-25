@@ -68,7 +68,7 @@ public class AdminCategoryController extends HttpServlet {
         boolean isSuccess = false;
         String categoryName = GetParam.getStringParam(request, "categoryName", "Category name", 0, 30, null);
         if (categoryName == null) {
-            throw new ServletException("Parameter does not exist!");
+            throw new IllegalArgumentException();
         }
 
         CategoryDAO categoryDAO = new CategoryDAO();

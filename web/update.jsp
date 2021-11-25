@@ -3,10 +3,11 @@
     <head>
         <%@taglib uri="http://java.sun.com/jsp/jstl/core"
                   prefix="c"%>
+        <%@page contentType="text/html" pageEncoding="UTF-8"%>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Create Event</title>
+        <title>Update Event</title>
         <link rel="stylesheet" href="./asset/css/style.css" />
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
@@ -85,7 +86,7 @@
                                     </li>
                                     <li>
                                         <div class="text-field">
-                                            <input autocomplete="off" type="date" id="start" name="startDate"/>
+                                            <input autocomplete="off" type="datetime-local" id="start" name="startDate"/>
                                             <label for="start">Start Date</label>
                                             <c:if test="${not empty startDateError}">
                                                 <p class="text text-danger">*${startDateError}</p>
@@ -94,7 +95,7 @@
                                     </li>
                                     <li>
                                         <div class="text-field">
-                                            <input autocomplete="off" type="date" id="end" name="endDate"/>
+                                            <input autocomplete="off" type="datetime-local" id="end" name="endDate"/>
                                             <label for="end">End Date</label>
                                             <c:if test="${not empty endDateError}">
                                                 <p class="text text-danger">*${endDateError}</p>
@@ -183,15 +184,24 @@
         <div id="data"></div>
         <jsp:include page="./includes/footer.jsp"></jsp:include>
 
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ"
-            crossorigin="anonymous"
-        ></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://cdn.tiny.cloud/1/hquj2y89l4x5vq47fqu28inr9lvl3vk9mytjhor0j85uu14t/tinymce/5/tinymce.min.js"></script>
-        <script src="./asset/js/main.js"></script>
-
+            <script
+                src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ"
+                crossorigin="anonymous"
+            ></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+            <script src="https://cdn.tiny.cloud/1/hquj2y89l4x5vq47fqu28inr9lvl3vk9mytjhor0j85uu14t/tinymce/5/tinymce.min.js"></script>
+            <script src="./asset/js/main.js"></script>
+            <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <c:if test="${not empty requestScope.error}">
+            <script>
+                Swal.fire(
+                        'Success!',
+                        '${requestScope.error}',
+                        'success'
+                        );
+            </script>
+        </c:if>
         <script>
             var upload = document.getElementById("upload");
             var fileName = document.querySelector(".img-upload .file-name");

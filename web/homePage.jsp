@@ -156,7 +156,15 @@
                                                 </c:if>
                                             </c:forEach>    
                                         </span>
-                                        <span> <i class="fal fa-comments"></i> 0 Comments</span>
+                                        <span> <i class="fal fa-comments"></i> 
+                                            <c:set var="num" value="0"/>
+                                            <c:forEach var="comment" items="${commentNum}">
+                                                <c:if test="${comment.eventID eq event.eventID}">
+                                                    <c:set var="num" value="${comment.commentNum}"/>
+                                                </c:if>
+                                            </c:forEach>
+                                            ${num} Comments
+                                        </span>
                                         <c:forEach var="register" items="${registerNumList}">
                                             <c:if test="${event.eventID eq register.eventID}">
                                                 <c:set var="registerNum" value="${register.registerNum}"/>

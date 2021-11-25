@@ -69,5 +69,5 @@ public class Routers {
     public final static String ADMIN_REQUEST_CONTROLLER = "admin-request";
     public final static String ADMIN_FORM_CONTROLLER = "admin-form";
     public final static String ADMIN_USER_CONTROLLER = "admin-user";
-    public final static String ADMIN_DASHBOARD_CONTROLLER = "admin-dashbaord";
+    public final static String ADMIN_DASHBOARD_CONTROLLER = "admin-dashboard";
 }

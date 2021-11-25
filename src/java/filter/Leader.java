@@ -71,7 +71,7 @@ public class Leader implements Filter {
             }
         } catch (Exception ex) {
             log(ex.getMessage());
-            request.setAttribute("Error", ex.getMessage());
+            request.setAttribute("errorMessage", ex.getMessage());
             request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
         }
     }

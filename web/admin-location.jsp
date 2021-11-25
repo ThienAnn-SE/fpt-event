@@ -58,12 +58,18 @@
                                         <input type="text" class="form-control" id="locationName" name="locationName" placeholder="Enter the location name" required/>
                                         <div class="valid-feedback">Valid</div>
                                         <div class="invalid-feedback">Please fill out this field</div>
+                                        <c:if test="${locationNameError}">
+                                            <div class="text-danger">${locationNameError}</div>
+                                        </c:if>
                                     </div>
                                     <div class="form-group">
                                         <label for="locationCapacity" class="font-weight-bold">Location capacity:</label>
                                         <input type="number" class="form-control" id="locationCapacity" name="locationCapacity" placeholder="Enter the location capacity" required/>
                                         <div class="valid-feedback">Valid</div>
                                         <div class="invalid-feedback">Please fill out this field</div>
+                                        <c:if test="${locationCapacityError}">
+                                            <div class="text-danger">${locationCapacityError}</div>
+                                        </c:if>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </form>

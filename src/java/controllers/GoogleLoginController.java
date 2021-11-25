@@ -92,11 +92,15 @@ public class GoogleLoginController extends HttpServlet {
                         request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
                     }
                 }
-                
+
                 //on success
                 session.setAttribute("email", email);
                 session.setAttribute("avatar", request.getAttribute("avatar"));
-                response.sendRedirect(Routers.HOME_PAGE_CONTROLLER + "?action=Login successfully");
+                if (user.getRole() == 10) {
+                    response.sendRedirect(Routers.ADMIN_DASHBOARD_CONTROLLER);
+                } else {
+                    response.sendRedirect(Routers.HOME_PAGE_CONTROLLER + "?action=Login successfully");
+                }
             } catch (SQLException | NamingException | MessagingException ex) {
                 log(ex.getMessage());
                 request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);

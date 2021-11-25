@@ -64,6 +64,9 @@
                                         <input type="text" class="form-control" id="categoryName" name="categoryName" placeholder="Enter the category name" required/>
                                         <div class="valid-feedback">Valid</div>
                                         <div class="invalid-feedback">Please fill out this field</div>
+                                        <c:if test="${not empty categoryNameError}">
+                                            <div class="text-danger">${categoryNameError}</div>
+                                        </c:if>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </form>
