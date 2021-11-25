@@ -25,7 +25,7 @@
 
         <!-- Custom styles for this page -->
         <link href="./asset/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-        
+
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body id="page-top">
@@ -58,36 +58,54 @@
                                         <input type="text" class="form-control" id="clubName" name="clubName" placeholder="Enter the club name" required/>
                                         <div class="valid-feedback">Valid</div>
                                         <div class="invalid-feedback">Please fill out this field</div>
+                                        <c:if test="${not empty clubNameError}">
+                                            <div class="text-danger">${clubNameError}</div>
+                                        </c:if>                                     
                                     </div>
                                     <div class="form-group">
                                         <label for="clubDescription" class="font-weight-bold">Club description:</label>
                                         <input type="text" class="form-control" id="clubDescription" name="clubDescription" placeholder="Enter the club description" required/>
                                         <div class="valid-feedback">Valid</div>
                                         <div class="invalid-feedback">Please fill out this field</div>
+                                        <c:if test="${not empty clubDescriptionError}">
+                                            <div class="text-danger">${clubDescriptionError}</div>
+                                        </c:if> 
                                     </div>
                                     <div class="form-group">
                                         <label for="createDate" class="font-weight-bold">Club create date:</label>
                                         <input type="date" class="form-control" id="createDate" name="createDate" required/>
                                         <div class="valid-feedback">Valid</div>
                                         <div class="invalid-feedback">Please choose a date</div>
+                                        <c:if test="${not empty createDateError}">
+                                            <div class="text-danger">${createDateError}</div>
+                                        </c:if> 
                                     </div>
                                     <div class="form-group">
                                         <label for="clubEmail" class="font-weight-bold">Club Email:</label>
                                         <input type="text" class="form-control" id="clubEmail" name="clubEmail" placeholder="Enter the club email" required/>
                                         <div class="valid-feedback">Valid</div>
                                         <div class="invalid-feedback">Please fill out this field</div>
+                                        <c:if test="${not empty clubEmailError}">
+                                            <div class="text-danger">${clubEmailError}</div>
+                                        </c:if> 
                                     </div>
                                     <div class="form-group">
                                         <label for="clubPhoneNumber" class="font-weight-bold">Club phone number:</label>
                                         <input type="tel" class="form-control" id="clubPhoneNumber" name="clubPhoneNumber" placeholder="Enter the club phone number" required/>
                                         <div class="valid-feedback">Valid</div>
                                         <div class="invalid-feedback">Please fill out this field</div>
+                                        <c:if test="${not empty clubPhoneNumberError}">
+                                            <div class="text-danger">${clubPhoneNumberError}</div>
+                                        </c:if> 
                                     </div>
                                     <div class="form-group">
                                         <label for="userEmail" class="font-weight-bold">Club leader email:</label>
                                         <input type="text" class="form-control" id="userEmail" name="userEmail" placeholder="Enter the club leader email" required/>
                                         <div class="valid-feedback">Valid</div>
                                         <div class="invalid-feedback">Please fill out this field</div>
+                                        <c:if test="${not empty userEmailError}">
+                                            <div class="text-danger">${userEmailError}</div>
+                                        </c:if> 
                                     </div>
                                     <input type="hidden" name="action" value="add"/>
                                     <button type="submit" class="btn btn-primary">Submit</button>

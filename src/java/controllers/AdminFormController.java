@@ -83,7 +83,7 @@ public class AdminFormController extends HttpServlet {
         String reason = GetParam.getStringParam(request, "reason", "Reason", 0, 100, null);
 
         if (email == null || btAction == null || reason == null) {
-            throw new IllegalArgumentException("Missing input field!");
+            throw new IllegalArgumentException();
         }
 
         String now = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));

@@ -184,6 +184,14 @@ public class Helper {
         return ChronoUnit.DAYS.between(now, future) == 3;
     }
 
+    public static boolean is3DayFromNow(Date startDate) {
+        String date = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(System.currentTimeMillis());
+        LocalDate now = LocalDate.parse(date);
+        LocalDate future = LocalDate.parse(convertDateToSQLString(startDate));
+        return ChronoUnit.DAYS.between(now, future) < 3;
+    }
+
+
     /* public static Integer generateOrderId() throws Exception {
         OrderDAO orderDAO = new OrderDAO();
 

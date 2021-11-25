@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import utils.FileHelper;
 import utils.GetParam;
+import utils.Helper;
 
 /**
  *
@@ -140,8 +141,8 @@ public class UpdateEventController extends HttpServlet {
         Integer categoryID = GetParam.getIntParams(request, "categoryID", "Category", 1, 500, event.getCategoryID());
         Integer locationID = GetParam.getIntParams(request, "locationID", "Location", 1, 500, event.getLocationID());
         Date registerEndDate = GetParam.getDateFromNowToFuture(request, "registerEndDate", "Registration end date", null);
-        Date startDate = GetParam.getDateFromNowToFuture(request, "startDate", "Start Date", null);
-        Date endDate = GetParam.getDateFromNowToFuture(request, "endDate", "End date", null);
+        Date startDate = GetParam.getDateTimeFromNowToFuture(request, "startDate", "Start Date", null);
+        Date endDate = GetParam.getDateTimeFromNowToFuture(request, "endDate", "End date", null);
         String imageURL = GetParam.getFileParam(request, "txtImageURL", "Image", 1024 * 1024, FileHelper.imageExtension);
         String content = GetParam.getStringParam(request, "txtContent", "Content", 0, Integer.MAX_VALUE, event.getContent());
         Integer ticketFee = GetParam.getIntParams(request, "ticketFee", "Ticket fee", 0, 10000000, event.getTicketFee());
@@ -158,8 +159,17 @@ public class UpdateEventController extends HttpServlet {
         }
 
         LocationDAO locationDAO = new LocationDAO();
+
         if (locationDAO.getLocationByID(locationID) == null) {
             throw new SQLException("This location with given ID does not exist");
+        }
+
+        if (registerEndDate.before(new Date(System.currentTimeMillis()))) {
+            throw new IllegalArgumentException("Registraion end date can not be before today!");
+        }
+
+        if (registerEndDate.equals(new Date(System.currentTimeMillis()))) {
+            throw new IllegalArgumentException("Registration end date can not be today!");
         }
 
         if (registerEndDate.after(startDate)) {
@@ -260,5 +270,4 @@ public class UpdateEventController extends HttpServlet {
             request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
         }
     }
-
 }

@@ -607,7 +607,7 @@ public class EventDAO {
         boolean isSuccess = false;
         try {
             conn = DBHelpers.makeConnection();
-            String sql = "UPDATE tblEvents SET eventName = ?, categoryID = ?, locationID = ?, registerEndDate = ?, startDate = ?, endDate = ?,"
+            String sql = "UPDATE tblFUEvents SET eventName = ?, categoryID = ?, locationID = ?, registerEndDate = ?, startDate = ?, endDate = ?,"
                     + " imageURL = ?, content =?, ticketFee = ?, slot = ?"
                     + " WHERE eventID = ?";
             preStm = conn.prepareStatement(sql);

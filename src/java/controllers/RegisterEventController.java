@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import utils.AutoMailerHelper;
 import utils.GetParam;
-import utils.Helper;
 import utils.PaymentServices;
 
 /**
@@ -100,7 +99,7 @@ public class RegisterEventController extends HttpServlet {
 
         //check isBanned/new/invalid?
         if (user.getStatus() != 500) {
-            request.setAttribute("errorMessage", "You are not allow to register");
+            request.setAttribute("errorMessage", "You are not allow to register because of your account status!");
             return false;
         }
         //on success
@@ -210,9 +209,9 @@ public class RegisterEventController extends HttpServlet {
         }
         EventDAO eventDAO = new EventDAO();
 
-        AutoMailerHelper sendMail = new AutoMailerHelper();
+       // AutoMailerHelper sendMail = new AutoMailerHelper();
 
-        sendMail.sendEventRegistrationMail(email, eventDAO.getEventByID(eventID).getEventName());
+       // sendMail.sendEventRegistrationMail(email, eventDAO.getEventByID(eventID).getEventName());
 
         return true;
     }
@@ -261,7 +260,7 @@ public class RegisterEventController extends HttpServlet {
 
         String email = (String) session.getAttribute("email");
 
-        String registerDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis());
+        String registerDate = new SimpleDateFormat("yyyy-MM-dd").format(System.currentTimeMillis());
 
         EventRegisterDAO registerDAO = new EventRegisterDAO();
 
@@ -282,9 +281,9 @@ public class RegisterEventController extends HttpServlet {
             return false;
         }
 
-        AutoMailerHelper sendMail = new AutoMailerHelper();
+        //AutoMailerHelper sendMail = new AutoMailerHelper();
 
-        sendMail.sendEventRegistrationMail(email, event.getEventName());
+        //sendMail.sendEventRegistrationMail(email, event.getEventName());
         return true;
     }
 }

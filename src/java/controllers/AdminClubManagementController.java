@@ -155,6 +155,7 @@ public class AdminClubManagementController extends HttpServlet {
         if (clubDAO.getClubByPhoneNumber(clubPhoneNumber) != null) {
             throw new IllegalArgumentException("This phone number is already existed!");
         }
+        
         //validate user email
         validateUserEmail(userEmail);
         //add new club
@@ -216,6 +217,10 @@ public class AdminClubManagementController extends HttpServlet {
         //checking user is another club admin
         if (user.getRole() == 4 || user.getRole() == 5) {
             throw new IllegalArgumentException("This user is another club admin at the momment!");
+        }
+        //leader and admin
+        if(user.getRole() != 1){
+            throw new IllegalArgumentException("This user is not available to be a leader!");
         }
     }
 }

@@ -146,6 +146,7 @@ create table tblVisitorCounters(
 	INSERT INTO tblRoles(roleID, roleName) VALUES (3,'Mentor')
 	INSERT INTO tblRoles(roleID, roleName) VALUES (4,'Club leader')
 	INSERT INTO tblRoles(roleID, roleName) VALUES (5,'Department leader')
+	INSERT INTO tblRoles(roleID, roleName) VALUES (10,'Admin')
 
 	INSERT INTO tblUserStatuses(statusID, statusDescription) VALUES (300,'Vừa khởi tạo')
 	INSERT INTO tblUserStatuses(statusID, statusDescription) VALUES (500,'Đã cập nhật')
@@ -386,13 +387,18 @@ create table tblVisitorCounters(
 	left join tblEventRegisters as er on fb.registerID = er.registerID
 	where er.userEmail = 'baonngse150655@fpt.edu.vn'
 
-	select * from tblEventRegisters
-	delete from tblEventRegisters where registerID = 127
+	SELECT count(fb.feedbackID) as num
+                         FROM tblFeedbacks AS fb
+                        LEFT JOIN tblEventRegisters AS er ON er.registerID = fb.registerID
+                         WHERE fb.registerID IN (SELECT registerID
+                        FROM tblEventRegisters
+                        WHERE eventID = 14)
 
+	select * from tblUsers where roleID =1
 	select * from tblEventRegisters  as er
 	left join tblFUEvents as e on er.eventID = e.eventID
 	where er.userEmail = 'baonngse150655@fpt.edu.vn'
-	select * from tblFeedbacks where registerID = 108
+	select * from tblFeedbacks 
 
 
 	select * from tblBanRequests

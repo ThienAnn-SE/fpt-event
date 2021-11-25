@@ -149,7 +149,7 @@ public class ViewUserController extends HttpServlet {
             return false;
         }
 
-        if (dayOfBirth.after(Helper.getCurrentDate()) || dayOfBirth.before(Helper.convertStringToDate("1920-01-01"))) {
+        if (dayOfBirth.after(Helper.convertStringToDate("2003-01-01")) || dayOfBirth.before(Helper.convertStringToDate("1920-01-01"))) {
             request.setAttribute("txtDateError", "Invalid date of birth");
             return false;
         }

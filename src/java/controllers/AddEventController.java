@@ -113,6 +113,15 @@ public class AddEventController extends HttpServlet {
                 || startDate == null || endDate == null || slot == null || content == null || imageURL == null) {
             return false;
         }
+
+        if (registerEndDate.before(new Date(System.currentTimeMillis()))) {
+            throw new IllegalArgumentException("Registraion end date can not be before today!");
+        }
+
+        if (registerEndDate.equals(new Date(System.currentTimeMillis()))) {
+            throw new IllegalArgumentException("Registration end date can not be today!");
+        }
+
         if (registerEndDate.after(startDate)) {
             request.setAttribute("endDateError", "Registration end date must before event start date");
             return false;

@@ -77,6 +77,9 @@
                                         <input type="text" class="form-control" id="email" placeholder="Enter user email" name="email" value="" required>
                                         <div class="valid-feedback">Valid.</div>
                                         <div class="invalid-feedback">Please fill out this field.</div>
+                                        <c:if test="${not empty emailError}">
+                                            <div class="text-danger">${emailError}</div>
+                                        </c:if>
                                     </div>
                                     <div class="form-group">
                                         <label for="btAction">Select action:</label>
@@ -87,12 +90,18 @@
                                         </select>
                                         <div class="valid-feedback">Valid.</div>
                                         <div class="invalid-feedback">Please choose action to do.</div>
+                                        <c:if test="${not empty btActionError}">
+                                            <div class="text-danger">${btActionError}</div>
+                                        </c:if>
                                     </div>
                                     <div class="form-group">
                                         <label for="reason">Reason:</label>
                                         <textarea class="form-control" rows="4" id="reason" name="reason" placeholder="Maximum 100 characters..." required></textarea>
                                         <div class="valid-feedback">Valid.</div>
                                         <div class="invalid-feedback">Please fill out this field.</div>
+                                        <c:if test="${not empty reasonError}">
+                                            <div class="text-danger">${reasonError}</div>
+                                        </c:if>
                                     </div>
                                     <button type="submit" name="action" value="ban" class="btn btn-primary">Submit</button>
                                 </form>

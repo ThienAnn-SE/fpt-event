@@ -119,7 +119,7 @@
                                         </li>
                                     </c:if>
                                     <c:if test="${not empty sessionScope.email}">
-                                        <li class="header-item">
+                                        <li class="header-mobile-item">
                                             <a href="logout">
                                                 <i class="fa fa-sign-out" aria-hidden="true"></i>
                                                 logout
@@ -241,7 +241,7 @@
                                                             </td>
                                                             <td>
                                                                 ${payment.paymentTotal}<c:if test="${payment.paymentMethod eq 'paypal'}">&#36;</c:if><c:if test="${payment.paymentMethod eq 'cash'}">VND</c:if>
-                                                            </td>
+                                                                </td>
                                                             <c:if test="${payment.statusDescription eq 'pending'}">
                                                                 <td>
                                                                     <span class="label-item warning label-dot mr-2"></span>
@@ -501,6 +501,15 @@
                 Swal.fire(
                         'Success!',
                         'Cancel event successfully!',
+                        'success'
+                        );
+            </script>
+        </c:if> 
+        <c:if test="${param.update eq 'success'}">
+            <script>
+                Swal.fire(
+                        'Success!',
+                        'Update event successfully!',
                         'success'
                         );
             </script>

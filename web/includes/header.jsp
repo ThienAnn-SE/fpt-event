@@ -55,7 +55,7 @@
                                     </li>
                                 </c:if>
                                 <c:if test="${not empty sessionScope.email}"> 
-                                    <c:if test="${sessionScope.role eq 1 or sessionScope.role eq 2}">
+                                    <c:if test="${sessionScope.role eq 1 or sessionScope.role eq 2 or sessionScope.role eq 3}">
                                         <li class="header-item">
                                             <a href="profile">
                                                 <i class="fa fa-user" aria-hidden="true"></i>
@@ -63,7 +63,7 @@
                                             </a>
                                         </li>
                                     </c:if>
-                                    <c:if test="${sessionScope.role eq 3 or sessionScope.role eq 4}">
+                                    <c:if test="${sessionScope.role eq 5 or sessionScope.role eq 4}">
                                         <li class="header-item">
                                             <a href="EventManagementController">
                                                 <i class="fa fa-bars" aria-hidden="true"></i>
@@ -105,7 +105,7 @@
                                 </li>
                             </c:if>
                             <c:if test="${not empty sessionScope.email}">
-                                <c:if test="${sessionScope.role eq 1 or sessionScope.role eq 2}">
+                                <c:if test="${sessionScope.role eq 1 or sessionScope.role eq 2 or sessionScope.role eq 3}">
                                     <li class="header-mobile-item">
                                         <a href="profile">
                                             <i class="fa fa-user" aria-hidden="true"></i>
@@ -113,7 +113,7 @@
                                         </a>
                                     </li>
                                 </c:if>
-                                <c:if test="${sessionScope.role eq 3 or sessionScope.role eq 4}">
+                                <c:if test="${sessionScope.role eq 5or sessionScope.role eq 4}">
                                     <li class="header-mobile-item">
                                         <a href="EventManagementController">
                                             <i class="fa fa-bars" aria-hidden="true"></i>
