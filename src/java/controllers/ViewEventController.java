@@ -10,6 +10,7 @@ import daos.CategoryDAO;
 import daos.ClubDAO;
 import daos.CommentDAO;
 import daos.EventDAO;
+import daos.EventFeedbackDAO;
 import daos.EventFollowDAO;
 import daos.EventRegisterDAO;
 import daos.EventStatusDAO;
@@ -21,7 +22,6 @@ import dtos.EventDTO;
 import dtos.EventStatusDTO;
 import dtos.LocationDTO;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -39,8 +39,7 @@ import utils.GetParam;
 public class ViewEventController extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code>
-     * methods.
+     * Processes requests for both HTTP <code>GET</code> methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -64,6 +63,7 @@ public class ViewEventController extends HttpServlet {
         CommentDAO commentDAO = new CommentDAO();
         EventFollowDAO followDAO = new EventFollowDAO();
         HttpSession session = request.getSession();
+        EventFeedbackDAO feedbackDAO = new EventFeedbackDAO();
 
         //get parameter
         Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 10, 5000, null);
@@ -91,6 +91,11 @@ public class ViewEventController extends HttpServlet {
                 request.setAttribute("errorMessage", "You are not allow to access this page");
                 return false;
             }
+        }
+
+        if (event.getStatusID() == 570) {
+            request.setAttribute("avgVote", feedbackDAO.getEventAvgVote(eventID));
+            request.setAttribute("numOfVote", feedbackDAO.getEventNumOfVote(eventID));
         }
 
         String email = (String) session.getAttribute("email");
