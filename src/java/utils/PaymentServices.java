@@ -82,12 +82,15 @@ public class PaymentServices {
         EventDAO eventDAO = new EventDAO();
         EventDTO eventDTO = eventDAO.getEventByID(eventRegister.getEventID());
 
+        double value = (double) eventDTO.getTicketFee() / 23000;
+        String price = String.format("%.2f", value);
+
         Details details = new Details();
-        details.setSubtotal(String.valueOf(eventDTO.getTicketFee()));
+        details.setSubtotal(price);
 
         Amount amount = new Amount();
         amount.setCurrency("USD");
-        amount.setTotal(String.valueOf(eventDTO.getTicketFee()));
+        amount.setTotal(price);
 
         Transaction transaction = new Transaction();
         transaction.setAmount(amount);
@@ -99,7 +102,7 @@ public class PaymentServices {
         Item item = new Item();
         item.setCurrency("USD");
         item.setName(eventDTO.getEventName() + "Ticket");
-        item.setPrice(String.valueOf(eventDTO.getTicketFee()));
+        item.setPrice(price);
         item.setQuantity("1");
 
         items.add(item);

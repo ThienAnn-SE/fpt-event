@@ -6,6 +6,8 @@
 package listener;
 
 import daos.EventDAO;
+import daos.EventRegisterDAO;
+import daos.LocationDAO;
 import dtos.EventDTO;
 import java.util.Date;
 import java.sql.SQLException;
@@ -16,7 +18,9 @@ import java.util.ArrayList;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.mail.MessagingException;
 import javax.naming.NamingException;
+import utils.AutoMailerHelper;
 import utils.Helper;
 
 /**
@@ -43,9 +47,14 @@ public class MyTask extends TimerTask {
                 }
                 if (Helper.is3DayAfterNow(new SimpleDateFormat("dd-MM-yyyy").parse(eventList.get(i).getCreateDate()))) {
                     eventDAO.changeEventStatus(eventList.get(i).getEventID(), 500);
-                }               
+                    EventRegisterDAO registerDAO = new EventRegisterDAO();
+                    LocationDAO locationDAO = new LocationDAO();
+                    String locationName = locationDAO.getLocationByID(eventList.get(i).getEventID()).getLocationName();
+                    AutoMailerHelper sendMail = new AutoMailerHelper();
+                    sendMail.sendEventNotification(registerDAO.getRegisterList(eventList.get(i).getEventID()), eventDAO.getEventByID(eventList.get(i).getEventID()), locationName);
+                }
             }
-        } catch (NamingException | SQLException | ParseException ex) {
+        } catch (NamingException | SQLException | ParseException | MessagingException ex) {
             Logger.getLogger(MyTask.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

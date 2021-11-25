@@ -7,14 +7,12 @@ package daos;
 
 import dtos.EventDTO;
 import dtos.EventRegisterDTO;
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import javax.naming.NamingException;
 import utils.DBHelpers;
 
@@ -65,6 +63,31 @@ public class EventRegisterDAO {
             this.closeConnection();
         }
         return isSuccess;
+    }
+
+    public EventRegisterDTO getRegistrationByID(int registerID) throws SQLException, NamingException {
+        EventRegisterDTO registration = null;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT *"
+                        + " FROM tblEventRegisters"
+                        + " WHERE registerID = ?";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, registerID);
+                rs = preStm.executeQuery();
+
+                if (rs.next()) {
+                    int eventID = rs.getInt("eventID");
+                    String email = rs.getString("userEmail");
+                    String registerDate = new SimpleDateFormat("yyyy-MM-dd").format(rs.getDate("registerDate"));
+                    registration = new EventRegisterDTO(eventID, email, registerDate);
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return registration;
     }
 
     public int getRegisterID(int eventID, String userEmail) throws SQLException, NamingException {

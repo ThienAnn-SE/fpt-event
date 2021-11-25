@@ -48,7 +48,7 @@ public class PaymentDAO {
         try {
             conn = DBHelpers.makeConnection();
             String sql = "INSERT INTO tblPayments(registerID, paymentDescription, statusDescription, paymentMethod, paymentDate, paymentTotal)"
-                    + " VALUES(?,?,?,?)";
+                    + " VALUES(?,?,?,?,?,?)";
             preStm = conn.prepareStatement(sql);
             preStm.setInt(1, dto.getRegisterID());
             preStm.setNString(2, dto.getPaymentDescription());

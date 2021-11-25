@@ -102,8 +102,8 @@ public class AddEventController extends HttpServlet {
         Integer categoryID = GetParam.getIntParams(request, "categoryID", "Category", 1, 500, null);
         Date createDate = Helper.getCurrentDate();
         Date registerEndDate = GetParam.getDateFromNowToFuture(request, "registerEndDate", "Registration end date", null);
-        Date startDate = GetParam.getDateFromNowToFuture(request, "startDate", "Start date", null);
-        Date endDate = GetParam.getDateFromNowToFuture(request, "endDate", "End date", null);
+        Date startDate = GetParam.getDateTimeFromNowToFuture(request, "startDate", "Start date", null);
+        Date endDate = GetParam.getDateTimeFromNowToFuture(request, "endDate", "End date", null);
         Integer slot = GetParam.getIntParams(request, "slot", "Slot", 0, 5000, null);
         String imageURL = GetParam.getFileParam(request, "imageURL", "Image", 1024 * 1024, FileHelper.imageExtension);
         String content = GetParam.getStringParam(request, "content", "Content", 0, Integer.MAX_VALUE, null);
@@ -175,7 +175,7 @@ public class AddEventController extends HttpServlet {
             throws ServletException, IOException {
         try {
             if (postHandler(request, response)) {
-                response.sendRedirect(Routers.EVENT_MANAGEMENT_CONTROLLER + "?success=true");
+                response.sendRedirect(Routers.EVENT_MANAGEMENT_CONTROLLER + "?add=success");
             } else {
                 request.setAttribute("result", "fail");
                 doGet(request, response);

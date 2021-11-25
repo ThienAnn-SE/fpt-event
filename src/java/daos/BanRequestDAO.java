@@ -61,6 +61,49 @@ public class BanRequestDAO {
         return isSuccess;
     }
 
+    public boolean processBanRequest(String email, String date) throws NamingException, SQLException {
+        boolean isSuccess = false;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "UPDATE tblBanRequests"
+                        + " SET approvalDate = ?, requestStatus = 1"
+                        + " WHERE userEmail = ?";
+                preStm = conn.prepareStatement(sql);
+                preStm.setDate(1, java.sql.Date.valueOf(date));
+                preStm.setString(2, email);
+
+                isSuccess = preStm.executeUpdate()> 0;
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return isSuccess;
+    }
+
+    public boolean isReported(int clubID, String userEmail) throws NamingException, SQLException {
+        boolean isReported = false;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT requestID "
+                        + " FROM tblBanRequests"
+                        + " WHERE clubID = ? AND userEmail = ?";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, clubID);
+                preStm.setString(2, userEmail);
+
+                rs = preStm.executeQuery();
+                if (rs.next()) {
+                    isReported = true;
+                }
+            }
+        } finally {
+            this.closeConnection();
+        }
+        return isReported;
+    }
+
     public int getNumOfUnreslovedRequest() throws NamingException, SQLException {
         int num = 0;
         try {
@@ -68,8 +111,7 @@ public class BanRequestDAO {
             if (conn != null) {
                 String sql = "SELECT COUNT(requestID) AS num"
                         + " FROM tblBanRequests"
-                        + " WHERE requestStatus = 0"
-                        + " GROUP BY requestID";
+                        + " WHERE requestStatus = 0";
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();
 

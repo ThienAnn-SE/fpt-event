@@ -998,6 +998,12 @@ input:checked ~ label {
     border-radius: 8px;
 }
 
+.dt-button{
+    margin-left: 15px;
+    padding: 15px 30px;
+    border-radius: 8px;
+}
+
 .rate form #title {
     width: 100%;
     margin: 5px 0 20px -10px;
@@ -1111,7 +1117,6 @@ input:checked ~ label {
 }
 
 .avatar-name h5 {
-    text-transform: capitalize;
     font-size: 18px;
     margin-bottom: 7px;
 }
@@ -1614,7 +1619,6 @@ input:checked ~ label {
 }
 
 .dropdown {
-    margin-top: 20px;
     width: 100%;
     position: relative;
     border-radius: 8px;

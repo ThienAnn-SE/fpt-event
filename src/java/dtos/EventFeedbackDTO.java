@@ -10,14 +10,22 @@ package dtos;
  * @author thien
  */
 public class EventFeedbackDTO {
+
     private int registerID;
     private int vote;
     private String feedback;
+    private String email;
 
     public EventFeedbackDTO(int registerID, int vote, String feedback) {
         this.registerID = registerID;
         this.vote = vote;
         this.feedback = feedback;
+    }
+
+    public EventFeedbackDTO(int vote, String feedback, String email) {
+        this.vote = vote;
+        this.feedback = feedback;
+        this.email = email;
     }
 
     public EventFeedbackDTO() {
@@ -46,6 +54,13 @@ public class EventFeedbackDTO {
     public void setFeedback(String feedback) {
         this.feedback = feedback;
     }
-    
-    
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 }

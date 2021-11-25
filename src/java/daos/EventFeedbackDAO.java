@@ -61,23 +61,45 @@ public class EventFeedbackDAO {
         return isSuccess;
     }
 
+    public boolean isFeedbacked(int registerID) throws NamingException, SQLException {
+        boolean isSuccess = false;
+        try {
+            conn = DBHelpers.makeConnection();
+            if (conn != null) {
+                String sql = "SELECT * FROM tblFeedbacks"
+                        + " WHERE registerID = ?";
+                preStm = conn.prepareStatement(sql);
+                preStm.setInt(1, registerID);
+                rs = preStm.executeQuery();
+                if (rs.next()) {
+                    isSuccess = true;
+                }
+            }
+        } finally {
+
+        }
+        return isSuccess;
+    }
+
     public ArrayList<EventFeedbackDTO> getEventFeedbackList(int eventID) throws NamingException, SQLException {
         ArrayList<EventFeedbackDTO> list = new ArrayList<>();
         try {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
-                String sql = "SELECT registerID, feedback, vote FROM tblFeedbacks"
-                        + " WHERE registerID IN (SELECT registerID"
+                String sql = "SELECT er.userEmail , fb.feedback, fb.vote"
+                        + " FROM tblFeedbacks AS fb"
+                        + " LEFT JOIN tblEventRegisters AS er ON er.registerID = fb.registerID"
+                        + " WHERE fb.registerID IN (SELECT registerID"
                         + " FROM tblEventRegisters"
                         + " WHERE eventID = ?)";
                 preStm = conn.prepareStatement(sql);
                 preStm.setInt(1, eventID);
                 rs = preStm.executeQuery();
                 while (rs.next()) {
-                    int registerID = rs.getInt("registerID");
+                    String email = rs.getString("userEmail");
                     String feedback = rs.getNString("feedback");
                     int vote = rs.getInt("vote");
-                    list.add(new EventFeedbackDTO(registerID, vote, feedback));
+                    list.add(new EventFeedbackDTO(vote, feedback, email));
                 }
             }
         } finally {

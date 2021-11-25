@@ -12,12 +12,10 @@ import daos.EventRegisterDAO;
 import daos.UserDAO;
 import dtos.EventDTO;
 import dtos.EventFeedbackDTO;
+import dtos.EventRegisterDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -39,44 +37,43 @@ public class FeedbackController extends HttpServlet {
      *
      * @param request servlet request
      * @param response servlet response
-     * @return
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      * @throws java.sql.SQLException
      * @throws javax.naming.NamingException
      */
-    protected boolean postHandler(HttpServletRequest request, HttpServletResponse response)
+    protected void postHandler(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException, NamingException {
         response.setContentType("text/html;charset=UTF-8");
-        Integer eventID = GetParam.getIntParams(request, "eventID", "EventID", 10, 5000, null);
+
+        EventRegisterDAO registerDAO = new EventRegisterDAO();
+        UserDAO userDAO = new UserDAO();
+
+        Integer registerID = GetParam.getIntParams(request, "registerID", "EventID", 10, Integer.MAX_VALUE, null);
         Integer vote = GetParam.getIntParams(request, "rate", "Rate", 1, 5, null);
         String feedback = GetParam.getStringParam(request, "feedback", "Feedback", 10, 100, null);
 
-        if (eventID == null || vote == null || feedback == null) {
-            return false;
-        }
-
-        EventDAO eventDAO = new EventDAO();
-        if (eventDAO.getEventByID(eventID) == null) {
-            request.setAttribute("errorMessage", "The event does not exist");
-            return false;
+        if (registerID == null || vote == null || feedback == null) {
+            request.setAttribute("eventID", registerDAO.getRegistrationByID(registerID).getEventID());
+            throw new IllegalArgumentException();
         }
 
         HttpSession session = request.getSession();
         String userEmail = (String) session.getAttribute("email");
-        UserDAO userDAO = new UserDAO();
-        if (userDAO.getUserByEmail(userEmail) != null) {
-            request.setAttribute("errorMessage", "The user does not exist");
+        if (userDAO.getUserByEmail(userEmail) == null) {
+            throw new SQLException("User does not exist!");
         }
 
-        EventRegisterDAO registerDAO = new EventRegisterDAO();
-        int registerID = registerDAO.getRegisterID(eventID, userEmail);
-        if (registerID == 0) {
-            request.setAttribute("errorMessage", "The user did not register this event");
+        EventRegisterDTO registration = registerDAO.getRegistrationByID(registerID);
+        if (registration == null) {
+            throw new SQLException("You did not register this event!");
         }
 
         EventFeedbackDAO feedbackDAO = new EventFeedbackDAO();
-        return feedbackDAO.addNewFeedback(new EventFeedbackDTO(eventID, vote, feedback));
+        if (!feedbackDAO.addNewFeedback(new EventFeedbackDTO(registerID, vote, feedback))) {
+            throw new SQLException("Internal error!");
+        }
+        response.sendRedirect(Routers.VIEW_USER_CONTROLLER + "?rating=success");
     }
 
     /**
@@ -127,6 +124,7 @@ public class FeedbackController extends HttpServlet {
         //initialized resource
         EventRegisterDAO registerDAO = new EventRegisterDAO();
         EventDAO eventDAO = new EventDAO();
+        EventFeedbackDAO feedbackDAO = new EventFeedbackDAO();
         HttpSession session = request.getSession();
 
         //get parameter
@@ -155,10 +153,14 @@ public class FeedbackController extends HttpServlet {
             throw new SQLException("User does not attend this event!");
         }
 
-        //set request attribute
-        request.setAttribute("eventName", event.getEventName());
-        request.setAttribute("registerID", registerID);
-        request.getRequestDispatcher(Routers.USER_FEEDBACK_PAGE).forward(request, response);
+        if (feedbackDAO.isFeedbacked(registerID)) {
+            response.sendRedirect(Routers.VIEW_USER_CONTROLLER + "?feedback=fail");
+        } else {
+            //set request attribute
+            request.setAttribute("eventName", event.getEventName());
+            request.setAttribute("registerID", registerID);
+            request.getRequestDispatcher(Routers.USER_FEEDBACK_PAGE).forward(request, response);
+        }
     }
 
     /**
@@ -205,11 +207,10 @@ public class FeedbackController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            if (postHandler(request, response)) {
-
-            } else {
-
-            }
+            postHandler(request, response);
+        } catch (IllegalArgumentException ex) {
+            int eventID = (int) request.getAttribute("eventID");
+            response.sendRedirect(Routers.FEEDBACK_CONTROLLER + "?feedback=fail&action=rate&eventID=" + eventID);
         } catch (SQLException | NamingException ex) {
             log(ex.getMessage());
             request.setAttribute("errorMessage", ex.getMessage());

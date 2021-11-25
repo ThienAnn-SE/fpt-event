@@ -381,6 +381,32 @@ create table tblVisitorCounters(
 	INSERT INTO tblFollowed(eventID,userEmail,followDate) VALUES (19,'khanhhnss154319@fpt.edu.vn','2021-10-27')
 
 
+	select fb.feedback , fb.vote, er.userEmail 
+	from tblFeedbacks as fb
+	left join tblEventRegisters as er on fb.registerID = er.registerID
+	where er.userEmail = 'baonngse150655@fpt.edu.vn'
+
+	select * from tblEventRegisters
+	delete from tblEventRegisters where registerID = 127
+
+	select * from tblEventRegisters  as er
+	left join tblFUEvents as e on er.eventID = e.eventID
+	where er.userEmail = 'baonngse150655@fpt.edu.vn'
+	select * from tblFeedbacks where registerID = 108
+
+
+	select * from tblBanRequests
+	update tblCommentReports set userEmail = 'khanhhnss154319@fpt.edu.vn' where reportID = 12
+	select count(reportID) as num
+	from tblCommentReports
+	where reportStatus = 300
+
+	SELECT count(rp.reportID)
+                          FROM tblCommentReports AS rp
+                         LEFT JOIN tblComments AS c ON rp.commentID = c.commentID
+						 WHERE c.userEmail = 'thanhntse151308@fpt.edu.vn' AND rp.reportStatus = 500
+
+
 	select * from tblFeedbacks
 	where registerID in (select registerID
 						from tblEventRegisters

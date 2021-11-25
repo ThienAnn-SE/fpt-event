@@ -33,62 +33,73 @@
                             <div class="card card-custom">
                                 <div class="card-header bg-success">
                                     <h3 class="text-white" id="feedback-name">${eventName}</h3>                           
-                                </div>
-                                <div class="card-body">
-                                    <div class="rate">
-                                        <form action="feedback" class="needs-validation" novalidate>
-                                            <h2 class="text-center m-3">YOUR FEEDBACK</h2>
-                                            <hr>
-                                            <div class="form-group form-check" id="feedback">
-                                                <p>We would like your feedback to improve our event.</p>
-                                                <p>What is your opinion about our event?</p>
-                                                <label class="form-check-label">                                             
-                                                    <div class="star-icon">
-                                                        <input type="radio" name="rate" id="rate-5" value="5" required/>
-                                                        <label for="rate-5" class="fas fa-star"></label>
-                                                        <input type="radio" name="rate" id="rate-4" value="4" required/>
-                                                        <label for="rate-4" class="fas fa-star"></label>
-                                                        <input type="radio" name="rate" id="rate-3" value="3" required/>
-                                                        <label for="rate-3" class="fas fa-star"></label>
-                                                        <input type="radio" name="rate" id="rate-2" value="2" required/>
-                                                        <label for="rate-2" class="fas fa-star"></label>
-                                                        <input type="radio" name="rate" id="rate-1" value="1" required/>
-                                                        <label for="rate-1" class="fas fa-star"></label>
-                                                        <div class="pt-5" id="title"></div>
-                                                        <div class="valid-feedback pt-1">Valid.</div>
-                                                        <div class="invalid-feedback pt-1">Rate a star to continue.</div>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <hr>
-                                            <div class="form-group">
-                                                <p>Please leave your feedback below:</p>
-                                                <textarea rows="5" placeholder="Add your feedback here" name="feedback" required></textarea>
-                                                <div class="valid-feedback pt-1">Valid.</div>
-                                                <div class="invalid-feedback pt-1">Leave a comment to continue.</div>
-                                            </div>
-                                            <div class="form-btn">
-                                                <button class="mx-5" type="submit">Send</button>
-                                                <a class="mx-3" href="profile">Cancel</a>
-                                            </div>
-                                            <input type="hidden" name="registerID" value="${registerID}"/>
-                                        </form>
-                                    </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="rate">
+                                    <form action="feedback" method="POST" class="needs-validation" novalidate>
+                                        <h2 class="text-center m-3">YOUR FEEDBACK</h2>
+                                        <hr>
+                                        <div class="form-group form-check" id="feedback">
+                                            <p>We would like your feedback to improve our event.</p>
+                                            <p>What is your opinion about our event?</p>
+                                            <label class="form-check-label">                                             
+                                                <div class="star-icon">
+                                                    <input type="radio" name="rate" id="rate-5" value="5" required/>
+                                                    <label for="rate-5" class="fas fa-star"></label>
+                                                    <input type="radio" name="rate" id="rate-4" value="4" required/>
+                                                    <label for="rate-4" class="fas fa-star"></label>
+                                                    <input type="radio" name="rate" id="rate-3" value="3" required/>
+                                                    <label for="rate-3" class="fas fa-star"></label>
+                                                    <input type="radio" name="rate" id="rate-2" value="2" required/>
+                                                    <label for="rate-2" class="fas fa-star"></label>
+                                                    <input type="radio" name="rate" id="rate-1" value="1" required/>
+                                                    <label for="rate-1" class="fas fa-star"></label>
+                                                    <div class="pt-5" id="title"></div>
+                                                    <div class="valid-feedback pt-1">Valid.</div>
+                                                    <div class="invalid-feedback pt-1">Rate a star to continue.</div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <hr>
+                                        <div class="form-group">
+                                            <p>Please leave your feedback below:</p>
+                                            <textarea rows="5" placeholder="Add your feedback here" name="feedback" required></textarea>
+                                            <div class="valid-feedback pt-1">Valid.</div>
+                                            <div class="invalid-feedback pt-1">Leave a comment to continue.</div>
+                                        </div>
+                                        <div class="form-btn">
+                                            <button class="mx-5" type="submit">Send</button>
+                                            <a class="mx-3" href="profile">Cancel</a>
+                                        </div>
+                                        <input type="hidden" name="registerID" value="${registerID}"/>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
         <jsp:include page="./includes/footer.jsp"></jsp:include>
 
-        <script src="./asset/js/main.js"></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ"
-            crossorigin="anonymous"
-        ></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+            <script src="./asset/js/main.js"></script>
+            <script
+                src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ"
+                crossorigin="anonymous"
+            ></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+            <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <c:if test="${param.feedback eq 'fail'}">
+            <script>
+                Swal.fire(
+                        'Fail!',
+                        'There are some error happen when you feedback!',
+                        'error'
+                        );
+            </script>
+        </c:if>
         <script>
             // Disable form submissions if there are invalid fields
             (function () {

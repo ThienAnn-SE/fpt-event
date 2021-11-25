@@ -45,7 +45,6 @@ public class Routers {
     public final static String ADMIN_CATEGORY_PAGE = "admin-category.jsp";
     public final static String ADMIN_LOCATION_PAGE = "admin-location.jsp";
     public final static String ADMIN_CLUB_MANAGEMENT_PAGE = "admin-club.jsp";
-    
 
     public final static String ADD_EVENT_CONTROLLER = "AddEventController";
     public final static String UPDATE_CONTROLLER = "UpdateController";
@@ -57,6 +56,10 @@ public class Routers {
     public final static String REGISTER_EVENT_CONTROLLER = "RegisterEventController";
     public final static String FOLLOW_EVENT_CONTROLLER = "FollowEventController";
     public final static String SEARCH_EVENT_CONTROLLER = "SearchEventController";
+    public final static String UPDATE_EVENT_CONTROLLER = "UpdateEventController";
+    public final static String BAN_USER_CONTROLLER = "user-ban";
+    public final static String FEEDBACK_CONTROLLER = "feedback";
+    public final static String VIEW_REGISTERED_USER_CONTROLLER = "leader-registrationList";
     public final static String HOME_PAGE_CONTROLLER = "home";
     public final static String COMMENT_CONTROLLER = "comment";
     public final static String EVENT_MANAGEMENT_CONTROLLER = "EventManagementController";
@@ -64,4 +67,7 @@ public class Routers {
     public final static String ADMIN_CATEGORY_CONTROLLER = "admin-category";
     public final static String ADMIN_CLUB_CONTROLLER = "admin-club";
     public final static String ADMIN_REQUEST_CONTROLLER = "admin-request";
+    public final static String ADMIN_FORM_CONTROLLER = "admin-form";
+    public final static String ADMIN_USER_CONTROLLER = "admin-user";
+    public final static String ADMIN_DASHBOARD_CONTROLLER = "admin-dashbaord";
 }

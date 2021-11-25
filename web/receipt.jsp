@@ -9,40 +9,67 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <link href="./asset/css/receipt.css" rel="stylesheet" type="text/css"/>
+        <title>Receipt</title>
     </head>
     <body>
-        <div align="center">
-            <h1>Payment Done. Please click the button to back the home page</h1>
-            <br/>
-            <h2>Receipt Details:</h2>
-            <table>
-                <tr>
-                    <td><b>Payer:</b></td>
-                    <td>${payer.firstName}</td>      
+        <table class="body-wrap">
+            <tbody><tr>
+                    <td></td>
+                    <td class="container" width="600">
+                        <div class="content">
+                            <table class="main" width="100%" cellpadding="0" cellspacing="0">
+                                <tbody><tr>
+                                        <td class="content-wrap aligncenter">
+                                            <table width="100%" cellpadding="0" cellspacing="0">
+                                                <tbody><tr>
+                                                        <td class="content-block">
+                                                            <h2>Here is your receipt for the payment</h2>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="content-block">
+                                                            <table class="invoice">
+                                                                <tbody><tr>
+                                                                        <td>${payer.firstName}<br>${payer.email}<br>${payer.phone}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <table class="invoice-items" cellpadding="0" cellspacing="0">
+                                                                                <tbody><tr>
+                                                                                        <td>${transaction.description}</td>
+                                                                                        <td class="alignright">$ ${transaction.amount.details.subtotal}</td>
+                                                                                    </tr>
+                                                                                    <tr class="total">
+                                                                                        <td class="alignright" width="80%">Total</td>
+                                                                                        <td class="alignright">$ ${transaction.amount.details.subtotal}</td>
+                                                                                    </tr>
+                                                                                </tbody></table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody></table>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="content-block">
+                                                            <a href="home">Back to homepage</a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody></table>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            <div class="footer">
+                                <table width="100%">
+                                    <tbody><tr>
+                                            <td class="aligncenter content-block">Copyright &#169; 2021 SWP391 - Group 6. All Rights Reserved.</td>
+                                        </tr>
+                                    </tbody></table>
+                            </div></div>
+                    </td>
+                    <td></td>
                 </tr>
-                <tr>
-                    <td><b>Email: </b></td>
-                    <td>${payer.email}</td>      
-                </tr>
-                <tr>
-                    <td><b>Phone number:</b></td>
-                    <td>${payer.phone}</td>      
-                </tr>
-                <tr>
-                    <td><b>Description:</b></td>
-                    <td>${transaction.description}</td>
-                </tr>
-                <tr>
-                    <td><b>Subtotal:</b></td>
-                    <td>${transaction.amount.details.subtotal} VND</td>
-                </tr>
-                <tr>
-                    <td><b>Total:</b></td>
-                    <td>${transaction.amount.total} VND</td>
-                </tr>                    
-            </table>
-                
-        </div>
+            </tbody>
+        </table>
     </body>
 </html>

@@ -115,8 +115,7 @@ public class CommentReportDAO {
             if (conn != null) {
                 String sql = "SELECT COUNT(reportID) AS num"
                         + " FROM tblCommentReports"
-                        + " WHERE reportStatus = 300"
-                        + " GROUP BY reportID";
+                        + " WHERE reportStatus = 300";
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();
 
@@ -130,15 +129,15 @@ public class CommentReportDAO {
         return num;
     }
 
-    public boolean changeReportStatus(int reportID, int reportStatus) throws NamingException, SQLException {
+    public boolean changeReportStatus(int commentID, int reportStatus) throws NamingException, SQLException {
         boolean isSuccess = false;
         try {
             conn = DBHelpers.makeConnection();
             String sql = "UPDATE tblCommentReports SET reportStatus = ?"
-                    + " WHERE reportID = ?";
+                    + " WHERE commentID = ?";
             preStm = conn.prepareStatement(sql);
             preStm.setInt(1, reportStatus);
-            preStm.setInt(2, reportID);
+            preStm.setInt(2, commentID);
 
             isSuccess = preStm.executeUpdate() > 0;
         } finally {
@@ -155,7 +154,7 @@ public class CommentReportDAO {
                 String sql = "SELECT rp.reportID, rp.commentID, rp.userEmail, rp.sendDate, rp.reportStatus, c.comment"
                         + " FROM tblCommentReports AS rp"
                         + " LEFT JOIN tblComments AS c ON rp.commentID = c.commentID"
-                        + " ORDER BY rp.reportStatus";
+                        + " ORDER BY reportStatus";
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();
                 while (rs.next()) {
@@ -179,11 +178,11 @@ public class CommentReportDAO {
         try {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
-                String sql = "SELECT userEmail, COUNT(reportID) as number"
-                        + " FROM tblCommentReports"
+                String sql = "SELECT c.userEmail as userEmail, count(rp.reportID) as number"
+                        + " FROM tblCommentReports AS rp"
+                        + " LEFT JOIN tblComments AS c ON rp.commentID = c.commentID"
                         + " WHERE reportStatus = 500"
-                        + " GROUP BY userEmail"
-                        + " ORDER BY userEmail";
+                        + " GROUP BY c.userEmail";
                 preStm = conn.prepareStatement(sql);
                 rs = preStm.executeQuery();
                 while (rs.next()) {
@@ -203,9 +202,10 @@ public class CommentReportDAO {
         try {
             conn = DBHelpers.makeConnection();
             if (conn != null) {
-                String sql = "SELECT COUNT(reportID) as number"
-                        + " FROM tblCommentReports"
-                        + " WHERE userEmail = ? AND reportStatus = 500";
+                String sql = "SELECT count(rp.reportID) as number"
+                        + " FROM tblCommentReports AS rp"
+                        + " LEFT JOIN tblComments AS c ON rp.commentID = c.commentID"
+                        + " WHERE rp.reportStatus = 500 AND c.userEmail = ?";
                 preStm = conn.prepareStatement(sql);
                 preStm.setString(1, userEmail);
                 rs = preStm.executeQuery();

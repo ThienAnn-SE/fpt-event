@@ -120,7 +120,7 @@ public class Helper {
      */
     public static Date convertStringToDateTime(String date) {
         try {
-            return new SimpleDateFormat("ss:mm:HH yyyy-MM-dd").parse(date);
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(date);
         } catch (ParseException e) {
             return null;
         }
@@ -174,8 +174,8 @@ public class Helper {
      * @return current date time
      */
     public static Date getTodayTime() {
-        Date date = new Date(System.currentTimeMillis());
-        return date;
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return convertStringToDateTime(formatter.format(new Date(System.currentTimeMillis())));
     }
 
     public static boolean is3DayAfterNow(Date startDate) {
