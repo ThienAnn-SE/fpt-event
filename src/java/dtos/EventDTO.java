@@ -89,7 +89,7 @@ public class EventDTO {
         this.ticketFee = ticketFee;
     }
 
-    public EventDTO(int eventID, String eventName, int clubID, int catetoryID, int statusID, String startDate, String content, String imageURL, int slot) {
+    public EventDTO(int eventID, String eventName, int clubID, int catetoryID, int statusID, String startDate, String content, String imageURL, int ticketFee,  int slot) {
         this.eventID = eventID;
         this.eventName = eventName;
         this.clubID = clubID;
@@ -98,6 +98,7 @@ public class EventDTO {
         this.startDate = startDate;
         this.content = content;
         this.imageURL = imageURL;
+        this.ticketFee = ticketFee;
         this.slot = slot;
     }
 

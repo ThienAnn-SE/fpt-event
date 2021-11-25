@@ -21,7 +21,7 @@ public class GetParam {
      * @return Valid string
      */
     public static String getStringParam(HttpServletRequest request, String field, String label, int min, int max,
-                                        String defaultValue) {
+            String defaultValue) {
         String value = request.getParameter(field); // get value from field in request parameter
 
         if (value == null || value.trim().isEmpty()) {
@@ -62,11 +62,10 @@ public class GetParam {
      * @return Valid integer
      */
     public static Integer getIntParams(HttpServletRequest request, String field, String label, int min, int max,
-                                       Integer defaultValue) {
+            Integer defaultValue) {
 
         Integer realValue; // the integer value
         String value = request.getParameter(field); // get value from field in request parameter
-
 
         if (value == null || value.isEmpty()) {
             //value is null or not be typed
@@ -115,7 +114,7 @@ public class GetParam {
      * @return Valid float
      */
     public static Float getFloatParams(HttpServletRequest request, String field, String label, float min, float max,
-                                       Float defaultValue) {
+            Float defaultValue) {
         Float realValue; // the float value
         String value = request.getParameter(field); // get value from field in request parameter
 
@@ -235,7 +234,7 @@ public class GetParam {
      * @return Future date
      */
     public static Date getDateFromNowToFuture(HttpServletRequest request, String field, String label, Date df) {
-        String value = getStringParam(request, field, label, 10, 10, null); ///get value from request parameter
+        String value = getStringParam(request, field, label, 10, 20, null); ///get value from request parameter
         if (value == null) {
             //the value is invalid
             if (df == null) {
@@ -247,6 +246,37 @@ public class GetParam {
 
         Date date = Helper.convertStringToDate(value); //convert date in String type to date in Date type
         Date today = Helper.getCurrentDate(); //get current date in Date type
+
+        if (today.after(date)) {
+            //input date  is after current day
+            request.setAttribute("errorMessage", label + " should be in future");
+            return null;
+        }
+
+        return date;
+    }
+
+    /**
+     * Get date from request parameter and make sure it in the future
+     *
+     * @param request servlet request
+     * @param field request parameter name
+     * @param label Label
+     * @param df
+     * @return Future date
+     */
+    public static Date getDateTimeFromNowToFuture(HttpServletRequest request, String field, String label, Date df) {
+        String value = getStringParam(request, field, label, 10, 30, null); ///get value from request parameter
+        if (value == null) {
+            //the value is invalid
+            if (df == null) {
+                return null;
+            }
+            request.removeAttribute(field + "Error");
+            return df;
+        }
+        Date date = Helper.convertStringToDateTime(value.replace("T", " ")); //convert date in String type to date in Date type
+        Date today = Helper.getTodayTime(); //get current date in Date type
 
         if (today.after(date)) {
             //input date  is after current day
@@ -296,7 +326,7 @@ public class GetParam {
      * @return
      */
     public static String getFileParam(HttpServletRequest request, String field, String label, long maxSize,
-                                      String[] extension) {
+            String[] extension) {
         try {
             Part filePart = request.getPart(field);
             if (filePart == null) {
@@ -334,7 +364,7 @@ public class GetParam {
 
             return FileHelper.uploadFile(request, filePart);
         } catch (IOException | ServletException e) {
-            request.setAttribute(field+"Error", e.getMessage());
+            request.setAttribute(field + "Error", e.getMessage());
             return null;
         }
 

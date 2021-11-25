@@ -75,7 +75,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="table table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table table-bordered" id="category-table" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th>No.</th>
@@ -102,13 +102,7 @@
                         </div>
                     </div>
                     <!-- Footer -->
-                    <footer class="sticky-footer bg-white">
-                        <div class="container my-auto">
-                            <div class="copyright text-center my-auto">
-                                <span>Copyright &copy; Your Website 2020</span>
-                            </div>
-                        </div>
-                    </footer>
+                    <jsp:include page="includes/admin-footer.jsp"/>
                     <!-- End of Footer -->
                 </div>
             </div>
@@ -169,6 +163,7 @@
             })();
         </script>
         <!-- Bootstrap core JavaScript-->
+        <script src="./asset/vendor/jquery/jquery.min.js"></script>
         <script src="./asset/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
         <!-- Core plugin JavaScript-->
@@ -179,6 +174,10 @@
         <!-- Page level plugins -->
         <script src="./asset/vendor/datatables/jquery.dataTables.min.js"></script>
         <script src="./asset/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-        <script src="./asset/js/demo/datatables-demo.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#category-table').DataTable();
+            });
+        </script>
     </body>
 </html>

@@ -82,22 +82,24 @@ public class AdminRequestController extends HttpServlet {
         boolean result;
         //change report status
         CommentReportDAO reportDAO = new CommentReportDAO();
+
+        CommentReportDTO report = reportDAO.getReportByID(reportID);
+
+        CommentDTO comment = commentDAO.getCommentByID(report.getCommentID());
+        
         if (btAction.equalsIgnoreCase("cancel")) {
-            result = reportDAO.changeReportStatus(reportID, 400);
+            result = reportDAO.changeReportStatus(report.getCommentID(), 400);
             if (result) {
                 return true;
             }
         } else {
-            result = reportDAO.changeReportStatus(reportID, 500);
+            result = reportDAO.changeReportStatus(report.getCommentID(), 500);
         }
 
         if (!result) {
             throw new SQLException("Internal error!");
         }
 
-        CommentReportDTO report = reportDAO.getReportByID(reportID);
-
-        CommentDTO comment = commentDAO.getCommentByID(report.getCommentID());
         //change comment visible
         if (!commentDAO.changeCommentVisible(comment.getCommentID(), false)) {
             throw new SQLException("Internal error!");

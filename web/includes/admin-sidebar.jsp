@@ -9,7 +9,7 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="AdminDashboardController">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="admin-dashboard">
         <div class="sidebar-brand-icon">
             <image src="./asset/img/FPTU_EVENT.png" style="width:  100px"/>
         </div>
@@ -67,7 +67,7 @@
     </div>
 
     <li class="nav-item  <c:if test="${param.active eq 'ban'}">active</c:if>">
-        <a class="nav-link" href="AdminFormController">
+        <a class="nav-link" href="admin-form">
             <i class="fa fa-exclamation-circle"></i>
             <span>Ban user request</span></a>
     </li>

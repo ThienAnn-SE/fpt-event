@@ -84,7 +84,7 @@ public class EventDAO {
             preStm.setInt(5, 300);
             preStm.setDate(6, java.sql.Date.valueOf(Helper.convertDateToSQLString(createDate)));
             preStm.setTimestamp(7, java.sql.Timestamp.valueOf(Helper.convertDateTimeToSQLString(startDate)));
-            preStm.setTimestamp(8, java.sql.Timestamp.valueOf(Helper.convertDateTimeToSQLString(startDate)));
+            preStm.setTimestamp(8, java.sql.Timestamp.valueOf(Helper.convertDateTimeToSQLString(endDate)));
             preStm.setTimestamp(9, java.sql.Timestamp.valueOf(Helper.convertDateTimeToSQLString(registerEndDate)));
             preStm.setInt(10, slot);
             preStm.setString(11, imageURL);
@@ -157,9 +157,10 @@ public class EventDAO {
                 String startDate = new SimpleDateFormat("HH:mm:ss MM-dd-yyyy").format(rs.getTimestamp("startDate"));
                 String content = rs.getNString("content");
                 String imageURL = rs.getString("imageURL");
+                int ticketFee = rs.getInt("ticketFee");
                 int slot = rs.getInt("slot");
 
-                EventDTO dto = new EventDTO(eventID, eventName, clubID, categoryID, statusID, startDate, content, imageURL, slot);
+                EventDTO dto = new EventDTO(eventID, eventName, clubID, categoryID, statusID, startDate, content, imageURL, ticketFee, slot);
                 list.add(dto);
             }
         } finally {
@@ -190,9 +191,10 @@ public class EventDAO {
                     String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
                     String content = rs.getNString("content");
                     String imageURL = rs.getString("imageURL");
+                    int ticketFee = rs.getInt("ticketFee");
                     int slot = rs.getInt("slot");
 
-                    EventDTO dto = new EventDTO(eventID, eventName, clubID, categoryID, statusID, startDate, content, imageURL, slot);
+                    EventDTO dto = new EventDTO(eventID, eventName, clubID, categoryID, statusID, startDate, content, imageURL, ticketFee, slot);
                     list.add(dto);
                 }
             }
@@ -244,9 +246,10 @@ public class EventDAO {
                     String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
                     String content = rs.getNString("content");
                     String imageURL = rs.getString("imageURL");
+                    int ticketFee = rs.getInt("ticketFee");
                     int slot = rs.getInt("slot");
 
-                    EventDTO dto = new EventDTO(eventID, eventName, clubID, categoryID, statusID, startDate, content, imageURL, slot);
+                    EventDTO dto = new EventDTO(eventID, eventName, clubID, categoryID, statusID, startDate, content, imageURL, ticketFee, slot);
                     list.add(dto);
                 }
             }
@@ -301,9 +304,10 @@ public class EventDAO {
                     String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
                     String content = rs.getNString("content");
                     String imageURL = rs.getString("imageURL");
+                    int ticketFee = rs.getInt("ticketFee");
                     int slot = rs.getInt("slot");
 
-                    EventDTO dto = new EventDTO(eventID, eventName, clubID, categoryID, statusID, startDate, content, imageURL, slot);
+                    EventDTO dto = new EventDTO(eventID, eventName, clubID, categoryID, statusID, startDate, content, imageURL, ticketFee, slot);
                     list.add(dto);
                 }
             }
@@ -358,9 +362,10 @@ public class EventDAO {
                     String startDate = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy").format(rs.getTimestamp("startDate"));
                     String content = rs.getNString("content");
                     String imageURL = rs.getString("imageURL");
+                    int ticketFee = rs.getInt("ticketFee");
                     int slot = rs.getInt("slot");
 
-                    EventDTO dto = new EventDTO(eventID, eventName, clubID, categoryID, statusID, startDate, content, imageURL, slot);
+                    EventDTO dto = new EventDTO(eventID, eventName, clubID, categoryID, statusID, startDate, content, imageURL, ticketFee, slot);
                     list.add(dto);
                 }
             }
@@ -417,9 +422,10 @@ public class EventDAO {
                     String start = new SimpleDateFormat("MM-dd-yyyy").format(rs.getDate("startDate"));
                     String content = rs.getNString("content");
                     String imageURL = rs.getString("imageURL");
+                    int ticketFee = rs.getInt("ticketFee");
                     int slot = rs.getInt("slot");
 
-                    EventDTO dto = new EventDTO(eventID, eventName, clubID, categoryID, statusID, start, content, imageURL, slot);
+                    EventDTO dto = new EventDTO(eventID, eventName, clubID, categoryID, statusID, start, content, imageURL, ticketFee, slot);
                     list.add(dto);
                 }
             }
@@ -557,7 +563,7 @@ public class EventDAO {
                     String startDate = new SimpleDateFormat("MMM dd,yyyy").format(rs.getTimestamp("startDate"));
                     String endDate = new SimpleDateFormat("MMM dd,yyyy").format(rs.getTimestamp("endDate"));
                     int slot = rs.getInt("slot");
-                    list.add(new EventDTO(eventID, eventName, clubID, categoryID, statusID, startDate, endDate, null, slot));
+                    list.add(new EventDTO(eventID, eventName, clubID, categoryID, statusID, startDate, endDate, null, 0, slot));
                 }
             }
         } finally {

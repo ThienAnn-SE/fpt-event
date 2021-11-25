@@ -71,10 +71,10 @@
                             </div>
                             <div class="card-body">
                                 <!-- start of form -->
-                                <form action="AdminFormController" method="POST" id="banning_form" class="needs-validation" novalidate>
+                                <form action="admin-form" method="POST" id="banning_form" class="needs-validation" novalidate>
                                     <div class="form-group">
                                         <label for="email">User email:</label>
-                                        <input type="text" class="form-control" id="email" placeholder="Enter user email" name="email" value="${param.userEmail}" required>
+                                        <input type="text" class="form-control" id="email" placeholder="Enter user email" name="email" value="" required>
                                         <div class="valid-feedback">Valid.</div>
                                         <div class="invalid-feedback">Please fill out this field.</div>
                                     </div>
@@ -94,7 +94,7 @@
                                         <div class="valid-feedback">Valid.</div>
                                         <div class="invalid-feedback">Please fill out this field.</div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" name="action" value="ban" class="btn btn-primary">Submit</button>
                                 </form>
                             </div>
                         </div>
@@ -109,7 +109,7 @@
                                 </c:if>
                                 <c:if test="${not empty banRequestList}">
                                     <div class="table table-responsive">
-                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <table class="table table-bordered" id="request-table" width="100%" cellspacing="0">
                                             <thead>
                                                 <tr>
                                                     <th>From</th>
@@ -157,9 +157,7 @@
                                                             </c:if>
                                                         </td>
                                                         <td>
-                                                            <a class="btn btn-primary" href="BanUserController?userEmail=${request.userEmail}">
-                                                                Ban
-                                                            </a>
+                                                            <input type="button" name="btn" value="Ban" onclick="clicked($(this).data('email'))"  data-email="${request.userEmail}" class="btn btn-danger" />
                                                         </td>
                                                     </tr>
                                                 </c:forEach>
@@ -180,7 +178,7 @@
                                 </c:if>
                                 <c:if test="${not empty userBanList}">
                                     <div class="table-responsive">
-                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <table class="table table-bordered" id="ban-table" width="100%" cellspacing="0">
                                             <thead>
                                                 <tr>
                                                     <th>Email</th>
@@ -199,37 +197,33 @@
                                             </tfoot>
                                             <tbody>
                                                 <c:forEach var="user" items="${userBanList}">
-                                                <form action="CancelBanController" method="POST">
                                                     <tr>
                                                         <td>
                                                             <p>${user.email}</p>
-                                                            <input type="hidden" name="email" value="${user.email}"/>
                                                         </td>
                                                         <td>
                                                             <c:if test="${empty user.name}">
                                                                 <p class="text-danger">missing</p>   
                                                             </c:if>
                                                             <p> ${user.name}</p>
-                                                            <input type="hidden" name="name" value="${user.name}"/>
                                                         </td>                                                   
                                                         <td>
                                                             <p>
                                                                 <c:choose>
                                                                     <c:when test="${user.status eq 400}">
-                                                                        <span class="badge badge-pill badge-danger">Invalid</span>
+                                                                        <span class="badge badge-pill badge-danger p-2">Invalid</span>
                                                                     </c:when>
                                                                     <c:when test="${user.status eq 450}">
-                                                                        <span class="badge badge-pill badge-warning">Ban</span>
+                                                                        <span class="badge badge-pill badge-warning p-2">Ban</span>
                                                                     </c:when>
                                                                 </c:choose> 
                                                             </p>
                                                         </td>
                                                         <td>
-                                                            <button type="submit" class="btn badge-danger">Cancel</button>
+                                                            <button type="button" onclick="cancel_click($(this).data('email'), $(this).data('name'), $(this).data('status'))" data-email="${user.email}" data-name="${user.name}" data-status="${user.status}" data-toggle="modal" data-target="#confirm-submit" class="btn badge-danger">Cancel</button>
                                                         </td>
                                                     </tr>
-                                                </form>
-                                            </c:forEach>
+                                                </c:forEach>
                                             </tbody>                                   
                                         </table>
                                     </div>
@@ -242,13 +236,8 @@
                 <!-- End of Main Content -->
 
                 <!-- Footer -->
-                <footer class="sticky-footer bg-white">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2020</span>
-                        </div>
-                    </div>
-                </footer>
+                <jsp:include page="includes/admin-footer.jsp"/>
+
                 <!-- End of Footer -->
 
             </div>
@@ -261,6 +250,45 @@
         <a class="scroll-to-top rounded" href="#page-top">
             <i class="fas fa-angle-up"></i>
         </a>
+
+        <div class="modal fade" id="confirm-submit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form action="admin-form" method="POST">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2>Comment report</h2>
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true"><strong>X</strong></span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Please check the information again before approving the cancellation</p>
+                            <!-- We display the details entered by the user here -->
+                            <table class="table">
+                                <tr>
+                                    <th>User name:</th>
+                                    <td id="user-name"></td>
+                                </tr>
+                                <tr>
+                                    <th>Email:</th>
+                                    <td id="user-email"></td>
+                                </tr>
+                                <tr>
+                                    <th>Status:</th>
+                                    <td id="user-status"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <input type="hidden" id="userEmail" name="userEmail" value=""/>
+                        <div class="modal-footer">
+                            <button type="button" data-dismiss="modal" class="btn btn-primary">Close</button>
+                            <button type="submit" name="action" value="cancel" class="btn btn-danger danger">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <script>
             (function () {
                 'use strict';
@@ -293,6 +321,60 @@
         <!-- Page level plugins -->
         <script src="./asset/vendor/datatables/jquery.dataTables.min.js"></script>
         <script src="./asset/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#ban-table').DataTable();
+                $('#request-table').DataTable();
+            });
+        </script>
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <c:if test="${param.report eq 'success'}">
+            <script>
+            Swal.fire(
+                    'Success!',
+                    'Ban user successfully!',
+                    'success'
+                    );
+            </script>
+        </c:if>
+        <c:if test="${param.cancel eq 'success'}">
+            <script>
+                Swal.fire(
+                        'Success!',
+                        'Cancel banning successfully!',
+                        'success'
+                        );
+            </script>
+        </c:if>
+        <c:if test="${not empty requestScope.error}">
+            <script>
+                Swal.fire(
+                        'Error!',
+                        '${requestScope.error}',
+                        'error'
+                        );
+            </script>
+        </c:if>
+        <script>
+            function clicked(email) {
+                $('#email').val(email);
+                document.getElementById('email').focus();
+            }
+            ;
+
+            function cancel_click(email, name, status) {
+                $('#user-email').text(email);
+                $('#user-name').text(name);
+                if (status === 400) {
+                    $('#user-status').text("Invalid");
+                } else {
+                    $('#user-status').text("Ban");
+                }
+                $('#userEmail').val(email);
+            }
+            ;
+        </script>
     </body>
 
 </html>

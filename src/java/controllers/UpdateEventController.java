@@ -15,13 +15,10 @@ import dtos.EventDTO;
 import dtos.LocationDTO;
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import utils.FileHelper;
 import utils.GetParam;
-import utils.Helper;
 
 /**
  *
@@ -83,7 +79,6 @@ public class UpdateEventController extends HttpServlet {
         return true;
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -108,66 +103,76 @@ public class UpdateEventController extends HttpServlet {
         }
     }
 
-    protected boolean updateEvent(HttpServletRequest request, HttpServletResponse response)
+    /**
+     *
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     * @throws NamingException
+     * @throws SQLException
+     */
+    private void updateEvent(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, NamingException, SQLException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html;charset=UTF-8");
+
+        EventDAO eventDAO = new EventDAO();
+
         //get parameter
-        Integer eventID = GetParam.getIntParams(request, "txtEventID", "Event ID", 10, Integer.MAX_VALUE, null);
-        String eventName = GetParam.getStringParam(request, "txtEventName", "Event name", 10, 1000, null);
-        Integer categoryID = GetParam.getIntParams(request, "txtCategoryID", "Category", 1, 500, null);
-        Integer locationID = GetParam.getIntParams(request, "txtLocationID", "Location", 1, 500, null);
-        Date registerEndDate = GetParam.getDateFromNowToFuture(request, "txtRegisterEndDate", "Registration end date", null);
-        Date startDate = GetParam.getDateFromNowToFuture(request, "txtStartDate", "Start Date", null);
-        Date endDate = GetParam.getDateFromNowToFuture(request, "txtEndDate", "End date", null);
+        Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 10, Integer.MAX_VALUE, null);
+
+        if (eventID == null) {
+            throw new ServletException("Missing parameter!");
+        }
+
+        EventDTO event = eventDAO.getEventByID(eventID);
+        if (event == null) {
+            throw new SQLException("Event with the given ID can not be found");
+        }
+
+        if (event.getStatusID() != 300) {
+            throw new IllegalArgumentException("This event can not be updated anymore");
+        }
+
+        String eventName = GetParam.getStringParam(request, "eventName", "Event name", 10, 1000, event.getEventName());
+        Integer categoryID = GetParam.getIntParams(request, "categoryID", "Category", 1, 500, event.getCategoryID());
+        Integer locationID = GetParam.getIntParams(request, "locationID", "Location", 1, 500, event.getLocationID());
+        Date registerEndDate = GetParam.getDateFromNowToFuture(request, "registerEndDate", "Registration end date", null);
+        Date startDate = GetParam.getDateFromNowToFuture(request, "startDate", "Start Date", null);
+        Date endDate = GetParam.getDateFromNowToFuture(request, "endDate", "End date", null);
         String imageURL = GetParam.getFileParam(request, "txtImageURL", "Image", 1024 * 1024, FileHelper.imageExtension);
-        String content = GetParam.getStringParam(request, "txtContent", "Content", 0, Integer.MAX_VALUE, null);
-        Integer ticketFee = GetParam.getIntParams(request, "txtTicketFee", "Ticket fee", 0, 10000000, 0);
-        Integer slot = GetParam.getIntParams(request, "txtSlot", "Slot", 0, 5000, null);
+        String content = GetParam.getStringParam(request, "txtContent", "Content", 0, Integer.MAX_VALUE, event.getContent());
+        Integer ticketFee = GetParam.getIntParams(request, "ticketFee", "Ticket fee", 0, 10000000, event.getTicketFee());
+        Integer slot = GetParam.getIntParams(request, "slot", "Slot", 0, 5000, event.getSlot());
+
         //validate paramter
-        if (eventID == null || eventName == null || categoryID == null || locationID == null || registerEndDate == null
-                || startDate == null || endDate == null || content == null || slot == null) {
-            return false;
+        if (registerEndDate == null || startDate == null || endDate == null) {
+            throw new IllegalArgumentException();
         }
 
         CategoryDAO categoryDAO = new CategoryDAO();
         if (categoryDAO.getCategoryByID(categoryID) == null) {
-            request.setAttribute("errorMessage", "This category with given ID does not exist");
-            return false;
+            throw new SQLException("This category with given ID does not exist");
         }
 
         LocationDAO locationDAO = new LocationDAO();
         if (locationDAO.getLocationByID(locationID) == null) {
-            request.setAttribute("errorMessage", "This location with given ID does not exist");
+            throw new SQLException("This location with given ID does not exist");
         }
 
         if (registerEndDate.after(startDate)) {
-            request.setAttribute("errorMessage", "Registration end date can not be after event start date");
-            return false;
+            throw new IllegalArgumentException("Registration end date can not be after event start date");
         }
 
         if (startDate.after(endDate)) {
-            request.setAttribute("errorMessage", "Event start date can not be after event end date");
-            return false;
-        }
-
-        EventDAO eventDAO = new EventDAO();
-        EventDTO event = eventDAO.getEventByID(eventID);
-        if (event == null) {
-            request.setAttribute("errorMessage", "Event with the given ID can not be found");
-            return false;
-        }
-
-        if (event.getStatusID() != 300) {
-            request.setAttribute("errorMessage", "This event can not be updated anymore");
-            return false;
+            throw new IllegalArgumentException("Event start date can not be after event end date");
         }
 
         EventRegisterDAO registerDAO = new EventRegisterDAO();
         if (registerDAO.getRegisterNumByEventID(eventID) > slot) {
-            request.setAttribute("errorMessage", "Current number of registration is greater than your input slot");
-            return false;
+            throw new IllegalArgumentException("Current number of registration is greater than your input slot");
         }
 
         if (imageURL == null) {
@@ -176,21 +181,48 @@ public class UpdateEventController extends HttpServlet {
             File oldImageURL = new File(event.getImageURL());
             if (!oldImageURL.delete()) {
                 //delete the current image
-                request.setAttribute("errorMessage", "Failed to delete the current event image");
-                return false;
+                throw new ServletException("Failed to delete the current event image");
             }
         }
 
         SimpleDateFormat frm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         event = new EventDTO(eventID, eventName, locationID, categoryID, frm.format(registerEndDate), frm.format(startDate), frm.format(endDate), slot, imageURL, content, ticketFee);
-        boolean result = eventDAO.UpdateEvent(event);
-        if (!result) {
-            request.setAttribute("errorMessage", "Some thing went wrong, please try again later!!");
-            return false;
+        if (!eventDAO.UpdateEvent(event)) {
+            throw new SQLException("Internal error!");
         }
 
         //send email
-        return true;
+        response.sendRedirect(Routers.EVENT_MANAGEMENT_CONTROLLER + "?update=success");
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @throws SecurityException
+     * @throws IOException
+     * @throws NamingException
+     * @throws SQLException
+     */
+    private void cancelEvent(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException, NamingException, SQLException {
+        response.setContentType("text/html;charset=UTF-8");
+        Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 0, Integer.MAX_VALUE, null);
+        if (eventID == null) {
+            throw new ServletException("Missing parameter!");
+        }
+
+        EventDAO eventDAO = new EventDAO();
+
+        if (eventDAO.getEventByID(eventID) == null) {
+            throw new SQLException("Event does not exist!");
+        }
+
+        if (!eventDAO.changeEventStatus(eventID, 400)) {
+            throw new SQLException("Internal error!");
+        }
+
+        response.sendRedirect(Routers.EVENT_MANAGEMENT_CONTROLLER + "?cancel=success");
     }
 
     /**
@@ -204,23 +236,24 @@ public class UpdateEventController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        boolean result = false;
         try {
             //get parameter
-            String btAction = GetParam.getStringParam(request, "btAction", "Action", 0, 50, null);
+            String action = GetParam.getStringParam(request, "action", "Action", 0, 10, null);
             //check valid parameter
-            if (btAction != null) {
+            if (action != null) {
                 //perform action
-                result = updateEvent(request, response);
-                //return result
-                if (result) {
-                    response.sendRedirect(Routers.EVENT_MANAGEMENT_CONTROLLER);
-                } else {
-                    request.getRequestDispatcher(Routers.UPDATE_EVENT_PAGE).forward(request, response);
+                if (action.equalsIgnoreCase("update")) {
+                    updateEvent(request, response);
+                }
+                if (action.equalsIgnoreCase("cancel")) {
+                    cancelEvent(request, response);
                 }
             } else {
-                request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+                throw new ServletException("Missing paramter!");
             }
+        } catch (IllegalArgumentException ex) {
+            request.setAttribute("error", ex.getMessage());
+            doGet(request, response);
         } catch (IOException | SQLException | NamingException | ServletException ex) {
             log(ex.getMessage());
             request.setAttribute("errorMessage", ex.getMessage());

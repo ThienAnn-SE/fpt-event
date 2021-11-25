@@ -85,7 +85,7 @@
                                     </li>
                                     <li>
                                         <div class="text-field">
-                                            <input autocomplete="off" type="date" id="start" name="startDate"/>
+                                            <input autocomplete="off" type="datetime-local" id="start" name="startDate" value="2021-01-01T12:00:00"/>
                                             <label for="start">Start Date</label>
                                             <c:if test="${not empty startDateError}">
                                                 <p class="text text-danger">*${startDateError}</p>
@@ -94,7 +94,7 @@
                                     </li>
                                     <li>
                                         <div class="text-field">
-                                            <input autocomplete="off" type="datetime-local" id="end" name="endDate"/>
+                                            <input autocomplete="off" type="datetime-local" id="end" name="endDate" value="2021-01-01T12:00:00"/>
                                             <label for="end">End Date</label>
                                             <c:if test="${not empty endDateError}">
                                                 <p class="text text-danger">*${endDateError}</p>
@@ -103,7 +103,7 @@
                                     </li>
                                     <li>
                                         <div class="text-field">
-                                            <input autocomplete="off" type="datetime-local" id="registration" name="registerEndDate">
+                                            <input autocomplete="off" type="date" id="registration" name="registerEndDate">
                                             <label for="registration">Registration End Date</label>
                                             <c:if test="${not empty registerEndDateError}">
                                                 <p class="text text-danger">*${registerEndDateError}</p>

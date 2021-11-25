@@ -13,7 +13,7 @@ public class BanRequestDTO {
 
     private int requestID;
     private int clubID;
-    private String userMail;
+    private String userEmail;
     private String sendDate;
     private String endDate;
     private boolean requestStatus;
@@ -21,7 +21,7 @@ public class BanRequestDTO {
     public BanRequestDTO(int requestID, int clubID, String userMail, String sendDate, String endDate, boolean requestStatus) {
         this.requestID = requestID;
         this.clubID = clubID;
-        this.userMail = userMail;
+        this.userEmail = userMail;
         this.sendDate = sendDate;
         this.endDate = endDate;
         this.requestStatus = requestStatus;
@@ -30,14 +30,14 @@ public class BanRequestDTO {
     public BanRequestDTO(int requestID, int clubID, String userMail, String sendDate, boolean requestStatus) {
         this.requestID = requestID;
         this.clubID = clubID;
-        this.userMail = userMail;
+        this.userEmail = userMail;
         this.sendDate = sendDate;
         this.requestStatus = requestStatus;
     }
 
     public BanRequestDTO(int clubID, String userMail, String sendDate) {
         this.clubID = clubID;
-        this.userMail = userMail;
+        this.userEmail = userMail;
         this.sendDate = sendDate;
     }
 
@@ -60,12 +60,12 @@ public class BanRequestDTO {
         this.clubID = clubID;
     }
 
-    public String getUserMail() {
-        return userMail;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUserMail(String userMail) {
-        this.userMail = userMail;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public String getSendDate() {

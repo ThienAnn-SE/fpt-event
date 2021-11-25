@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Filter.java to edit this template
  */
 package filter;
 
@@ -27,10 +26,9 @@ import utils.Helper;
  *
  * @author thien
  */
-@WebFilter(filterName = "StudentFilter", urlPatterns = {"/" + Routers.REGISTER_EVENT_CONTROLLER,
-    "/" + Routers.FOLLOW_EVENT_CONTROLLER, "/" + Routers.COMMENT_CONTROLLER, "/" + Routers.COMMENT_CONTROLLER,
-    "/" + Routers.VIEW_USER_CONTROLLER})
-public class StudentFilter implements Filter {
+@WebFilter(filterName = "Leader", urlPatterns = {"/" + Routers.ADD_EVENT_CONTROLLER, "/" + Routers.UPDATE_EVENT_CONTROLLER,
+     "/" + Routers.EVENT_MANAGEMENT_CONTROLLER, "/" + Routers.VIEW_REGISTERED_USER_CONTROLLER, "/" + Routers.BAN_USER_CONTROLLER})
+public class Leader implements Filter {
 
     private static final boolean debug = true;
 
@@ -39,7 +37,7 @@ public class StudentFilter implements Filter {
     // configured. 
     private FilterConfig filterConfig = null;
 
-    public StudentFilter() {
+    public Leader() {
     }
 
     /**
@@ -51,7 +49,6 @@ public class StudentFilter implements Filter {
      * @exception IOException if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
-    @Override
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
@@ -61,14 +58,15 @@ public class StudentFilter implements Filter {
             HttpServletResponse res = (HttpServletResponse) response;
 
             Context env = (Context) new InitialContext().lookup("java:comp/env");
-            Integer minRole = (Integer) env.lookup("studentRole");
+            Integer minRole = (Integer) env.lookup("clubRole");
+            Integer maxRole = (Integer) env.lookup("departmentRole");
             if (!Helper.isLogin(req)) {
                 res.sendRedirect("https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/fpt-event/login"
                         + "&response_type=code&client_id=469898869226-81mot377rp6tcd9d4ka8oun0o62bjvao.apps.googleusercontent.com&approval_prompt=force"
                 );
                 return;
             }
-            if (Helper.protectedRouter(req, res, minRole, minRole, Routers.ERROR_PAGE)) {
+            if (Helper.protectedRouter(req, res, minRole, maxRole, Routers.ERROR_PAGE)) {
                 chain.doFilter(request, response);
             }
         } catch (Exception ex) {
@@ -80,8 +78,6 @@ public class StudentFilter implements Filter {
 
     /**
      * Return the filter configuration object for this filter.
-     *
-     * @return
      */
     public FilterConfig getFilterConfig() {
         return (this.filterConfig);
@@ -99,21 +95,17 @@ public class StudentFilter implements Filter {
     /**
      * Destroy method for this filter
      */
-    @Override
     public void destroy() {
     }
 
     /**
      * Init method for this filter
-     *
-     * @param filterConfig
      */
-    @Override
     public void init(FilterConfig filterConfig) {
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {
-                log("CommonRoleFilter:Initializing filter");
+                log("Leader:Initializing filter");
             }
         }
     }
@@ -121,4 +113,5 @@ public class StudentFilter implements Filter {
     public void log(String msg) {
         filterConfig.getServletContext().log(msg);
     }
+
 }

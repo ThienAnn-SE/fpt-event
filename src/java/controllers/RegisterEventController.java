@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.mail.MessagingException;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import utils.AutoMailerHelper;
 import utils.GetParam;
 import utils.Helper;
 import utils.PaymentServices;
@@ -162,7 +164,11 @@ public class RegisterEventController extends HttpServlet {
                     response.sendRedirect(result);
                 }
             } else {
-
+                if (executeCashHandler(request, response)) {
+                    response.sendRedirect(Routers.SEARCH_EVENT_CONTROLLER + "?success=true");
+                } else {
+                    request.getRequestDispatcher(Routers.ERROR_PAGE).forward(request, response);
+                }
             }
 
         } catch (Exception ex) {
@@ -198,7 +204,17 @@ public class RegisterEventController extends HttpServlet {
         EventRegisterDAO registerDAO = new EventRegisterDAO();
 
         //add registration
-        return registerDAO.addNewEventRegistration(new EventRegisterDTO(eventID, email, registerDate));
+        if (!registerDAO.addNewEventRegistration(new EventRegisterDTO(eventID, email, registerDate))) {
+            request.setAttribute("errorMessage", "Internal error!");
+            return false;
+        }
+        EventDAO eventDAO = new EventDAO();
+
+        AutoMailerHelper sendMail = new AutoMailerHelper();
+
+        sendMail.sendEventRegistrationMail(email, eventDAO.getEventByID(eventID).getEventName());
+
+        return true;
     }
 
     /**
@@ -233,7 +249,7 @@ public class RegisterEventController extends HttpServlet {
     }
 
     protected boolean executeCashHandler(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException, NamingException, SQLException {
+            throws IOException, ServletException, NamingException, SQLException, MessagingException {
         response.setContentType("text/html;charset=UTF-8");
         Integer eventID = GetParam.getIntParams(request, "eventID", "Event ID", 0, Integer.MAX_VALUE, null);
 
@@ -265,6 +281,10 @@ public class RegisterEventController extends HttpServlet {
             request.setAttribute("errorMessage", "internal error");
             return false;
         }
+
+        AutoMailerHelper sendMail = new AutoMailerHelper();
+
+        sendMail.sendEventRegistrationMail(email, event.getEventName());
         return true;
     }
 }

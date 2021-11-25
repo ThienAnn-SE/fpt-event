@@ -57,7 +57,7 @@ public class ExecutePaymentController extends HttpServlet {
         String userEmail = (String) session.getAttribute("email");
         int eventID = (int) session.getAttribute("eventID");
         //get current Date
-        String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis()));
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date(System.currentTimeMillis()));
         //add new registration
         EventRegisterDAO registerDAO = new EventRegisterDAO();
         if (!registerDAO.addNewEventRegistration(new EventRegisterDTO(eventID, userEmail, currentDate))) {

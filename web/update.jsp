@@ -37,6 +37,7 @@
                                         id="upload"
                                         type="file"
                                         accept=".png, .jpeg, .jpg"
+                                        name="imageURL"
                                         hidden
                                         />
                                     <label for="upload">
@@ -63,7 +64,7 @@
                                         <p class="text text-danger">*${contentError}</p>
                                     </c:if>
                                     <div class="card-body">
-                                        <textarea id="tinymce">${event.content}</textarea>
+                                        <textarea id="tinymce" name="content">${event.content}</textarea>
                                         <p class="font-weight-lighter">Tip: you can click the "<i class="fa fa-eye" aria-hidden="true"></i>" icon to preview the content!!</p>
                                     </div>
                                 </div>
@@ -134,7 +135,7 @@
                                                 <option disabled hidden selected>Choose the location</option>
                                                 <c:forEach var="location" items="${locationList}">
                                                     <option value="${location.locationID}"
-                                                            <c:if test="${location.locationID eq event.eventID}">
+                                                            <c:if test="${location.locationID eq event.locationID}">
                                                                 selected
                                                             </c:if>
                                                             >
@@ -169,7 +170,7 @@
                                     <li>
                                         <div class="event-submit">
                                             <input type="hidden" name="eventID" value="${event.eventID}"/>
-                                            <input class="btn" type="submit" name="btAction" value="update" />
+                                            <input class="btn" type="submit" name="action" value="update" />
                                         </div>
                                     </li>
                                 </ul>

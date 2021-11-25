@@ -6,7 +6,6 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Feedback</title>
-        <link rel="stylesheet" href="./asset/css/style.css" />
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
             rel="stylesheet"
@@ -24,6 +23,10 @@
             type="text/css"
             href="https://cdn.datatables.net/v/bs5/dt-1.11.3/datatables.min.css"
             />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="./asset/css/style.css" />
 
     </head>
     <body>
@@ -58,13 +61,13 @@
                                                         No.
                                                     </th>
                                                     <th>
+                                                        From
+                                                    </th>
+                                                    <th>
                                                         Feedback
                                                     </th>
                                                     <th>
                                                         Rating
-                                                    </th>
-                                                    <th>
-                                                        Action
                                                     </th>
                                                 </tr>
                                             </thead>
@@ -75,13 +78,13 @@
                                                             ${counter.count}
                                                         </td>
                                                         <td>
+                                                            ${item.email}
+                                                        </td>
+                                                        <td>
                                                             ${item.feedback}
                                                         </td>
                                                         <td>
-                                                            ${item.vote}
-                                                        </td>
-                                                        <td>
-                                                            <a href="#" class="text text-danger">Report</a>
+                                                            ${item.vote}<span><i class="fa fa-star" aria-hidden="true"></i></span>
                                                         </td>
                                                     </tr>
                                                 </c:forEach>

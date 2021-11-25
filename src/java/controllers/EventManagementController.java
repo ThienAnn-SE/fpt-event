@@ -13,20 +13,15 @@ import daos.EventFollowDAO;
 import daos.EventRegisterDAO;
 import daos.LocationDAO;
 import daos.PaymentDAO;
-import daos.UserDAO;
 import dtos.CategoryDTO;
 import dtos.ClubDTO;
 import dtos.EventDTO;
 import dtos.EventRegisterDTO;
 import dtos.LocationDTO;
 import dtos.PaymentDTO;
-import dtos.UserDTO;
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,8 +29,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import utils.FileHelper;
-import utils.GetParam;
 
 /**
  *

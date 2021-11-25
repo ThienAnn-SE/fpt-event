@@ -11,8 +11,6 @@ import daos.UserDAO;
 import dtos.UserDTO;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.mail.MessagingException;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;

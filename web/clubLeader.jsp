@@ -230,10 +230,18 @@
                                                 <tbody>
                                                     <c:forEach var="payment" items="${paymentList}">
                                                         <tr>
-                                                            <td>${payment.paymentDescription}</td>
-                                                            <td>${payment.paymentDate}</td>
-                                                            <td>${payment.paymentMethod}</td>
-                                                            <td>${payment.paymentTotal}</td>
+                                                            <td>
+                                                                ${payment.paymentDescription}
+                                                            </td>
+                                                            <td>
+                                                                ${payment.paymentDate}
+                                                            </td>
+                                                            <td>
+                                                                ${payment.paymentMethod}
+                                                            </td>
+                                                            <td>
+                                                                ${payment.paymentTotal}<c:if test="${payment.paymentMethod eq 'paypal'}">&#36;</c:if><c:if test="${payment.paymentMethod eq 'cash'}">VND</c:if>
+                                                            </td>
                                                             <c:if test="${payment.statusDescription eq 'pending'}">
                                                                 <td>
                                                                     <span class="label-item warning label-dot mr-2"></span>
@@ -275,11 +283,6 @@
                                             </a>
                                         </div>
                                         <div class="table-body">
-                                            <c:if test="${param.success}">
-                                                <div class="alert alert-success alert-dismissible fade show">
-                                                    <strong>Success!</strong> Add new event successfully
-                                                </div>  
-                                            </c:if>
                                             <div class="table table-responsive">
                                                 <table
                                                     id="event-table"
@@ -365,29 +368,34 @@
                                                                     </div>
                                                                 </td>
                                                                 <td>
-                                                                    <form action="UpdateEventController" method="POST" id="update-form">
-                                                                        <a href="ViewEventController?eventID=${event.eventID}" class="btn-icon active" data-tooltip="tooltip" title="View event detail">
-                                                                            <i class="fas fa-eye"></i>
+                                                                    <div class="dropdown show">
+                                                                        <a class="btn-icon dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                            <i class="fa fa-cog"></i>
                                                                         </a>
-                                                                        <a href="leader-registrationList?eventID=${event.eventID}" class="btn-icon" data-tooltip="tooltip"  title="View registration">
-                                                                            <i class="fa fa-users"></i>
-                                                                        </a>
-                                                                        <c:if test="${event.statusID eq 500 or event.statusID eq 530 or event.statusID eq 550}">
-                                                                            <a href="UpdateEventController?eventID=${event.eventID}" class="btn-icon" data-tooltip="tooltip" title="Edit event">
-                                                                                <i class="fas fa-edit"></i>
+                                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                                            <a href="ViewEventController?eventID=${event.eventID}" class="dropdown-item btn-icon">
+                                                                                <i class="fas fa-eye"></i> View event detail
                                                                             </a>
-                                                                        </c:if>
-                                                                        <c:if test="${ event.statusID  ne 400 and event.statusID ne 550 and event.statusID ne 570}">
-                                                                            <a  href="#confirm-cancel" class="btn-icon" id="cancel-link" data-tooltip="tooltip" title="Cancel event" data-toggle="modal" data-id="${event.eventID}">
-                                                                                <i class="fas fa-trash-alt"></i>
+                                                                            <a href="leader-registrationList?eventID=${event.eventID}" class="dropdown-item btn-icon">
+                                                                                <i class="fa fa-users"></i> View registration
                                                                             </a>
-                                                                        </c:if>
-                                                                        <c:if test="${event.statusID eq 570}">
-                                                                            <a href="feedback?action=view&eventID=${event.eventID}" class="btn-icon" data-tooltip="tooltip" title="View feedback">
-                                                                                <i class="fa fa-comments" aria-hidden="true"></i>
-                                                                            </a>
-                                                                        </c:if>
-                                                                    </form>
+                                                                            <c:if test="${event.statusID eq 300}">
+                                                                                <a href="UpdateEventController?eventID=${event.eventID}" class="dropdown-item btn-icon">
+                                                                                    <i class="fas fa-edit"></i> Edit event
+                                                                                </a>
+                                                                            </c:if>
+                                                                            <c:if test="${ event.statusID  ne 400 and event.statusID ne 550}">
+                                                                                <a  href="#confirm-cancel" class="dropdown-item btn-icon" id="cancel-link" data-toggle="modal" onclick="clicked_a($(this).data('id'))" data-id="${event.eventID}">
+                                                                                    <i class="fas fa-trash-alt"></i> Cancel event
+                                                                                </a>
+                                                                            </c:if>
+                                                                            <c:if test="${event.statusID eq 570}">
+                                                                                <a href="feedback?action=view&eventID=${event.eventID}" class="dropdown-item btn-icon">
+                                                                                    <i class="fa fa-comments" aria-hidden="true"></i> View feedback
+                                                                                </a>
+                                                                            </c:if>
+                                                                        </div>
+                                                                    </div>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>
@@ -435,7 +443,7 @@
                                 Cancelled event will not be viewed or interacted by any one except you!</p>
                         </div>
                         <div class="modal-footer">
-                            <input type="hidden" name="btAction" value="cancel"/>
+                            <input type="hidden" name="action" value="cancel"/>
                             <input type="hidden" name="eventID" id="eventID" value=""/>
                             <div class="form-btn">
                                 <button type="button" id="cancel" data-dismiss="modal">Cancel</button>
@@ -477,133 +485,144 @@
                 type="text/javascript"
                 src="https://cdn.datatables.net/v/bs5/dt-1.11.3/datatables.min.js"
             ></script>
-            <script>
-                $('#cancel-link').click(function (){
-                    $('#eventID').val($('a[href="#confirm-cancel"]').data('id'));
-                });
-            </script>
-            <script>
-                $(".alert-dismissible").fadeTo(4000, 1000).slideUp(1000, function () {
-                    $(".alert-dismissible").alert('close');
-                });
-            </script>
-            <script>
-                $(document).ready(function () {
-                    $('[data-tooltip="tooltip"]').tooltip();
-                });
+            <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-                $('#confirm-edit').on('show.bs.modal', function (e) {
-                    $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
-                });
-            </script>
-
+        <c:if test="${param.add eq 'success'}">
             <script>
-                $(document).ready(function () {
-                    $("#event-table").DataTable();
-                    $("#user-table").DataTable();
-                });
+                                                                                    Swal.fire(
+                                                                                            'Success!',
+                                                                                            'Add new event successfully!',
+                                                                                            'success'
+                                                                                            );
+            </script>
+        </c:if> 
+        <c:if test="${param.cancel eq 'success'}">
+            <script>
+                Swal.fire(
+                        'Success!',
+                        'Cancel event successfully!',
+                        'success'
+                        );
+            </script>
+        </c:if> 
+        <script>
+            function clicked_a(eventID) {
+                $('#eventID').val(eventID);
+            }
+        </script>
+        <script>
+            $('#confirm-edit').on('show.bs.modal', function (e) {
+                $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+            });
+        </script>
 
-                var days = document.getElementById("days");
-                var chart = document.getElementById("lineChart");
-                var array = [],
-                        dayShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-                        monthsShort = [
-                            "Jan",
-                            "Feb",
-                            "Mar",
-                            "Apr",
-                            "May",
-                            "Jun",
-                            "Jul",
-                            "Aug",
-                            "Sep",
-                            "Oct",
-                            "Nov",
-                            "Dec",
-                        ],
-                        dataFollowList = [
+        <script>
+            $(document).ready(function () {
+                $("#event-table").DataTable();
+                $("#user-table").DataTable();
+            });
+
+            var days = document.getElementById("days");
+            var chart = document.getElementById("lineChart");
+            var array = [],
+                    dayShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+                    monthsShort = [
+                        "Jan",
+                        "Feb",
+                        "Mar",
+                        "Apr",
+                        "May",
+                        "Jun",
+                        "Jul",
+                        "Aug",
+                        "Sep",
+                        "Oct",
+                        "Nov",
+                        "Dec",
+                    ],
+                    dataFollowList = [
             <c:forEach var="follow" items="${dataFollowList}">
                 ${follow},
             </c:forEach>
-                        ],
-                        dataRegisterList = [
+                    ],
+                    dataRegisterList = [
             <c:forEach var="register" items="${dataRegisterList}">
                 ${register},
             </c:forEach>
-                        ];
-                array = getDates();
-                function getDates() {
-                    var dateArray = [];
-                    var currentDate = new Date();
-                    for (var i = 0; i < days.value; i++) {
-                        var temp = [
-                            dayShort[currentDate.getDay()],
-                            monthsShort[currentDate.getMonth()] + " " + currentDate.getDate(),
-                            currentDate.getFullYear(),
-                        ];
-                        dateArray.push(temp);
-                        currentDate.setDate(currentDate.getDate() - 1);
-                    }
-                    return dateArray;
+                    ];
+            array = getDates();
+            function getDates() {
+                var dateArray = [];
+                var currentDate = new Date();
+                for (var i = 0; i < days.value; i++) {
+                    var temp = [
+                        dayShort[currentDate.getDay()],
+                        monthsShort[currentDate.getMonth()] + " " + currentDate.getDate(),
+                        currentDate.getFullYear(),
+                    ];
+                    dateArray.push(temp);
+                    currentDate.setDate(currentDate.getDate() - 1);
                 }
-                function getFollowData() {
-                    var data = [];
-                    for (var i = 0; i < days.value; i++) {
-                        data.push(dataFollowList[i]);
-                    }
-                    return data;
+                return dateArray;
+            }
+            function getFollowData() {
+                var data = [];
+                for (var i = 0; i < days.value; i++) {
+                    data.push(dataFollowList[i]);
                 }
-                function getRegisterData() {
-                    var data = [];
-                    for (var i = 0; i < days.value; i++) {
-                        data.push(dataRegisterList[i]);
-                    }
-                    return data;
+                return data;
+            }
+            function getRegisterData() {
+                var data = [];
+                for (var i = 0; i < days.value; i++) {
+                    data.push(dataRegisterList[i]);
                 }
+                return data;
+            }
 
-                days.onchange = () => {
-                    array = getDates();
-                    lineChart.config.data.labels = array.reverse();
-                    lineChart.config.data.datasets[0].data = getFollowData().reverse();
-                    lineChart.config.data.datasets[1].data = getRegisterData().reverse();
-                    lineChart.update();
-                };
-                var lineChart = new Chart(chart, {
-                    type: "line",
-                    data: {
-                        labels: array.reverse(),
-                        datasets: [
-                            {
-                                label: "Students Followed",
-                                backgroundColor: "rgb(255, 99, 132)",
-                                borderColor: "rgb(255, 99, 132)",
-                                data: getFollowData().reverse(),
-                            },
-                            {
-                                label: "Students Registered",
-                                backgroundColor: "rgb(75, 192, 192)",
-                                borderColor: "rgb(75, 192, 192)",
-                                data: getRegisterData().reverse(),
-                            },
-                        ],
-                    },
-                    options: {
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: "Number of students registered and followed",
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    title: (context) => {
-                                        return context[0].label.replaceAll(",", " ");
-                                    },
+            days.onchange = () => {
+                array = getDates();
+                lineChart.config.data.labels = array.reverse();
+                lineChart.config.data.datasets[0].data = getFollowData().reverse();
+                lineChart.config.data.datasets[1].data = getRegisterData().reverse();
+                lineChart.update();
+            };
+            var lineChart = new Chart(chart, {
+                type: "line",
+                data: {
+                    labels: array.reverse(),
+                    datasets: [
+                        {
+                            label: "Students Followed",
+                            backgroundColor: "rgb(255, 99, 132)",
+                            borderColor: "rgb(255, 99, 132)",
+                            data: getFollowData().reverse(),
+                        },
+                        {
+                            label: "Students Registered",
+                            backgroundColor: "rgb(75, 192, 192)",
+                            borderColor: "rgb(75, 192, 192)",
+                            data: getRegisterData().reverse(),
+                        },
+                    ],
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Number of students registered and followed",
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: (context) => {
+                                    return context[0].label.replaceAll(",", " ");
                                 },
                             },
                         },
                     },
-                });
-                Chart.defaults.font.size = 14;
+                },
+            });
+            Chart.defaults.font.size = 14;
         </script>
     </body>
 </html>

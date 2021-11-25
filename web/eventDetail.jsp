@@ -84,35 +84,37 @@
                                 </div>
                                 <div class="event-text" >
                                     <c:out value="${event.content}" escapeXml="false"/>
-                                    <c:if test="${isFollowed}">
-                                        <button    
-                                            <c:if test="${not empty param.focus}">
-                                                autofocus
-                                            </c:if>>
-                                            <a href="FollowEventController?btAction=unfollow&eventID=${event.eventID}" class="btn ">
-                                                <span class="btn-text" >followed</span>
-                                                <span class="btn-border"></span>
+                                    <c:if test="${sessionScope.role eq 1}">
+                                        <c:if test="${isFollowed}">
+                                            <button    
+                                                <c:if test="${not empty param.focus}">
+                                                    autofocus
+                                                </c:if>>
+                                                <a href="FollowEventController?btAction=unfollow&eventID=${event.eventID}" class="btn ">
+                                                    <span class="btn-text" >followed</span>
+                                                    <span class="btn-border"></span>
 
-                                            </a>
-                                        </button>
+                                                </a>
+                                            </button>
+                                        </c:if>
+                                        <c:if test="${not isFollowed}">
+                                            <button
+                                                <c:if test="${not empty param.focus}">
+                                                    autofocus
+                                                </c:if>>
+                                                <a href="FollowEventController?btAction=follow&eventID=${event.eventID}" class="btn btn-follow">
+                                                    <span class="btn-text">follow event</span>
+                                                    <span><i class="fa fa-heart" aria-hidden="true"></i></span>
+                                                </a>
+                                            </button>
+                                        </c:if>
+                                        <c:if test="${event.statusID ne 570}">
+                                            <a href="RegisterEventController?eventID=${event.eventID}" class="btn">
+                                                <span class="btn-text">book ticket</span>
+                                                <span class="btn-border"></span>
+                                            </a>  
+                                        </c:if> 
                                     </c:if>
-                                    <c:if test="${not isFollowed}">
-                                        <button
-                                            <c:if test="${not empty param.focus}">
-                                                autofocus
-                                            </c:if>>
-                                            <a href="FollowEventController?btAction=follow&eventID=${event.eventID}" class="btn btn-follow">
-                                                <span class="btn-text">follow event</span>
-                                                <span><i class="fa fa-heart" aria-hidden="true"></i></span>
-                                            </a>
-                                        </button>
-                                    </c:if>
-                                    <c:if test="${event.statusID ne 570}">
-                                        <a href="RegisterEventController?eventID=${event.eventID}" class="btn">
-                                            <span class="btn-text">book ticket</span>
-                                            <span class="btn-border"></span>
-                                        </a>  
-                                    </c:if>                                
                                 </div>
                             </div>
                             <hr>
@@ -130,7 +132,7 @@
                                                     </div>
                                                     <div class="comment-text">
                                                         <div class="avatar-name">
-                                                            <h5>${comment.email}</h5>
+                                                            <h5 class="comment">${comment.email}</h5>
                                                             <span>${comment.postDate}</span>
                                                             <c:if test="${not empty sessionScope.email and (comment.email ne sessionScope.email)}">
                                                                 <a href="#" data-href="comment?commentID=${comment.commentID}&eventID=${event.eventID}" class="comment-reply-link" data-target="#report"  data-toggle="modal">
@@ -174,12 +176,11 @@
                                     </div>
                                 </div>
 
-
                                 <div class="comment-form">
                                     <c:if test="${empty sessionScope.email}">
                                         Please log in to comment!!
                                     </c:if>
-                                    <c:if test="${not empty sessionScope.email}">
+                                    <c:if test="${not empty sessionScope.email and sessionScope.role ne 4 and sessionScope.role ne 5}">
                                         <div class="comment-form-container">
                                             <h3 class="form-title">leave a comment</h3>
                                             <form action="comment" class="row" method="POST" enctype='multipart/form-data' accept-charset="utf-8">
@@ -208,7 +209,6 @@
                             </div>
                         </article>
                     </div>
-
                     <div class="col-lg-4">
                         <div class="event-sidebar">
                             <div class="widget">
@@ -238,6 +238,22 @@
         </div>
         <jsp:include page="./includes/footer.jsp"></jsp:include>
             <script src="./asset/js/main.js"></script>
+
+            <script>
+                elements = document.getElementsByClassName('comment');
+                for (var i = elements.length; i--; ) {
+                    var email = elements[i].innerHTML;
+                    if (email.includes('@fe.edu.vn') === true) {
+                        elements[i].style.color = "red";
+                        elements[i].innerHTML += '<span class="badge badge-pill badge-danger">  &#124; Mentor</span>';
+                    }
+                }
+
+                $('#report').on('show.bs.modal', function (e) {
+                    $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+                });
+                $('#cancel').css('cursor', 'pointer');
+            </script>
             <script
                 src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
                 integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
@@ -262,12 +278,5 @@
                         );
             </script>
         </c:if>
-        <script>
-            $('#report').on('show.bs.modal', function (e) {
-                $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
-            });
-
-            $('#cancel').css('cursor', 'pointer');
-        </script>
     </body>
 </html>

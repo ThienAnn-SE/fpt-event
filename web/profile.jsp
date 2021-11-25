@@ -447,7 +447,16 @@
                         'Success!',
                         'You updated your profile successfully!',
                         'success'
-                        )
+                        );
+            </script>
+        </c:if>
+        <c:if test="${param.rating eq 'success'}">
+            <script>
+                Swal.fire(
+                        'Success!',
+                        'Your feedback have been sent successfully!',
+                        'success'
+                        );
             </script>
         </c:if>
         <c:if test="${requestScope.message eq 'Update failed'}">
@@ -456,7 +465,16 @@
                         'Fail!',
                         'There are some error happen when you update!',
                         'error'
-                        )
+                        );
+            </script>
+        </c:if>
+        <c:if test="${param.feedback eq 'fail'}">
+            <script>
+                Swal.fire(
+                        'Fail!',
+                        'You have feedbacked this event already!',
+                        'error'
+                        );
             </script>
         </c:if>
         <script>
