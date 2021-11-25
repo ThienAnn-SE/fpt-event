@@ -95,6 +95,7 @@ public class AddEventController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         //initialized resource
         EventDAO eventDAO = new EventDAO();
+        LocationDAO locationDAO = new LocationDAO();
         //get and validate params
         String eventName = GetParam.getStringParam(request, "eventName", "Event name", 10, 100, null);
         Integer clubID = GetParam.getIntParams(request, "clubID", "Club ID", 1, 500, null);
@@ -130,6 +131,10 @@ public class AddEventController extends HttpServlet {
         if (startDate.after(endDate)) {
             request.setAttribute("registerEndDateError", "Event end date must after event start date");
             return false;
+        }
+        
+        if(slot > locationDAO.getLocationByID(locationID).getLocationCapacity()){
+            throw new IllegalArgumentException("Slot is over location capacity!");
         }
 
         //check event name is vailable
