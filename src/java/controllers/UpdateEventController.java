@@ -179,6 +179,9 @@ public class UpdateEventController extends HttpServlet {
         if (startDate.after(endDate)) {
             throw new IllegalArgumentException("Event start date can not be after event end date");
         }
+        if (slot > locationDAO.getLocationByID(locationID).getLocationCapacity()) {
+            throw new IllegalArgumentException("Slot is over location capacity!");
+        }
 
         EventRegisterDAO registerDAO = new EventRegisterDAO();
         if (registerDAO.getRegisterNumByEventID(eventID) > slot) {
