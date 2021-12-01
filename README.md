@@ -47,11 +47,11 @@ Therefore, the Event Management website was created to replace the traditional m
 	-Git
 	-GitHub
 ## Team member
-	-Lê Thiên Ân
-	-Đoàn Phạm Bích Hợp
-	-Nguyễn Thị Hoàng Dung
-	-Nguyễn Văn Quyền
-	-Nguyễn Tuấn Thành
+	- ### Lê Thiên Ân
+	- ### Đoàn Phạm Bích Hợp
+	- ### Nguyễn Thị Hoàng Dung
+	- ### Nguyễn Văn Quyền
+	- ### Nguyễn Tuấn Thành
 ### Database
 
 ![Database diagram](https://github.com/ThienAnn-SE/fpt-event/blob/main/images/database.PNG)
