@@ -1,20 +1,59 @@
-### Hi there, I'm Thien An - aka Andrew 👋
-Welcome to our FPT-Event Manger project
-This is a team project with 5-member group!!!
+# FPT Event Management project
+
 ## 
 <br />
-
-### Languages and Tools:
-
-<img align="left" alt="Visual Studio Code" width="26px" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/visual-studio-code/visual-studio-code.png" />
-<img align="left" alt="Java" width="26px" src="https://raw.githubusercontent.com/github/explore/main/topics/java/java.png" />
-<img align="left" alt="HTML5" width="26px" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/html/html.png" />
-<img align="left" alt="CSS3" width="26px" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/css/css.png" />
-<img align="left" alt="JavaScript" width="26px" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/javascript/javascript.png" />
-<img align="left" alt="SQL" width="26px" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/sql/sql.png" />
-<img align="left" alt="Git" width="26px" src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/git/git.png" />
-<img align="left" alt="GitHub" width="26px" src="https://raw.githubusercontent.com/github/explore/78df643247d429f6cc873026c0622819ad797942/topics/github/github.png" />
-
+## Case Study
+At FPT University every year, it is still difficult to help students access events, as well as clubs or departments, it is also difficult to manage all the events they organize.
+Therefore, the Event Management website was created to replace the traditional method to solve the above problems.
+## Feature by role
+- ### Guest
+	-Login
+	-View event
+	-Search event
+- ### Student
+	-Update student information
+	-Follow event
+	-Register event
+	-Comment event
+	-Report comment
+	-Feedback event
+	-View followed and registered event on calendar
+- ### Club/ Department leader
+	-Create event
+	-Update event
+	-View event list
+	-View event payment list
+	-View statistic
+	-View event registration list
+	-Export event registration list
+	-Send ban register request
+	-View event feedback
+- ### Admin
+	-View web application statistic
+	-View and manage user/club/category/location list
+	-Execute ban register request
+	-Process comment report
+## Technology:
+-### Back-end:
+	- Servlet/JSP
+-### Front-end:
+	-HTML5
+	-Bootstrap5 - CSS
+	-Javascript
+-### Database
+	-MSSQL Server 2019
+-### API
+	-Google API (OAuth 2.0)
+	-Paypal API (sandbox mode)
+-### Version control
+	-Git
+	-GitHub
+## Team member
+	-Lê Thiên Ân
+	-Đoàn Phạm Bích Hợp
+	-Nguyễn Thị Hoàng Dung
+	-Nguyễn Văn Quyền
+	-Nguyễn Tuấn Thành
 ### Database
 
 ![Database diagram](https://github.com/ThienAnn-SE/fpt-event/blob/main/images/database.PNG)
