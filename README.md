@@ -31,10 +31,10 @@ Therefore, the Event Management website was created to replace the traditional m
 	-View and manage user/club/category/location list
 	-Execute ban register request
 	-Process comment report
-## Technology:
--### Back-end:
+## Technology
+-### Back-end
 	- Servlet/JSP
--### Front-end:
+-### Front-end
 	-HTML5
 	-Bootstrap5 - CSS
 	-Javascript
