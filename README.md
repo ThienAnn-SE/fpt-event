@@ -1,7 +1,5 @@
 # FPT Event Management project
 
-## 
-<br />
 ## Case Study
 At FPT University every year, it is still difficult to help students access events, as well as clubs or departments, it is also difficult to manage all the events they organize.
 Therefore, the Event Management website was created to replace the traditional method to solve the above problems.
