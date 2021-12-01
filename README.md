@@ -32,18 +32,18 @@ Therefore, the Event Management website was created to replace the traditional m
 	-Execute ban register request
 	-Process comment report
 ## Technology
--### Back-end
+- ### Back-end
 	- Servlet/JSP
--### Front-end
+- ### Front-end
 	-HTML5
 	-Bootstrap5 - CSS
 	-Javascript
--### Database
+- ### Database
 	-MSSQL Server 2019
--### API
+- ### API
 	-Google API (OAuth 2.0)
 	-Paypal API (sandbox mode)
--### Version control
+- ### Version control
 	-Git
 	-GitHub
 ## Team member
